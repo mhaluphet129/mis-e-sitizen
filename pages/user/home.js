@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
-import Sider from "../components/layout/sider";
-import Header from "../components/layout/header";
-import Content from "../components/layout/content";
-const { Footer } = Layout;
+import { Sider, Header, Content, Footer } from "../components/layout";
 
 export default () => {
   const [selectedKey, setSelectedKey] = useState(1);
