@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input, Modal, Typography, Button, Alert } from "antd";
-import { UserAddOutlined, WarningOutlined } from "@ant-design/icons";
+import { UserAddOutlined } from "@ant-design/icons";
 
 const AddAdmin = ({ open, close }) => {
   const [email, setEmail] = useState("");

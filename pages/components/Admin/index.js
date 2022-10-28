@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, Table, Tag, Typography } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
-import AddAdmin from "./components/add_admin";
-import UpdateAdmin from "./components/update_admin";
+
+import { AddAdmin, UpdateAdmin } from "./components";
 
 const AdminPage = () => {
   const [showAddAdmin, setShowAddAdmin] = useState(false);

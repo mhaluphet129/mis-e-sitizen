@@ -9,7 +9,8 @@ import {
   CopyFilled,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
-import AdminPage from "../Admin";
+import AdminPage from "../components/Admin";
+import SeniorCitizenPage from "../components/SeniorCitizen";
 
 const Sider = ({ selectedIndex }) => {
   let items = [
@@ -68,7 +69,7 @@ const Header = () => {
       }}
     >
       <Modal
-        visible={showModal}
+        open={showModal}
         onCancel={() => setShowModal(false)}
         closable={false}
         footer={null}
@@ -109,6 +110,7 @@ const Content = ({ selectedKey }) => {
   return (
     <div style={{ backgroundColor: "#eee", height: "100%", padding: "10px" }}>
       {selectedKey == "admin" ? <AdminPage /> : null}
+      {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
     </div>
   );
 };
