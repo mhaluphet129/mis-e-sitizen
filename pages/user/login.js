@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
-import { Form, Tabs, Input, Button, Modal, message, Checkbox } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons/lib/icons";
+import { Form, Input, Button, Alert } from "antd";
+import axios from "axios";
 
 export default () => {
-  const handleLogin = (val) => {
-    console.log(val);
+  const [isError, setIsError] = useState(false);
+  const handleLogin = async (val) => {
+    let { data } = axios.post("/api/auth");
   };
 
   return (
@@ -25,11 +26,36 @@ export default () => {
         }}
         onFinish={handleLogin}
       >
-        <Form.Item label="Username" name="username">
+        {isError && (
+          <Alert
+            message="Error Text"
+            description="Error Description Error Description Error Description Error Description"
+            type="error"
+          />
+        )}
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Please input your username!",
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Password" name="password">
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your password!",
+            },
+          ]}
+        >
           <Input.Password />
         </Form.Item>
 

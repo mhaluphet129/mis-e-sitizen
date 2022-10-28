@@ -7,7 +7,9 @@ import {
   AreaChartOutlined,
   AliwangwangFilled,
   CopyFilled,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
+import AdminPage from "../Admin";
 
 const Sider = ({ selectedIndex }) => {
   let items = [
@@ -17,7 +19,12 @@ const Sider = ({ selectedIndex }) => {
       icon: <AreaChartOutlined />,
     },
     {
-      label: "Senior Citizen",
+      label: "Manage Admins Page",
+      key: "admin",
+      icon: <UsergroupAddOutlined />,
+    },
+    {
+      label: "Senior Citizen Page",
       key: "senior",
       icon: <AliwangwangFilled />,
     },
@@ -36,13 +43,13 @@ const Sider = ({ selectedIndex }) => {
         minHeight: "92vh",
       }}
     >
-      <div style={{ height: "35vh", backgroundColor: "#fff" }} />
+      <div style={{ height: "25vh", backgroundColor: "#fff" }} />
       <Menu
         onClick={selectedIndex}
         items={items}
         defaultSelectedKeys="dashboard"
         style={{
-          minHeight: "60vh",
+          minHeight: "70vh",
         }}
       />
     </Layout.Sider>
@@ -100,8 +107,8 @@ const Header = () => {
 
 const Content = ({ selectedKey }) => {
   return (
-    <div style={{ backgroundColor: "#eee", height: "100%" }}>
-      content {selectedKey}
+    <div style={{ backgroundColor: "#eee", height: "100%", padding: "10px" }}>
+      {selectedKey == "admin" ? <AdminPage /> : null}
     </div>
   );
 };
