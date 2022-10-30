@@ -1,16 +1,26 @@
 import React, { useState } from "react";
-import { Modal, Input, Button, Form, Alert } from "antd";
+import { Modal, Input, Button, Form, Alert, message } from "antd";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const UpdatePassword = ({ open, close }) => {
   const [error, setError] = useState(false);
 
-  const handleOnFinish = (val) => {
+  const handleOnFinish = async (val) => {
     const { password, confirmPassword } = val;
     if (password != confirmPassword) setError(true);
     else {
-      alert("Goods ka bay!");
-      close();
+      let { data } = await axios.post("/api/admin", {
+        payload: {
+          mode: "change-pass-admin",
+          password: password,
+        },
+      });
+
+      if (data.status == 200) {
+        message.success(data.message);
+        close();
+      } else message.error(data.message);
     }
   };
 
@@ -25,7 +35,7 @@ const UpdatePassword = ({ open, close }) => {
     >
       {error && (
         <Alert
-          message={"Passwords didn't match"}
+          message="Passwords didn't match"
           type="error"
           onClose={() => setError(false)}
           showIcon

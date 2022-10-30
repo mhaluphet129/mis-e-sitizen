@@ -8,7 +8,6 @@ if (!cached) {
 
 async function dbConnect() {
   if (cached.conn) {
-    console.log("mongoDB already connected.");
     return cached.conn;
   }
 

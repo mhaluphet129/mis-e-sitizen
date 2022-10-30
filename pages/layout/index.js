@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, Layout, Avatar, Modal, Button, Typography } from "antd";
 import {
   UserOutlined,
@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import AdminPage from "../components/Admin";
 import SeniorCitizenPage from "../components/SeniorCitizen";
+import Cookies from "js-cookie";
 
 const Sider = ({ selectedIndex }) => {
   let items = [
@@ -60,6 +61,12 @@ const Sider = ({ selectedIndex }) => {
 const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
+  const [currentUser, setCurrentUser] = useState({ name: "", lastname: "" });
+
+  useEffect(() => {
+    setCurrentUser(JSON.parse(Cookies.get("currentUser")));
+  }, [Cookies.get("currentUser")]);
+
   return (
     <Layout.Header
       style={{
@@ -80,7 +87,7 @@ const Header = () => {
       >
         <UserOutlined style={{ width: "40vw", fontSize: "10rem" }} />
         <Typography.Title level={2} style={{ textAlign: "center" }}>
-          Leynard Allison Cayetuna
+          {currentUser.name} {currentUser.lastname}
         </Typography.Title>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button icon={<SettingFilled />} style={{ marginRight: "5px" }}>
@@ -90,6 +97,11 @@ const Header = () => {
             icon={<LogoutOutlined />}
             style={{ marginLeft: "5px" }}
             type="primary"
+            onClick={() => {
+              Cookies.remove("user");
+              Cookies.set("loggedIn", "false");
+              window.location.reload();
+            }}
           >
             Logout
           </Button>
@@ -100,7 +112,8 @@ const Header = () => {
         style={{ marginLeft: "auto", cursor: "pointer" }}
         onClick={() => setShowModal(true)}
       >
-        L C
+        {currentUser.name[0]?.toUpperCase()}{" "}
+        {currentUser.lastname[0]?.toUpperCase()}
       </Avatar>
     </Layout.Header>
   );

@@ -40,14 +40,14 @@ let SeniorSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-      required: false,
+      required: true,
     },
     middlename: {
       type: String,
     },
     lastname: {
       type: String,
-      required: false,
+      required: true,
     },
     gender: {
       type: String,
@@ -83,4 +83,4 @@ let SeniorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.User || mongoose.model("Senior", SeniorSchema);
+export default mongoose.models.Senior || mongoose.model("Senior", SeniorSchema);

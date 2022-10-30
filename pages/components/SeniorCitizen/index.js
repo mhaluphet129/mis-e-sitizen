@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Button, Table, Tag, Typography, Space, Select } from "antd";
+import { Button, Table, Tag, Typography, Space, Input, Tooltip } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
   SettingOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 
 import { AddSenior, UpdateSenior, Filter } from "./components";
@@ -70,10 +71,11 @@ const AdminPage = () => {
       align: "center",
       render: (_, row) => <Tag>{row.status}</Tag>,
     },
+
     {
       title: "Function",
-      width: 150,
       align: "center",
+      width: 150,
       render: () => <Button icon={<SettingOutlined />}>Update</Button>,
     },
   ];
@@ -81,7 +83,12 @@ const AdminPage = () => {
     <div>
       <Space style={{ marginBottom: 5 }}>
         <Button onClick={() => setShowAddSenior(true)}>Add Senior</Button>
-        <Button onClick={() => setOpenFilter(true)}>Filter</Button>
+        <Input placeholder="Search by name" />
+        <Input placeholder="Search by address" />
+        <Button icon={<SearchOutlined />} />
+        <Tooltip title="More options">
+          <Button onClick={() => setOpenFilter(true)}>...</Button>
+        </Tooltip>
       </Space>
       <Table
         dataSource={dummyData}
@@ -91,6 +98,7 @@ const AdminPage = () => {
             onClick: () => setUpdateSenior({ open: true, data }),
           };
         }}
+        rowKey={(row) => row._id}
       />
       <AddSenior open={showAddSenior} close={() => setShowAddSenior(false)} />
       <UpdateSenior

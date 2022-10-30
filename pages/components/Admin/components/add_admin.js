@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Input, Modal, Typography, Button, Alert } from "antd";
+import { Input, Modal, Typography, Button, Alert, message } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
+import axios from "axios";
 
-const AddAdmin = ({ open, close }) => {
+const AddAdmin = ({ open, close, refresh }) => {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({ show: false, description: "" });
 
   const validate = (str) => {
     var re = /\S+@\S+\.\S+/;
@@ -19,11 +20,11 @@ const AddAdmin = ({ open, close }) => {
       closable={false}
       footer={null}
     >
-      {error && (
+      {error.show && (
         <Alert
-          message={"Invalid Email"}
+          message={error.description}
           type="warning"
-          onClose={() => setError(false)}
+          onClose={() => setError({ show: false, description: "" })}
           showIcon
           closable
         />
@@ -42,12 +43,29 @@ const AddAdmin = ({ open, close }) => {
           value={email}
         />
         <Button
-          onClick={() => {
-            if (!(email.length != 0 && validate(email))) setError(true);
+          onClick={async () => {
+            if (!(email.length != 0 && validate(email)))
+              setError({ show: true, description: "Invalid Email" });
             else {
-              setError(false);
-              alert("valid");
-              setEmail("");
+              setError({ show: false, description: "" });
+
+              let { data } = await axios.post("/api/admin", {
+                payload: {
+                  mode: "add-admin",
+                  email,
+                },
+              });
+
+              if (data.status == 409)
+                setError({
+                  show: true,
+                  description: "Email is already taken. ",
+                });
+              else if (data.status == 200) {
+                message.success(data.message);
+                refresh();
+                close();
+              }
             }
           }}
           type="primary"

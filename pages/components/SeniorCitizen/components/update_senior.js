@@ -48,9 +48,10 @@ const UpdateSenior = ({ open, close, data }) => {
         open={open}
         onClose={close}
         width={500}
-        title="Update Senior Citizen Information"
+        title=" "
         extra={[
           <Space>
+            <Button type="link">View History</Button>
             <Button type="primary" disabled={!edited}>
               SAVE
             </Button>

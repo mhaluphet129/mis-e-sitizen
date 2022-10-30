@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, Button, Space, Form, Input, Modal } from "antd";
+import { Drawer, Button, Form, Input, message } from "antd";
+import axios from "axios";
 import UpdatePassword from "./update_password";
 
-const UpdateAdmin = ({ open, close, data }) => {
+const UpdateAdmin = ({ open, close, data, refresh }) => {
   const [edited, setEdited] = useState(false);
   const [inputData, setInputData] = useState({
     name: "",
@@ -10,6 +11,22 @@ const UpdateAdmin = ({ open, close, data }) => {
     email: "",
   });
   const [openModal, setOpenModal] = useState(false);
+
+  const handleSave = async () => {
+    let res = await axios.post("/api/admin", {
+      payload: {
+        id: data._id,
+        data: inputData,
+        mode: "update-admin",
+      },
+    });
+
+    if (res.data.status == 200) {
+      message.success(res.data.message);
+      setEdited(false);
+      refresh();
+    } else message.error(res.data.message);
+  };
 
   useEffect(() => {
     setInputData(data);
@@ -24,12 +41,9 @@ const UpdateAdmin = ({ open, close, data }) => {
         width={350}
         title="Update Admin"
         extra={[
-          <Space>
-            <Button type="primary" disabled={!edited}>
-              SAVE
-            </Button>
-            <Button>CANCEL</Button>
-          </Space>,
+          <Button type="primary" disabled={!edited} onClick={handleSave}>
+            SAVE
+          </Button>,
         ]}
         closable={false}
       >
