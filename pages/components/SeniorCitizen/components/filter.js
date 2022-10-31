@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CheckOutlined } from "@ant-design/icons";
+import { CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   Modal,
   Button,
@@ -11,10 +11,16 @@ import {
   Tooltip,
   Checkbox,
   Select,
+  message,
 } from "antd";
+import axios from "axios";
 
-const Filter = ({ open, close }) => {
+const Filter = ({ open, close, setSenior }) => {
   const [minAge, setMinAge] = useState(60);
+  const [ageRange, setAgeRange] = useState({ from: 60, to: 90 });
+  const [withPension, setWithPension] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [form] = Form.useForm();
 
   return (
     <Modal
@@ -22,12 +28,22 @@ const Filter = ({ open, close }) => {
       onCancel={close}
       closable={false}
       onOk={close}
-      title="Filter"
+      title="Filter Search"
       footer={[
-        <Button type="primary" icon={<CheckOutlined />}>
+        <Button
+          onClick={() => {
+            setReset(true);
+            close();
+            setSenior(null);
+          }}
+        >
+          Reset
+        </Button>,
+        <Button type="primary" icon={<CheckOutlined />} onClick={form.submit}>
           Apply Filter
         </Button>,
       ]}
+      destroyOnClose={reset}
     >
       <Form
         labelCol={{
@@ -38,35 +54,74 @@ const Filter = ({ open, close }) => {
           flex: 1,
         }}
         colon={false}
+        form={form}
+        onFinish={async (val) => {
+          val = { ...val, ageRange, withPension };
+          let { data } = await axios.get("/api/senior", {
+            params: {
+              mode: "filter-senior",
+              filter: JSON.stringify(val),
+            },
+          });
+
+          if (data.status == 200) {
+            message.success("Search done.");
+            close();
+            setSenior(data.searchData);
+          }
+        }}
       >
-        <Form.Item label="By Gender:">
+        <Form.Item label="By Gender:" name="gender">
           <Radio.Group>
-            <Space direction="vertical">
+            <Space>
               <Radio value="male">Male</Radio>
               <Radio value="female">Female</Radio>
             </Space>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="By Age:">
-          <Tooltip
-            trigger={["focus"]}
-            title="You can enter specific only if other input is blank"
-          >
-            <InputNumber
-              width={30}
-              defaultValue={60}
-              onChange={(e) => setMinAge(e)}
-            />{" "}
-          </Tooltip>
+        <Form.Item
+          label={
+            <div>
+              By Age:{" "}
+              <Tooltip title="test">
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </div>
+          }
+        >
+          <InputNumber
+            width={30}
+            defaultValue={60}
+            onChange={(e) => {
+              setMinAge(e);
+              setAgeRange((_) => {
+                return { ..._, from: e };
+              });
+            }}
+          />{" "}
           -{" "}
-          <Tooltip trigger={["focus"]}>
-            <InputNumber width={30} defaultValue={90} min={minAge} />
-          </Tooltip>
+          <InputNumber
+            width={30}
+            defaultValue={90}
+            min={minAge}
+            onChange={(e) => {
+              setAgeRange((_) => {
+                return { ..._, to: e };
+              });
+            }}
+          />
         </Form.Item>
-        <Form.Item label="With Pension:">
-          <Checkbox />
+        <Form.Item label="With Pension:" name="withPension">
+          <Checkbox
+            onChange={(e) => {
+              setWithPension(e.target.checked);
+            }}
+          />
         </Form.Item>
-        <Form.Item label="By status:">
+        <Form.Item label="By Address:" name="address">
+          <Input />
+        </Form.Item>
+        <Form.Item label="By status:" name="status">
           <Select
             mode="multiple"
             allowClear

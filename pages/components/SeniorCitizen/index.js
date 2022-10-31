@@ -1,5 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Button, Table, Tag, Typography, Space, Input, Tooltip } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Button,
+  Table,
+  Tag,
+  Typography,
+  Space,
+  Input,
+  Tooltip,
+  AutoComplete,
+  message,
+} from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -13,9 +23,12 @@ import axios from "axios";
 const AdminPage = () => {
   const [showAddSenior, setShowAddSenior] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [updateSenior, setUpdateSenior] = useState({ open: false, data: null });
   const [seniors, setSeniors] = useState([]);
   const [trigger, setTrigger] = useState(0);
+  const [_searchName, setSearchName] = useState("");
+  const timerRef = useRef(null);
 
   const column = [
     {
@@ -68,20 +81,74 @@ const AdminPage = () => {
     },
   ];
 
+  const searchName = async (keyword) => {
+    if (keyword != "" && keyword != null) {
+      let { data } = await axios.get("/api/senior", {
+        params: {
+          mode: "search-senior",
+          searchKeyword: keyword,
+        },
+      });
+      if (data.status == 200) {
+        setSeniors(data.searchData);
+        setLoading(false);
+      }
+    }
+  };
+
+  const runTimer = (key) => {
+    setLoading(true);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(function () {
+      searchName(key);
+    }, 500);
+  };
+
   useEffect(async () => {
-    let { data } = await axios.get("/api/senior");
+    let { data } = await axios.get("/api/senior", {
+      params: { mode: "fetch-all", search: _searchName },
+    });
     if (data.status == 200) setSeniors(data.senior);
   }, [trigger]);
+
   return (
     <div>
       <Space style={{ marginBottom: 5 }}>
         <Button onClick={() => setShowAddSenior(true)}>Add Senior</Button>
-        <Input placeholder="Search by name" />
-        <Input placeholder="Search by address" />
-        <Button icon={<SearchOutlined />} />
+        <AutoComplete
+          style={{
+            width: 200,
+          }}
+          loading={loading}
+          placeholder="Search by name"
+          filterOption={(inputValue, option) =>
+            option.value?.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+          }
+          onChange={(_) => {
+            runTimer(_);
+            if (_?.length <= 0) {
+              setSearchName("");
+              setLoading(false);
+              setTrigger(trigger + 1);
+            }
+          }}
+          autoFocus
+          allowClear
+        />
+        {/* <Button icon={<SearchOutlined />} /> */}
         <Tooltip title="More options">
-          <Button onClick={() => setOpenFilter(true)}>...</Button>
+          <Button
+            onClick={() => setOpenFilter(true)}
+            icon={<SettingOutlined />}
+          />
         </Tooltip>
+        {/* <Typography>
+          Filter query: Gender[Male], Age[0-90], Pension[
+          <CheckOutlined />
+          ], Status[<Tag style={{ marginRight: 0 }}>Deceased</Tag>]
+        </Typography> */}
       </Space>
       <Table
         dataSource={seniors}
@@ -104,7 +171,14 @@ const AdminPage = () => {
         data={updateSenior.data}
         refresh={() => setTrigger(trigger + 1)}
       />
-      <Filter open={openFilter} close={() => setOpenFilter(false)} />
+      <Filter
+        open={openFilter}
+        close={() => setOpenFilter(false)}
+        setSenior={(data) => {
+          if (data != null) setSeniors(data);
+          else setTrigger(trigger + 1);
+        }}
+      />
     </div>
   );
 };
