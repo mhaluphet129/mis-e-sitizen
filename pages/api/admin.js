@@ -58,9 +58,10 @@ export default async function handler(req, res) {
             let { id, data } = req.body.payload;
 
             return Admin.findOneAndUpdate({ _id: id }, { $set: { ...data } })
-              .then(() =>
-                res.json({ status: 200, message: "Successfully updated" })
-              )
+              .then(() => {
+                res.json({ status: 200, message: "Successfully updated" });
+                resolve();
+              })
               .catch((err) => {
                 res
                   .status(500)
@@ -74,9 +75,10 @@ export default async function handler(req, res) {
               { _id: id },
               { $set: { password } }
             )
-              .then(() =>
-                res.json({ status: 200, message: "Successfully updated" })
-              )
+              .then(() => {
+                res.json({ status: 200, message: "Successfully updated" });
+                resolve();
+              })
               .catch((err) => {
                 res
                   .status(500)
@@ -84,6 +86,19 @@ export default async function handler(req, res) {
               });
           }
         }
+      });
+    }
+    case "DELETE": {
+      return new Promise(async (resolve, reject) => {
+        const { id } = req.query;
+        return await Admin.findOneAndDelete({ _id: id })
+          .then(() => {
+            res.json({ status: 200, message: "Sucessfully deleted" });
+            resolve();
+          })
+          .catch((err) => {
+            res.status(500).json({ success: false, message: "Error: " + err });
+          });
       });
     }
     default:

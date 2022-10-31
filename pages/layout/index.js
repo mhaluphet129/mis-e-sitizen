@@ -14,7 +14,7 @@ import SeniorCitizenPage from "../components/SeniorCitizen";
 import Cookies from "js-cookie";
 
 const Sider = ({ selectedIndex }) => {
-  let items = [
+  let [items, setItems] = useState([
     {
       label: "Dashboard",
       key: "dashboard",
@@ -38,7 +38,15 @@ const Sider = ({ selectedIndex }) => {
         paddingRight: "40px",
       },
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    let currentUser = JSON.parse(Cookies.get("currentUser"));
+    if (!currentUser?.role.includes("superadmin")) {
+      setItems((e) => e.filter((_) => _.key != "admin"));
+    }
+  }, []);
+
   return (
     <Layout.Sider
       style={{

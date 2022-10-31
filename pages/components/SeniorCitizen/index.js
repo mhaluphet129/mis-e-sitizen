@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Table, Tag, Typography, Space, Input, Tooltip } from "antd";
 import {
   CheckOutlined,
@@ -8,26 +8,14 @@ import {
 } from "@ant-design/icons";
 
 import { AddSenior, UpdateSenior, Filter } from "./components";
+import axios from "axios";
 
 const AdminPage = () => {
   const [showAddSenior, setShowAddSenior] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [updateSenior, setUpdateSenior] = useState({ open: false, data: null });
-
-  const dummyData = [
-    {
-      name: "Lata1",
-      lastname: "Cayetuna",
-      email: "cayetunatuna@gmail.com",
-      address: "kalibangon",
-      status: "active",
-      gender: "Female",
-      age: 81,
-      pensionStatus: {
-        withPension: true,
-      },
-    },
-  ];
+  const [seniors, setSeniors] = useState([]);
+  const [trigger, setTrigger] = useState(0);
 
   const column = [
     {
@@ -79,6 +67,11 @@ const AdminPage = () => {
       render: () => <Button icon={<SettingOutlined />}>Update</Button>,
     },
   ];
+
+  useEffect(async () => {
+    let { data } = await axios.get("/api/senior");
+    if (data.status == 200) setSeniors(data.senior);
+  }, [trigger]);
   return (
     <div>
       <Space style={{ marginBottom: 5 }}>
@@ -91,7 +84,7 @@ const AdminPage = () => {
         </Tooltip>
       </Space>
       <Table
-        dataSource={dummyData}
+        dataSource={seniors}
         columns={column}
         onRow={(data) => {
           return {
@@ -100,11 +93,16 @@ const AdminPage = () => {
         }}
         rowKey={(row) => row._id}
       />
-      <AddSenior open={showAddSenior} close={() => setShowAddSenior(false)} />
+      <AddSenior
+        open={showAddSenior}
+        close={() => setShowAddSenior(false)}
+        refresh={() => setTrigger(trigger + 1)}
+      />
       <UpdateSenior
         open={updateSenior.open}
         close={() => setUpdateSenior({ open: false, data: null })}
         data={updateSenior.data}
+        refresh={() => setTrigger(trigger + 1)}
       />
       <Filter open={openFilter} close={() => setOpenFilter(false)} />
     </div>

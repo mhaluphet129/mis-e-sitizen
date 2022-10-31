@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, Button, Form, Input, message } from "antd";
+import { Drawer, Button, Form, Input, message, Space, Modal } from "antd";
 import axios from "axios";
 import UpdatePassword from "./update_password";
+import Cookies from "js-cookie";
 
 const UpdateAdmin = ({ open, close, data, refresh }) => {
   const [edited, setEdited] = useState(false);
@@ -28,6 +29,24 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
     } else message.error(res.data.message);
   };
 
+  const handleDelete = async () => {
+    let currentUser = JSON.parse(Cookies.get("currentUser"));
+    if (currentUser?._id == data._id) {
+      message.warning("You cannot remove your own account");
+      return;
+    }
+    let res = await axios.delete("/api/admin", {
+      params: { id: data._id },
+    });
+
+    if (res.data.status == 200) {
+      setEdited(false);
+      refresh();
+      close();
+      message.success(res.data.message);
+    } else message.error(res.data.message);
+  };
+
   useEffect(() => {
     setInputData(data);
   }, [data]);
@@ -41,9 +60,25 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
         width={350}
         title="Update Admin"
         extra={[
-          <Button type="primary" disabled={!edited} onClick={handleSave}>
-            SAVE
-          </Button>,
+          <Space>
+            <Button type="primary" disabled={!edited} onClick={handleSave}>
+              SAVE
+            </Button>
+            {!data?.role.includes("superadmin") ? (
+              <Button
+                type="danger"
+                onClick={() => {
+                  Modal.confirm({
+                    title: "are you sure ?",
+                    okText: "Confirm",
+                    onOk: handleDelete,
+                  });
+                }}
+              >
+                DELETE
+              </Button>
+            ) : null}
+          </Space>,
         ]}
         closable={false}
       >

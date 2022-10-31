@@ -26,7 +26,6 @@ let pensionSchema = new mongoose.Schema(
     },
     monthlyPension: {
       type: Number,
-      required: true,
     },
   },
   { _id: false }
