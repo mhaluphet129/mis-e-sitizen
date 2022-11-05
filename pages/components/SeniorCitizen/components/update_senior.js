@@ -14,9 +14,11 @@ import {
 } from "antd";
 import moment from "moment";
 import axios from "axios";
+import { History } from "../components";
 
-const UpdateSenior = ({ open, close, data, refresh }) => {
+const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
   const [edited, setEdited] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
   const [inputData, setInputData] = useState({
     id: "",
     name: "",
@@ -69,7 +71,15 @@ const UpdateSenior = ({ open, close, data, refresh }) => {
         title=" "
         extra={[
           <Space>
-            <Button type="link">View History</Button>
+            <Button
+              type="link"
+              onClick={() => {
+                setOpenHistory(true);
+                close();
+              }}
+            >
+              View History
+            </Button>
             <Button type="primary" disabled={!edited} onClick={handleSave}>
               SAVE
             </Button>
@@ -312,6 +322,14 @@ const UpdateSenior = ({ open, close, data, refresh }) => {
           </Form.Item>
         </Form>
       </Drawer>
+      <History
+        open={openHistory}
+        close={() => {
+          setOpenHistory(false);
+          updateOpen();
+        }}
+        id="09"
+      />
     </>
   );
 };

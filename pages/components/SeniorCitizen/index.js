@@ -5,19 +5,23 @@ import {
   Tag,
   Typography,
   Space,
-  Input,
   Tooltip,
   AutoComplete,
-  message,
 } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
+  HistoryOutlined,
   SettingOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
 
-import { AddSenior, UpdateSenior, Filter } from "./components";
+import {
+  AddSenior,
+  UpdateSenior,
+  Filter,
+  History,
+  AddHistory,
+} from "./components";
 import axios from "axios";
 
 const AdminPage = () => {
@@ -27,8 +31,11 @@ const AdminPage = () => {
   const [updateSenior, setUpdateSenior] = useState({ open: false, data: null });
   const [seniors, setSeniors] = useState([]);
   const [trigger, setTrigger] = useState(0);
+  const [selectFunctionIndex, setSelectFunctionIndex] = useState(-1);
   const [_searchName, setSearchName] = useState("");
   const timerRef = useRef(null);
+  const [openHistory, setOpenHistory] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const column = [
     {
@@ -77,7 +84,37 @@ const AdminPage = () => {
       title: "Function",
       align: "center",
       width: 150,
-      render: () => <Button icon={<SettingOutlined />}>Update</Button>,
+      render: (_, __, ___) =>
+        selectFunctionIndex != ___ ? (
+          <Button
+            icon={<HistoryOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectFunctionIndex(___);
+            }}
+          >
+            History
+          </Button>
+        ) : (
+          <Space>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenModal(true);
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenHistory(true);
+              }}
+            >
+              View
+            </Button>
+          </Space>
+        ),
     },
   ];
 
@@ -167,7 +204,16 @@ const AdminPage = () => {
       />
       <UpdateSenior
         open={updateSenior.open}
-        close={() => setUpdateSenior({ open: false, data: null })}
+        close={() =>
+          setUpdateSenior((e) => {
+            return { open: false, data: { ...e.data } };
+          })
+        }
+        updateOpen={() =>
+          setUpdateSenior((e) => {
+            return { open: true, data: { ...e.data } };
+          })
+        }
         data={updateSenior.data}
         refresh={() => setTrigger(trigger + 1)}
       />
@@ -179,6 +225,14 @@ const AdminPage = () => {
           else setTrigger(trigger + 1);
         }}
       />
+      <History
+        open={openHistory}
+        close={() => {
+          setOpenHistory(false);
+        }}
+        id="09"
+      />
+      <AddHistory open={openModal} close={() => setOpenModal(false)} />
     </div>
   );
 };
