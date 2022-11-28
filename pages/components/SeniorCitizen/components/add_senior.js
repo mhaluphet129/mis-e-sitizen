@@ -9,9 +9,11 @@ import {
   InputNumber,
   Checkbox,
   Button,
+  Select,
   message,
 } from "antd";
 import axios from "axios";
+import moment from "moment";
 
 const AddSenior = ({ open, close, refresh }) => {
   const [pension, setPension] = useState({ withPension: false, pension: 3000 });
@@ -23,8 +25,12 @@ const AddSenior = ({ open, close, refresh }) => {
   let [form] = Form.useForm();
 
   const handleFinish = async (val) => {
-    val = { ...val, pensionStatus: pension, emergencyContact };
-
+    let age = moment().diff(
+      moment(val?.dateOfBirth).format("YYYY-MM-DD"),
+      "years",
+      false
+    );
+    val = { ...val, pensionStatus: pension, emergencyContact, age };
     let { data } = await axios.post("/api/senior", {
       payload: {
         mode: "add-senior",
@@ -36,7 +42,7 @@ const AddSenior = ({ open, close, refresh }) => {
       close();
       refresh();
       message.success(data.message);
-    } else message.error(data.mesasge);
+    } else message.error(data.message);
   };
 
   return (
@@ -46,6 +52,7 @@ const AddSenior = ({ open, close, refresh }) => {
       onCancel={close}
       closable={false}
       width={550}
+      style={{ top: 10 }}
       footer={
         <Button type="primary" onClick={form.submit}>
           Add Senior
@@ -64,6 +71,7 @@ const AddSenior = ({ open, close, refresh }) => {
         }}
         colon={false}
         onFinish={handleFinish}
+        style={{ overflowY: "auto", maxHeight: "calc(100vh - 200px)" }}
       >
         <Form.Item
           label="Senior Citizen ID No."
@@ -124,18 +132,7 @@ const AddSenior = ({ open, close, refresh }) => {
         >
           <DatePicker />
         </Form.Item>
-        <Form.Item
-          label="Age"
-          name="age"
-          rules={[
-            {
-              required: true,
-              message: "This is required.",
-            },
-          ]}
-        >
-          <InputNumber />
-        </Form.Item>
+
         <Form.Item
           label="Barangay"
           name="barangay"
@@ -146,7 +143,23 @@ const AddSenior = ({ open, close, refresh }) => {
             },
           ]}
         >
-          <Input />
+          <Select
+            showSearch
+            placeholder="Select a person"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={Array(17)
+              .fill({})
+              .map((_, i) => {
+                return {
+                  label: `Barangay ${i + 1}`,
+                  value: `Barangay ${i + 1}`,
+                };
+              })}
+            allowClear
+          />
         </Form.Item>
         <Form.Item
           label="Address"

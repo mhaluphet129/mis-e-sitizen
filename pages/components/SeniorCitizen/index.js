@@ -11,7 +11,9 @@ import {
 import {
   CheckOutlined,
   CloseOutlined,
-  HistoryOutlined,
+  EditOutlined,
+  EyeOutlined,
+  FileAddOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 
@@ -84,37 +86,35 @@ const AdminPage = () => {
       title: "Function",
       align: "center",
       width: 150,
-      render: (_, __, ___) =>
-        selectFunctionIndex != ___ ? (
-          <Button
-            icon={<HistoryOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectFunctionIndex(___);
-            }}
-          >
-            History
-          </Button>
-        ) : (
-          <Space>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenModal(true);
-              }}
-            >
-              Add
-            </Button>
-            <Button
+      render: (_, __, ___) => (
+        <Space>
+          <Tooltip title="View History">
+            <Typography.Link
               onClick={(e) => {
                 e.stopPropagation();
                 setOpenHistory(true);
               }}
             >
-              View
-            </Button>
-          </Space>
-        ),
+              <EyeOutlined style={{ fontSize: 20 }} />
+            </Typography.Link>
+          </Tooltip>
+          <Tooltip title="Add History">
+            <Typography.Link
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenModal(true);
+              }}
+            >
+              <FileAddOutlined style={{ fontSize: 20 }} />
+            </Typography.Link>
+          </Tooltip>
+          <Tooltip title="Edit Senior">
+            <Typography.Link>
+              <EditOutlined style={{ fontSize: 20 }} />
+            </Typography.Link>
+          </Tooltip>
+        </Space>
+      ),
     },
   ];
 

@@ -3,7 +3,7 @@ import { Layout } from "antd";
 import { Sider, Header, Content, Footer } from "../layout";
 
 export default () => {
-  const [selectedKey, setSelectedKey] = useState(1);
+  const [selectedKey, setSelectedKey] = useState("dashboard");
   return (
     <>
       <Layout>

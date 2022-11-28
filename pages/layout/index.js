@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Menu, Layout, Avatar, Modal, Button, Typography } from "antd";
+import {
+  Menu,
+  Layout,
+  Avatar,
+  Modal,
+  Button,
+  Typography,
+  PageHeader,
+  Card,
+} from "antd";
 import {
   UserOutlined,
   SettingFilled,
   LogoutOutlined,
   AreaChartOutlined,
-  AliwangwangFilled,
   CopyFilled,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
+
+import { FcBullish, FcBusinessman } from "react-icons/fc";
+import { TbOld } from "react-icons/tb";
 import AdminPage from "../components/Admin";
 import SeniorCitizenPage from "../components/SeniorCitizen";
+import Dashboard from "../components/Dashboard";
 import Cookies from "js-cookie";
 
 const Sider = ({ selectedIndex }) => {
@@ -18,17 +30,17 @@ const Sider = ({ selectedIndex }) => {
     {
       label: "Dashboard",
       key: "dashboard",
-      icon: <AreaChartOutlined />,
+      icon: <FcBullish />,
     },
     {
-      label: "Manage Admins Page",
+      label: "User Admins",
       key: "admin",
-      icon: <UsergroupAddOutlined />,
+      icon: <FcBusinessman />,
     },
     {
-      label: "Senior Citizen Page",
+      label: "Senior",
       key: "senior",
-      icon: <AliwangwangFilled />,
+      icon: <TbOld />,
     },
     {
       label: "Report",
@@ -130,8 +142,44 @@ const Header = () => {
 const Content = ({ selectedKey }) => {
   return (
     <div style={{ backgroundColor: "#eee", height: "100%", padding: "10px" }}>
-      {selectedKey == "admin" ? <AdminPage /> : null}
-      {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
+      {selectedKey == "dashboard" ? (
+        <PageHeader
+          title={
+            <>
+              <AreaChartOutlined style={{ fontSize: 30 }} />
+              Dashboard
+            </>
+          }
+        >
+          <Dashboard />
+        </PageHeader>
+      ) : null}
+      {selectedKey == "admin" ? (
+        <PageHeader
+          title={
+            <>
+              <UsergroupAddOutlined style={{ fontSize: 30 }} /> Admin Page
+            </>
+          }
+        >
+          <Card>
+            <AdminPage />
+          </Card>
+        </PageHeader>
+      ) : null}
+      {selectedKey == "senior" ? (
+        <PageHeader
+          title={
+            <>
+              <TbOld style={{ fontSize: 30 }} /> Senior Page
+            </>
+          }
+        >
+          <Card>
+            <SeniorCitizenPage />
+          </Card>
+        </PageHeader>
+      ) : null}
     </div>
   );
 };
