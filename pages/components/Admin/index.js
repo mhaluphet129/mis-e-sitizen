@@ -28,7 +28,11 @@ const AdminPage = () => {
     },
     {
       title: "Role",
-      render: (_, row) => <Tag color="blue">{row.role}</Tag>,
+      render: (_, row) => (
+        <Tag color={row?.role == "superadmin" ? "#00b96b" : "blue"}>
+          {row.role}
+        </Tag>
+      ),
     },
     {
       title: "Email",

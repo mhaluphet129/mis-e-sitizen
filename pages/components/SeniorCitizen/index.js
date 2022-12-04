@@ -33,13 +33,16 @@ const AdminPage = () => {
   const [updateSenior, setUpdateSenior] = useState({ open: false, data: null });
   const [seniors, setSeniors] = useState([]);
   const [trigger, setTrigger] = useState(0);
-  const [selectFunctionIndex, setSelectFunctionIndex] = useState(-1);
   const [_searchName, setSearchName] = useState("");
   const timerRef = useRef(null);
   const [openHistory, setOpenHistory] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const column = [
+    {
+      title: "Senior ID",
+      render: (_, row) => <Typography>{row?.id}</Typography>,
+    },
     {
       title: "Name",
       render: (_, row) => (
@@ -154,7 +157,7 @@ const AdminPage = () => {
     <div>
       <Space style={{ marginBottom: 5 }}>
         <Button onClick={() => setShowAddSenior(true)}>Add Senior</Button>
-        <AutoComplete
+        {/* <AutoComplete
           style={{
             width: 200,
           }}
@@ -173,7 +176,7 @@ const AdminPage = () => {
           }}
           autoFocus
           allowClear
-        />
+        /> */}
         {/* <Button icon={<SearchOutlined />} /> */}
         <Tooltip title="More options">
           <Button

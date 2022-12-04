@@ -3,13 +3,13 @@ import { Card, Row, Col, Typography } from "antd";
 
 const DashboardCards = (props) => {
   return (
-    <Card bodyStyle={{ padding: 5 }} key={props.key} hoverable>
+    <Card bodyStyle={{ padding: 5 }} hoverable>
       <Row gutter={[16, 0]}>
         <Col>
           <div
             style={{
               background: props.color,
-              height: 100,
+              height: "100%",
               width: 65,
               display: "flex",
               justifyContent: "center",

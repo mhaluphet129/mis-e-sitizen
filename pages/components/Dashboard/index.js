@@ -26,7 +26,7 @@ const Dashboard = () => {
   return (
     <Row gutter={[16, 16]}>
       {dummy.map((e, i) => (
-        <Col span={12}>
+        <Col span={12} key={e?.name + i}>
           <Cards
             key={e?.name + i}
             name={e?.name}

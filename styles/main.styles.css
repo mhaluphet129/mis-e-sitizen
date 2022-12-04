@@ -1,8 +1,21 @@
+body {
+  margin: 0;
+}
+
 .main-body-login {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #eee;
-  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.main-login-info {
+  background-image: url("../public/login-photo-senior.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   min-height: 100vh;
 }

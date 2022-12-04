@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import {
-  Menu,
+  Dropdown,
   Layout,
   Avatar,
+  Menu,
   Modal,
   Button,
   Typography,
-  PageHeader,
-  Card,
+  Image,
 } from "antd";
 import {
   UserOutlined,
   SettingFilled,
   LogoutOutlined,
-  AreaChartOutlined,
   CopyFilled,
-  UsergroupAddOutlined,
 } from "@ant-design/icons";
 
 import { FcBullish, FcBusinessman } from "react-icons/fc";
@@ -65,7 +63,17 @@ const Sider = ({ selectedIndex }) => {
         minHeight: "92vh",
       }}
     >
-      <div style={{ height: "25vh", backgroundColor: "#fff" }} />
+      <div
+        style={{
+          height: "25vh",
+          background: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Image preview={false} src="/menu-logo.png" alt="logo" width={150} />
+      </div>
       <Menu
         onClick={selectedIndex}
         items={items}
@@ -93,9 +101,39 @@ const Header = () => {
         backgroundColor: "#aaa",
         display: "flex",
         alignItems: "center",
+        justifyContent: "flex-end",
       }}
     >
-      <Modal
+      <Dropdown
+        placement="bottom"
+        menu={{
+          items: [
+            {
+              key: 1,
+              label: "Settings",
+              icon: <SettingFilled />,
+              onClick: () => {},
+            },
+            {
+              key: 2,
+              label: "Log Out",
+              icon: <LogoutOutlined />,
+              onClick: () => {
+                Cookies.remove("user");
+                Cookies.set("loggedIn", "false");
+                window.location.reload();
+              },
+            },
+          ],
+        }}
+      >
+        <Avatar size="large" style={{ marginLeft: "auto", cursor: "pointer" }}>
+          {currentUser.name[0]?.toUpperCase()}{" "}
+          {currentUser.lastname[0]?.toUpperCase()}
+        </Avatar>
+      </Dropdown>
+
+      {/* <Modal
         open={showModal}
         onCancel={() => setShowModal(false)}
         closable={false}
@@ -126,15 +164,7 @@ const Header = () => {
             Logout
           </Button>
         </div>
-      </Modal>
-      <Avatar
-        size="large"
-        style={{ marginLeft: "auto", cursor: "pointer" }}
-        onClick={() => setShowModal(true)}
-      >
-        {currentUser.name[0]?.toUpperCase()}{" "}
-        {currentUser.lastname[0]?.toUpperCase()}
-      </Avatar>
+      </Modal> */}
     </Layout.Header>
   );
 };
@@ -142,44 +172,9 @@ const Header = () => {
 const Content = ({ selectedKey }) => {
   return (
     <div style={{ backgroundColor: "#eee", height: "100%", padding: "10px" }}>
-      {selectedKey == "dashboard" ? (
-        <PageHeader
-          title={
-            <>
-              <AreaChartOutlined style={{ fontSize: 30 }} />
-              Dashboard
-            </>
-          }
-        >
-          <Dashboard />
-        </PageHeader>
-      ) : null}
-      {selectedKey == "admin" ? (
-        <PageHeader
-          title={
-            <>
-              <UsergroupAddOutlined style={{ fontSize: 30 }} /> Admin Page
-            </>
-          }
-        >
-          <Card>
-            <AdminPage />
-          </Card>
-        </PageHeader>
-      ) : null}
-      {selectedKey == "senior" ? (
-        <PageHeader
-          title={
-            <>
-              <TbOld style={{ fontSize: 30 }} /> Senior Page
-            </>
-          }
-        >
-          <Card>
-            <SeniorCitizenPage />
-          </Card>
-        </PageHeader>
-      ) : null}
+      {selectedKey == "dashboard" ? <Dashboard /> : null}
+      {selectedKey == "admin" ? <AdminPage /> : null}
+      {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
     </div>
   );
 };
@@ -192,10 +187,9 @@ const Footer = () => {
         justifyContent: "center",
         width: "100%",
         backgroundColor: "#aaa",
-        minHeight: "5vh",
       }}
     >
-      <Typography.Title level={5}>
+      <Typography.Title level={5} style={{ marginTop: 10 }}>
         E-Sitizen: A WEB-BASED INFORMATION AND HEALTH MONITORING SYSTEM FOR THE
         SENIOR CITIZEN
       </Typography.Title>
