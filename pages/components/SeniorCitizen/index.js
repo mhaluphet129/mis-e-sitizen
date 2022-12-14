@@ -92,29 +92,26 @@ const AdminPage = () => {
       render: (_, __, ___) => (
         <Space>
           <Tooltip title="View History">
-            <Typography.Link
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 setOpenHistory(true);
               }}
-            >
-              <EyeOutlined style={{ fontSize: 20 }} />
-            </Typography.Link>
+              icon={<EyeOutlined />}
+            />
           </Tooltip>
           <Tooltip title="Add History">
-            <Typography.Link
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 setOpenModal(true);
               }}
-            >
-              <FileAddOutlined style={{ fontSize: 20 }} />
-            </Typography.Link>
+              icon={<FileAddOutlined />}
+              disabled
+            />
           </Tooltip>
           <Tooltip title="Edit Senior">
-            <Typography.Link>
-              <EditOutlined style={{ fontSize: 20 }} />
-            </Typography.Link>
+            <Button icon={<EditOutlined />} />
           </Tooltip>
         </Space>
       ),
@@ -200,6 +197,8 @@ const AdminPage = () => {
             onClick: () => setUpdateSenior({ open: true, data }),
           };
         }}
+        pagination={false}
+        scroll={{ y: 500 }}
         rowKey={(row) => row._id}
       />
       <AddSenior

@@ -10,9 +10,11 @@ import {
   DatePicker,
   Checkbox,
   Modal,
+  Select,
   message,
 } from "antd";
 import moment from "moment";
+import dayjs from "dayjs";
 import axios from "axios";
 import { History } from "../components";
 
@@ -171,30 +173,37 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
               defaultValue={moment(inputData?.dateOfBirth)}
               format="MMM DD YYYY"
               onChange={(e) => {
+                let age = dayjs().diff(
+                  dayjs(e).format("YYYY-MM-DD"),
+                  "years",
+                  false
+                );
                 setInputData((_) => {
-                  return { ..._, dateOfBirth: e };
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="Age">
-            <InputNumber
-              value={inputData?.age || ""}
-              onChange={(e) => {
-                setInputData((_) => {
-                  return { ..._, age: e };
+                  return { ..._, dateOfBirth: e, age };
                 });
               }}
             />
           </Form.Item>
           <Form.Item label="Barangay">
-            <Input
-              value={inputData?.barangay || ""}
-              onChange={(e) => {
-                setInputData((_) => {
-                  return { ..._, barangay: e.target.value };
-                });
-              }}
+            <Select
+              showSearch
+              placeholder="Select a person"
+              optionFilterProp="children"
+              value={inputData?.barangay}
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              options={Array(17)
+                .fill({})
+                .map((_, i) => {
+                  return {
+                    label: `Barangay ${i + 1}`,
+                    value: `Barangay ${i + 1}`,
+                  };
+                })}
+              allowClear
             />
           </Form.Item>
           <Form.Item label="Address">
@@ -235,7 +244,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Monthly Pension">
             <InputNumber
-              defaultValue={inputData?.pensionStatus?.monthlyPension || ""}
+              value={inputData?.pensionStatus?.monthlyPension || ""}
               formatter={(value) =>
                 `₱ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }

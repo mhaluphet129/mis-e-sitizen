@@ -1,23 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Dropdown,
-  Layout,
-  Avatar,
-  Menu,
-  Modal,
-  Button,
-  Typography,
-  Image,
-} from "antd";
-import {
-  UserOutlined,
-  SettingFilled,
-  LogoutOutlined,
-  CopyFilled,
-} from "@ant-design/icons";
+import { Layout, Menu, Button, Typography, Image, Space, Tooltip } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
 
-import { FcBullish, FcBusinessman } from "react-icons/fc";
-import { TbOld } from "react-icons/tb";
+import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
+import { TbOld, TbReport } from "react-icons/tb";
 import AdminPage from "../components/Admin";
 import SeniorCitizenPage from "../components/SeniorCitizen";
 import Dashboard from "../components/Dashboard";
@@ -43,10 +29,15 @@ const Sider = ({ selectedIndex }) => {
     {
       label: "Report",
       key: "report",
-      icon: <CopyFilled />,
+      icon: <TbReport />,
       style: {
         paddingRight: "40px",
       },
+    },
+    {
+      label: "Settings",
+      key: "settings",
+      icon: <FcSettings />,
     },
   ]);
 
@@ -80,6 +71,7 @@ const Sider = ({ selectedIndex }) => {
         defaultSelectedKeys="dashboard"
         style={{
           minHeight: "70vh",
+          fontSize: 17,
         }}
       />
     </Layout.Sider>
@@ -87,8 +79,6 @@ const Sider = ({ selectedIndex }) => {
 };
 
 const Header = () => {
-  const [showModal, setShowModal] = useState(false);
-
   const [currentUser, setCurrentUser] = useState({ name: "", lastname: "" });
 
   useEffect(() => {
@@ -102,69 +92,27 @@ const Header = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
+        paddingInline: 20,
       }}
     >
-      <Dropdown
-        placement="bottom"
-        menu={{
-          items: [
-            {
-              key: 1,
-              label: "Settings",
-              icon: <SettingFilled />,
-              onClick: () => {},
-            },
-            {
-              key: 2,
-              label: "Log Out",
-              icon: <LogoutOutlined />,
-              onClick: () => {
-                Cookies.remove("user");
-                Cookies.set("loggedIn", "false");
-                window.location.reload();
-              },
-            },
-          ],
-        }}
-      >
-        <Avatar size="large" style={{ marginLeft: "auto", cursor: "pointer" }}>
-          {currentUser.name[0]?.toUpperCase()}{" "}
-          {currentUser.lastname[0]?.toUpperCase()}
-        </Avatar>
-      </Dropdown>
-
-      {/* <Modal
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-        closable={false}
-        footer={null}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <UserOutlined style={{ width: "40vw", fontSize: "10rem" }} />
-        <Typography.Title level={2} style={{ textAlign: "center" }}>
-          {currentUser.name} {currentUser.lastname}
-        </Typography.Title>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button icon={<SettingFilled />} style={{ marginRight: "5px" }}>
-            Settings
-          </Button>
+      <Space>
+        <Tooltip title="Logout">
           <Button
+            size="large"
             icon={<LogoutOutlined />}
-            style={{ marginLeft: "5px" }}
-            type="primary"
+            style={{
+              backgroundColor: "#aaa",
+              color: "#fff",
+              padding: 0,
+            }}
             onClick={() => {
               Cookies.remove("user");
               Cookies.set("loggedIn", "false");
               window.location.reload();
             }}
-          >
-            Logout
-          </Button>
-        </div>
-      </Modal> */}
+          />
+        </Tooltip>
+      </Space>
     </Layout.Header>
   );
 };

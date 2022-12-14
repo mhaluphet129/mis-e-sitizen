@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Button, message, Table, Tag, Typography } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
+import {
+  Button,
+  message,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  Typography,
+  Modal,
+} from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 import { AddAdmin, UpdateAdmin } from "./components";
@@ -10,6 +19,7 @@ const AdminPage = () => {
   const [admins, setAdmins] = useState([]);
   const [updateAdmin, setUpdateAdmin] = useState({ open: false, data: null });
   const [trigger, setTrigger] = useState(0);
+  const [loader, setLoader] = useState();
 
   const column = [
     {
@@ -42,15 +52,56 @@ const AdminPage = () => {
       title: "Function",
       width: 150,
       align: "center",
-      render: () => <Button icon={<SettingOutlined />}>Update</Button>,
+      render: (_, row) => (
+        <Space>
+          <Tooltip title="Edit">
+            <Button icon={<EditOutlined />} />
+          </Tooltip>
+          <Tooltip
+            title={
+              row?.role == "superadmin"
+                ? "You can't delete the Superadmin"
+                : "Delete"
+            }
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              disabled={row?.role == "superadmin"}
+              danger
+              onClick={(e) => {
+                e.stopPropagation();
+                Modal.confirm({
+                  title: "are you sure ?",
+                  okText: "Confirm",
+                  onOk: () => {
+                    (async () => {
+                      let { data } = await axios.delete("/api/admin", {
+                        params: {
+                          id: row?._id,
+                        },
+                      });
+                      if (data?.status == 200) {
+                        message.success(data.message);
+                        setTrigger(trigger + 1);
+                      } else message.error(data?.message);
+                    })();
+                  },
+                });
+              }}
+            />
+          </Tooltip>
+        </Space>
+      ),
     },
   ];
 
   useEffect(() => {
     (async () => {
+      setLoader("fetch");
       let { data } = await axios.get("/api/admin");
       if (data.status == 200) setAdmins(data.admins);
       else message.error(data.message);
+      setLoader("");
     })();
   }, [trigger]);
 
@@ -67,6 +118,7 @@ const AdminPage = () => {
         }}
         pagination={{ pageSize: 10 }}
         rowKey={(row) => row._id}
+        loading={loader == "fetch"}
       />
       <AddAdmin
         open={showAddAdmin}

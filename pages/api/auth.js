@@ -1,5 +1,6 @@
 import Admin from "../../database/model/Admin";
 import dbConnect from "../../database/dbConnect";
+import moment from "moment";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -29,6 +30,10 @@ export default async function handler(req, res) {
                 if (e == null) {
                   res.json({ status: 404, message: "Account not found." });
                 } else if (e.password == password) {
+                  Admin.findOneAndUpdate(
+                    { email },
+                    { $set: { lastLogin: moment() } }
+                  );
                   res.json({
                     status: 200,
                     message: "Login Successfully",

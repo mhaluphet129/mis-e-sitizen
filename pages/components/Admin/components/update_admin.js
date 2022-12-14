@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, Button, Form, Input, message, Space, Modal } from "antd";
+import {
+  Drawer,
+  Button,
+  Form,
+  Input,
+  message,
+  Space,
+  Modal,
+  Typography,
+} from "antd";
 import axios from "axios";
 import UpdatePassword from "./update_password";
 import Cookies from "js-cookie";
+import moment from "moment";
 
 const UpdateAdmin = ({ open, close, data, refresh }) => {
   const [edited, setEdited] = useState(false);
@@ -66,7 +76,7 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
             </Button>
             {!data?.role.includes("superadmin") ? (
               <Button
-                type="danger"
+                danger
                 onClick={() => {
                   Modal.confirm({
                     title: "are you sure ?",
@@ -113,7 +123,7 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
               }
             />
           </Form.Item>
-          <Form.Item>
+          <Form.Item noStyle>
             <Button
               style={{ width: "100%" }}
               type="primary"
@@ -122,6 +132,12 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
               Update Password
             </Button>
           </Form.Item>
+          {data?.lastLogin && (
+            <Typography.Text type="secondary" italic>
+              Last login @{" "}
+              {moment(data?.lastLogin).format("MMM DD, YYYY - HH:mm a")}
+            </Typography.Text>
+          )}
         </Form>
       </Drawer>
     </>

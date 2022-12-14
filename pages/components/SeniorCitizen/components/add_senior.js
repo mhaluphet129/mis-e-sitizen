@@ -14,6 +14,7 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+import dayjs from "dayjs";
 
 const AddSenior = ({ open, close, refresh }) => {
   const [pension, setPension] = useState({ withPension: false, pension: 3000 });
@@ -25,11 +26,12 @@ const AddSenior = ({ open, close, refresh }) => {
   let [form] = Form.useForm();
 
   const handleFinish = async (val) => {
-    let age = moment().diff(
-      moment(val?.dateOfBirth).format("YYYY-MM-DD"),
+    let age = dayjs().diff(
+      dayjs(val?.dateOfBirth).format("YYYY-MM-DD"),
       "years",
       false
     );
+
     val = { ...val, pensionStatus: pension, emergencyContact, age };
     let { data } = await axios.post("/api/senior", {
       payload: {

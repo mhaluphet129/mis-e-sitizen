@@ -30,7 +30,7 @@ const AddAdmin = ({ open, close, refresh }) => {
         />
       )}
 
-      <Typography.Title level={5} style={{ textAlign: "center" }}>
+      <Typography.Title level={5} style={{ textAlign: "center", marginTop: 5 }}>
         Email
       </Typography.Title>
       <Input.Group>
@@ -67,6 +67,11 @@ const AddAdmin = ({ open, close, refresh }) => {
                 close();
               }
             }
+          }}
+          style={{
+            borderRadius: 0,
+            borderTopRightRadius: 7,
+            borderBottomRightRadius: 7,
           }}
           type="primary"
         >

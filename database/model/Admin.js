@@ -15,6 +15,10 @@ let AdminSchema = new mongoose.Schema(
     password: {
       type: String,
     },
+    lastLogin: {
+      type: Date,
+      default: new Date(),
+    },
     role: {
       type: String,
       default: "admin",

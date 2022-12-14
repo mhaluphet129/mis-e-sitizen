@@ -47,7 +47,6 @@ const Login = () => {
   const handleNewUser = async () => {
     if (email != "") {
       let { data } = await axios.get("/api/auth", { params: { email } });
-      console.log(data);
       if (data.status == 200) setOpenModal(true);
       else {
         if (data.status == 404) message.error(data.message);
