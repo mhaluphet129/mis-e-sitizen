@@ -31,6 +31,7 @@ const Filter = ({ open, close, setSenior }) => {
       title="Filter Search"
       footer={[
         <Button
+          key="key 1"
           onClick={() => {
             setReset(true);
             close();
@@ -39,7 +40,12 @@ const Filter = ({ open, close, setSenior }) => {
         >
           Reset
         </Button>,
-        <Button type="primary" icon={<CheckOutlined />} onClick={form.submit}>
+        <Button
+          key="key 2"
+          type="primary"
+          icon={<CheckOutlined />}
+          onClick={form.submit}
+        >
           Apply Filter
         </Button>,
       ]}

@@ -46,10 +46,12 @@ const AdminPage = () => {
     },
   ];
 
-  useEffect(async () => {
-    let { data } = await axios.get("/api/admin");
-    if (data.status == 200) setAdmins(data.admins);
-    else message.error(data.message);
+  useEffect(() => {
+    (async () => {
+      let { data } = await axios.get("/api/admin");
+      if (data.status == 200) setAdmins(data.admins);
+      else message.error(data.message);
+    })();
   }, [trigger]);
 
   return (

@@ -146,11 +146,13 @@ const AdminPage = () => {
     }, 500);
   };
 
-  useEffect(async () => {
-    let { data } = await axios.get("/api/senior", {
-      params: { mode: "fetch-all", search: _searchName },
-    });
-    if (data.status == 200) setSeniors(data.senior);
+  useEffect(() => {
+    (async () => {
+      let { data } = await axios.get("/api/senior", {
+        params: { mode: "fetch-all", search: _searchName },
+      });
+      if (data.status == 200) setSeniors(data.senior);
+    })();
   }, [trigger]);
 
   return (

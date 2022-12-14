@@ -11,11 +11,12 @@ import {
   Typography,
   FloatButton,
   message,
+  Space,
 } from "antd";
 import axios from "axios";
 import { BsInfoCircle } from "react-icons/bs";
 
-export default () => {
+const Login = () => {
   const [isError, setIsError] = useState({ show: false, description: "" });
   const [email, setEmail] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -63,7 +64,7 @@ export default () => {
           title={`Setup account for email '${email}'`}
           onCancel={() => setOpenModal(false)}
           footer={[
-            <Button type="primary" onClick={form.submit}>
+            <Button key="key 1" type="primary" onClick={form.submit}>
               Update
             </Button>,
           ]}
@@ -245,3 +246,5 @@ export default () => {
     </Row>
   );
 };
+
+export default Login;

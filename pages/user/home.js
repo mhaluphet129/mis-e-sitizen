@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Layout } from "antd";
 import { Sider, Header, Content, Footer } from "../layout";
 
-export default () => {
+const Home = () => {
   const [selectedKey, setSelectedKey] = useState("dashboard");
   return (
     <>
@@ -13,7 +13,9 @@ export default () => {
           <Content selectedKey={selectedKey} />
         </Layout>
       </Layout>
-      <Footer>Footer</Footer>
+      <Footer />
     </>
   );
 };
+
+export default Home;

@@ -70,7 +70,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
         width={500}
         title=" "
         extra={[
-          <Space>
+          <Space key="key 1">
             <Button
               type="link"
               onClick={() => {

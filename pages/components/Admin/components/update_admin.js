@@ -60,7 +60,7 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
         width={350}
         title="Update Admin"
         extra={[
-          <Space>
+          <Space key="key 1">
             <Button type="primary" disabled={!edited} onClick={handleSave}>
               SAVE
             </Button>

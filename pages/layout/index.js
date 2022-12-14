@@ -93,7 +93,7 @@ const Header = () => {
 
   useEffect(() => {
     setCurrentUser(JSON.parse(Cookies.get("currentUser")));
-  }, [Cookies.get("currentUser")]);
+  }, []);
 
   return (
     <Layout.Header
@@ -197,4 +197,7 @@ const Footer = () => {
   );
 };
 
+const _Layout = () => <></>;
+
 export { Sider, Header, Content, Footer };
+export default _Layout;
