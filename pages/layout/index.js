@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu, Button, Typography, Image, Space, Tooltip } from "antd";
-import { LogoutOutlined } from "@ant-design/icons";
+import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 
 import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
 import { TbOld, TbReport } from "react-icons/tb";
+import { FaHouseUser } from "react-icons/fa";
 import AdminPage from "../components/Admin";
 import SeniorCitizenPage from "../components/SeniorCitizen";
 import Dashboard from "../components/Dashboard";
+import Barangay from "../components/Barangay";
+import Reports from "../components/Reports";
 import Cookies from "js-cookie";
 
 const Sider = ({ selectedIndex }) => {
@@ -15,6 +18,11 @@ const Sider = ({ selectedIndex }) => {
       label: "Dashboard",
       key: "dashboard",
       icon: <FcBullish />,
+    },
+    {
+      label: "Barangay",
+      key: "barangay",
+      icon: <FaHouseUser />,
     },
     {
       label: "User Admins",
@@ -34,11 +42,11 @@ const Sider = ({ selectedIndex }) => {
         paddingRight: "40px",
       },
     },
-    {
-      label: "Settings",
-      key: "settings",
-      icon: <FcSettings />,
-    },
+    // {
+    //   label: "Settings",
+    //   key: "settings",
+    //   icon: <FcSettings />,
+    // },
   ]);
 
   useEffect(() => {
@@ -96,6 +104,18 @@ const Header = () => {
       }}
     >
       <Space>
+        <Tooltip title="Profile Settings">
+          <Button
+            size="large"
+            icon={<SettingOutlined />}
+            style={{
+              backgroundColor: "#aaa",
+              color: "#fff",
+              padding: 0,
+            }}
+            onClick={() => {}}
+          />
+        </Tooltip>
         <Tooltip title="Logout">
           <Button
             size="large"
@@ -119,17 +139,26 @@ const Header = () => {
 
 const Content = ({ selectedKey }) => {
   return (
-    <div style={{ backgroundColor: "#eee", height: "100%", padding: "10px" }}>
+    <div
+      style={{
+        backgroundColor: "#eee",
+        height: "100%",
+        padding: "10px",
+        overflow: "scroll",
+      }}
+    >
       {selectedKey == "dashboard" ? <Dashboard /> : null}
       {selectedKey == "admin" ? <AdminPage /> : null}
       {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
+      {selectedKey == "barangay" ? <Barangay /> : null}
+      {selectedKey == "report" ? <Reports /> : null}
     </div>
   );
 };
 
 const Footer = () => {
   return (
-    <div
+    <Layout.Footer
       style={{
         display: "flex",
         justifyContent: "center",
@@ -141,7 +170,7 @@ const Footer = () => {
         E-Sitizen: A WEB-BASED INFORMATION AND HEALTH MONITORING SYSTEM FOR THE
         SENIOR CITIZEN
       </Typography.Title>
-    </div>
+    </Layout.Footer>
   );
 };
 

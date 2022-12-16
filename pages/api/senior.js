@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         switch (mode) {
           case "fetch-all": {
-            if (req.query.search != "") {
+            if (!["", undefined].includes(req.query.search)) {
               const { search } = req.query;
               return await Senior.find({ _id: search }).then((e) => {
                 res.json({
@@ -117,7 +117,6 @@ export default async function handler(req, res) {
             delete req.body.payload.data.updatedAt;
             delete req.body.payload.data.__v;
 
-            console.log(req.body.payload);
             return await Senior.findOneAndUpdate(
               { _id: id },
               { $set: { ...req.body.payload.data } }

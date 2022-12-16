@@ -19,3 +19,23 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+
+.custom-table td.ant-table-cell {
+  padding: 0 !important;
+  padding-left: 1px;
+  font-size: 0.8em;
+}
+
+.myTable th.ant-table-cell {
+  text-align: center !important;
+  background-color: rgba(255, 200, 0, 0.8) !important;
+}
+
+thead {
+  display: table-row-group;
+}
+
+@page {
+  size: legal;
+  margin: 0.5in;
+}
