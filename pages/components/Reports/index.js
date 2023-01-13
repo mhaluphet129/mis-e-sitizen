@@ -126,7 +126,11 @@ const Reports = () => {
         placement="bottom"
         height="100%"
         title="Print Preview"
-        extra={[<Button onClick={handlePrint}>PRINT</Button>]}
+        extra={[
+          <Button onClick={handlePrint} key="key1">
+            PRINT
+          </Button>,
+        ]}
         bodyStyle={{
           textAlign: "center",
         }}

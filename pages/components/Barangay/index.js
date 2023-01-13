@@ -41,8 +41,10 @@ const Barangay = () => {
       .fill(0)
       .map(() => "0123456789abcdef"[Math.floor(Math.random() * 16)])
       .join("");
+  const [height, setHeight] = useState(0);
 
   useEffect(() => {
+    setHeight(window.innerHeight);
     (async () => {
       let { data } = await axios.get("/api/barangay", {
         params: {
@@ -73,7 +75,7 @@ const Barangay = () => {
   return (
     <Card
       bodyStyle={{
-        height: window.innerHeight * 0.84,
+        height: height * 0.84,
         overflowY: "scroll",
         display: selectedGraph != "bar" ? "flex" : null,
         flexDirection: selectedGraph != "bar" ? "row" : null,

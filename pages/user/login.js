@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
   Form,
@@ -21,6 +21,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [credits, openCredits] = useState(false);
+  const [location, setLocation] = useState();
 
   const [form] = Form.useForm();
 
@@ -40,7 +41,7 @@ const Login = () => {
       Cookies.set("currentUser", JSON.stringify(data.currentUser));
       Cookies.set("loggedIn", "true");
       message.success(data.message);
-      window.location.reload();
+      location?.reload();
     }
   };
 
@@ -54,6 +55,10 @@ const Login = () => {
       }
     }
   };
+
+  useEffect(() => {
+    setLocation(window.location);
+  }, []);
 
   return (
     <Row gutter={[32, 0]}>
@@ -89,7 +94,7 @@ const Login = () => {
                 Cookies.set("currentUser", JSON.stringify(data.currentUser));
                 Cookies.set("loggedIn", "true");
                 message.success(data.message);
-                window.location.reload();
+                location?.reload();
               }
             }}
             labelCol={{ span: 7 }}

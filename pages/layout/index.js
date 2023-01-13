@@ -105,8 +105,10 @@ const Header = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openChangePass, setOpenChangePass] = useState(false);
   const [form] = Form.useForm();
+  const [location, setLocation] = useState();
 
   useEffect(() => {
+    setLocation(window.location);
     setCurrentUser(JSON.parse(Cookies.get("currentUser")));
   }, []);
 
@@ -212,7 +214,7 @@ const Header = () => {
               onClick={() => {
                 Cookies.remove("user");
                 Cookies.set("loggedIn", "false");
-                window.location.reload();
+                location?.reload();
               }}
             />
           </Tooltip>

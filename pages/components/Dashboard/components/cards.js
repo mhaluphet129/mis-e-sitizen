@@ -1,4 +1,3 @@
-import { FileAddOutlined } from "@ant-design/icons";
 import { Card, Row, Col, Typography } from "antd";
 
 const DashboardCards = (props) => {
@@ -18,7 +17,7 @@ const DashboardCards = (props) => {
               color: "#fff",
             }}
           >
-            {props?.icon}
+            {props?.icon != null ? props.icon : ""}
           </div>
         </Col>
         <Col
