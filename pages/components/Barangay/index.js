@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Pie, Bar } from "react-chartjs-2";
-import { Card, Radio, Space, Table, Select } from "antd";
+import { Card, Radio, Space, Table, Select, Typography, Tag } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import axios from "axios";
 import {
   Chart,
   ArcElement,
@@ -23,14 +25,16 @@ Chart.register(
 
 const Barangay = () => {
   const [selectedGraph, setSelectedGraph] = useState("pie");
-  const [selectedBarangay, setSelectedBarangay] = useState("barangay 1");
+  const [selectedBarangay, setSelectedBarangay] = useState("Barangay 1");
   const [barangayData, setbarangayData] = useState(
-    Array(14)
+    Array(17)
       .fill()
       .map((e, i) => {
-        return { label: `Barangay ${i + 1}`, data: 0 };
+        return { label: `Barangay ${i + 1}`, value: 0 };
       })
   );
+  const [pieData, setPieData] = useState([]);
+  const [seniors, setSeniors] = useState([]);
   const random = () =>
     "#" +
     Array(6)
@@ -39,11 +43,32 @@ const Barangay = () => {
       .join("");
 
   useEffect(() => {
-    console.log(
-      Array(14)
-        .fill(0)
-        .map(() => random())
-    );
+    (async () => {
+      let { data } = await axios.get("/api/barangay", {
+        params: {
+          mode: "dashboard-data",
+          selectedBarangay,
+        },
+      });
+
+      if (data?.status == 200) {
+        let arr = Array(17)
+          .fill()
+          .map(() => 0);
+        let arr2 = barangayData;
+
+        data?.data?.pieData.forEach((e) => {
+          arr[e._id.split(" ")[1] - 1] = e.count;
+          arr2[e._id.split(" ")[1] - 1] = {
+            label: `Barangay ${e._id.split(" ")[1] - 1}`,
+            value: (e.count / data?.data.totalSenior) * 100,
+          };
+        });
+        setPieData(arr);
+        setbarangayData(arr2);
+        setSeniors(data.data?.seniors);
+      }
+    })();
   }, []);
   return (
     <Card
@@ -84,15 +109,13 @@ const Barangay = () => {
               },
             }}
             data={{
-              labels: Array(14)
+              labels: Array(17)
                 .fill()
                 .map((e, i) => `Brgy ${i + 1}`),
               datasets: [
                 {
-                  data: Array(14)
-                    .fill()
-                    .map(() => Math.floor(Math.random() * 99999)),
-                  backgroundColor: Array(14)
+                  data: pieData,
+                  backgroundColor: Array(17)
                     .fill(0)
                     .map(() => random()),
                 },
@@ -115,15 +138,13 @@ const Barangay = () => {
               },
             }}
             data={{
-              labels: Array(14)
+              labels: Array(17)
                 .fill()
                 .map((e, i) => `Brgy ${i + 1}`),
               datasets: [
                 {
                   label: "Seniors",
-                  data: Array(14)
-                    .fill()
-                    .map(() => Math.floor(Math.random() * 99999)),
+                  data: pieData,
                   backgroundColor: "rgba(0,185,107,0.5)",
                 },
               ],
@@ -151,6 +172,7 @@ const Barangay = () => {
               },
               {
                 title: "Percentage/Total",
+                render: (_, row) => row?.value?.toFixed(2) + "%",
               },
             ]}
           />
@@ -164,12 +186,63 @@ const Barangay = () => {
         }}
       >
         <Table
+          dataSource={seniors}
+          columns={[
+            { title: "Senior ID", render: (_, row) => row?.id },
+            {
+              title: "Name",
+              render: (_, row) => (
+                <Typography>
+                  {row.name}
+                  {row?.middlename ? " " + row?.middlename : ""} {row.lastname}
+                </Typography>
+              ),
+            },
+            {
+              title: "Gender",
+              render: (_, row) => <Typography>{row?.gender}</Typography>,
+            },
+            {
+              title: "Age",
+              render: (_, row) => row?.age,
+            },
+            {
+              title: "With Pension ?",
+              width: 100,
+              align: "center",
+              render: (_, row) =>
+                row?.pensionStatus?.withPension ? (
+                  <CheckOutlined style={{ color: "#42ba96" }} />
+                ) : (
+                  <CloseOutlined style={{ color: "#ff0000" }} />
+                ),
+            },
+            {
+              title: "Status",
+              width: 150,
+              align: "center",
+              render: (_, row) => <Tag>{row.status}</Tag>,
+            },
+          ]}
           title={() => (
             <Select
               showSearch
               placeholder="Select Barangay"
               optionFilterProp="children"
-              onChange={(e) => setSelectedBarangay(e)}
+              onChange={(e) => {
+                setSelectedBarangay(e);
+
+                (async () => {
+                  let { data } = await axios.get("/api/barangay", {
+                    params: {
+                      mode: "fetch-seniors",
+                      barangay: e,
+                    },
+                  });
+
+                  if (data.status == 200) setSeniors(data?.data);
+                })();
+              }}
               value={selectedBarangay}
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -184,7 +257,6 @@ const Barangay = () => {
                     value: `Barangay ${i + 1}`,
                   };
                 })}
-              allowClear
             />
           )}
         />

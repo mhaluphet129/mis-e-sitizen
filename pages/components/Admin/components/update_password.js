@@ -3,7 +3,7 @@ import { Modal, Input, Button, Form, Alert, message } from "antd";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-const UpdatePassword = ({ open, close }) => {
+const UpdatePassword = ({ open, close, id }) => {
   const [error, setError] = useState(false);
 
   const handleOnFinish = async (val) => {
@@ -14,6 +14,7 @@ const UpdatePassword = ({ open, close }) => {
         payload: {
           mode: "change-pass-admin",
           password: password,
+          id,
         },
       });
 

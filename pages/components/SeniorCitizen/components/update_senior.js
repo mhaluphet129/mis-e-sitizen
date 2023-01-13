@@ -86,7 +86,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
               SAVE
             </Button>
             <Button
-              type="danger"
+              danger
               onClick={() => {
                 Modal.confirm({
                   title: "are you sure ?",
