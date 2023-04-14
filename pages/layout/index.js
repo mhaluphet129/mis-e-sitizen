@@ -212,8 +212,8 @@ const Header = () => {
                 padding: 0,
               }}
               onClick={() => {
-                Cookies.remove("user");
-                Cookies.set("loggedIn", "false");
+                Cookies.remove("currentUser");
+                Cookies.remove("loggedIn");
                 location?.reload();
               }}
             />

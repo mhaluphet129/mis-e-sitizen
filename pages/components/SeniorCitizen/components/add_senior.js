@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 
 const AddSenior = ({ open, close, refresh }) => {
   const [pension, setPension] = useState({ withPension: false, pension: 3000 });
+  const [withSSS, setWithSSS] = useState(false);
   const [emergencyContact, setEmergencyContact] = useState({
     name: "",
     contactNumber: "",
@@ -26,6 +27,7 @@ const AddSenior = ({ open, close, refresh }) => {
   let [form] = Form.useForm();
 
   const handleFinish = async (val) => {
+    val = { ...val, withSSS };
     let age = dayjs().diff(
       dayjs(val?.dateOfBirth).format("YYYY-MM-DD"),
       "years",
@@ -212,6 +214,9 @@ const AddSenior = ({ open, close, refresh }) => {
             }
             disabled={!pension.withPension}
           />
+        </Form.Item>
+        <Form.Item label="With SSS ?" name="withSSS">
+          <Checkbox onChange={(e) => setWithSSS(e.target.checked)} />
         </Form.Item>
         <Form.Item label="Status" name="status" initialValue="active">
           <Radio.Group defaultValue="active">

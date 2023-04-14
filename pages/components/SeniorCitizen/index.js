@@ -79,6 +79,17 @@ const AdminPage = () => {
         ),
     },
     {
+      title: "With SSS ?",
+      width: 100,
+      align: "center",
+      render: (_, row) =>
+        row?.withSSS ? (
+          <CheckOutlined style={{ color: "#42ba96" }} />
+        ) : (
+          <CloseOutlined style={{ color: "#ff0000" }} />
+        ),
+    },
+    {
       title: "Status",
       width: 150,
       align: "center",

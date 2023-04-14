@@ -73,6 +73,10 @@ let SeniorSchema = new mongoose.Schema(
       required: true,
     },
     pensionStatus: pensionSchema,
+    withSSS: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       required: true,

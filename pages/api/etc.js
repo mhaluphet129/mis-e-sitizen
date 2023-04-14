@@ -49,7 +49,7 @@ export default async function handler(req, res) {
               password: "1234",
             });
 
-            initAdmin
+            return initAdmin
               .save()
               .then(() => {
                 res.json({
@@ -62,6 +62,7 @@ export default async function handler(req, res) {
                 res
                   .status(500)
                   .json({ success: false, message: "Error: " + err });
+                reject();
               });
           }
         }

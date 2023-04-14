@@ -5,7 +5,6 @@ import moment from "moment";
 export default async function handler(req, res) {
   await dbConnect();
   const { method } = req;
-
   switch (method) {
     case "GET":
       return new Promise(async (resolve, reject) => {
@@ -25,12 +24,12 @@ export default async function handler(req, res) {
         switch (mode) {
           case "login": {
             const { email, password } = req.body.payload;
-            await Admin.findOne({ email })
-              .then((e) => {
+            return await Admin.findOne({ email })
+              .then(async (e) => {
                 if (e == null) {
                   res.json({ status: 404, message: "Account not found." });
                 } else if (e.password == password) {
-                  Admin.findOneAndUpdate(
+                  await Admin.findOneAndUpdate(
                     { email },
                     { $set: { lastLogin: moment() } }
                   );
@@ -39,6 +38,7 @@ export default async function handler(req, res) {
                     message: "Login Successfully",
                     currentUser: e,
                   });
+                  resolve();
                 } else if (e?.password == null) {
                   res.json({
                     status: 200,
@@ -58,7 +58,6 @@ export default async function handler(req, res) {
           }
           case "new-user": {
             const payload = req.body.payload;
-
             delete payload.mode;
             delete payload.confirm;
 

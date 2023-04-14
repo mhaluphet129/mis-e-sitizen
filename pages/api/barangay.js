@@ -44,8 +44,9 @@ export default async function handler(req, res) {
                   status: 200,
                   data: doc,
                 });
+                resolve();
               })
-              .catch(() => {
+              .catch((err) => {
                 res
                   .status(500)
                   .json({ success: false, message: "Error: " + err });
