@@ -241,6 +241,15 @@ const Login = () => {
           Citizen of the Municipality of Kadingilan Bukidnon
         </Typography.Title>
       </Col>
+      {/* CREDITS */}
+      <Modal
+        open={credits}
+        onCancel={() => openCredits(false)}
+        footer={null}
+        closable={false}
+      >
+        Wala ko kabalo say ibutang haha
+      </Modal>
       <FloatButton
         icon={<BsInfoCircle />}
         onClick={() => {

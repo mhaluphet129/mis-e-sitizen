@@ -7,13 +7,16 @@ const Home = () => {
   return (
     <>
       <Layout>
-        <Sider selectedIndex={(e) => setSelectedKey(e.key)} />
+        <Sider
+          selectedIndex={(e) => setSelectedKey(e.key)}
+          selectedKey={selectedKey}
+        />
         <Layout>
           <Header />
-          <Content selectedKey={selectedKey} />
+          <Content selectedKey={selectedKey} setSelectedKey={setSelectedKey} />
         </Layout>
       </Layout>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

@@ -65,6 +65,8 @@ export default async function handler(req, res) {
             if (_.hasOwnProperty("gender")) option.push({ gender: _.gender });
             if (_.hasOwnProperty("withPension"))
               option.push({ "pensionStatus.withPension": _.withPension });
+            if (_.hasOwnProperty("withSSS"))
+              option.push({ "pensionStatus.withSSS": _.withSSS });
             if (_.hasOwnProperty("address"))
               option.push({ address: _.address });
             if (_.hasOwnProperty("status"))
@@ -86,6 +88,39 @@ export default async function handler(req, res) {
                   .json({ success: false, message: "Error: " + err });
               });
             resolve();
+          }
+          case "dash-card": {
+            let query = {};
+
+            switch (req.query?.filter) {
+              case "withPension": {
+                query = { "pensionStatus.withPension": true };
+                break;
+              }
+              case "withoutPension": {
+                query = { "pensionStatus.withPension": false };
+                break;
+              }
+              case "male": {
+                query = { gender: "male" };
+                break;
+              }
+              case "female": {
+                query = { gender: "female" };
+                break;
+              }
+            }
+
+            await Senior.find(query)
+              .then((e) => {
+                res.json({ status: 200, data: e });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
           }
         }
       });

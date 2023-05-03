@@ -15,6 +15,7 @@ import {
   EyeOutlined,
   FileAddOutlined,
   SettingOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 
 import {
@@ -37,6 +38,7 @@ const AdminPage = () => {
   const timerRef = useRef(null);
   const [openHistory, setOpenHistory] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [filter, setFilter] = useState({});
 
   const column = [
     {
@@ -167,7 +169,7 @@ const AdminPage = () => {
     <div>
       <Space style={{ marginBottom: 5 }}>
         <Button onClick={() => setShowAddSenior(true)}>Add Senior</Button>
-        {/* <AutoComplete
+        <AutoComplete
           style={{
             width: 200,
           }}
@@ -186,19 +188,32 @@ const AdminPage = () => {
           }}
           autoFocus
           allowClear
-        /> */}
-        {/* <Button icon={<SearchOutlined />} /> */}
+        />
+        <Button icon={<SearchOutlined />} />
         <Tooltip title="More options">
           <Button
             onClick={() => setOpenFilter(true)}
             icon={<SettingOutlined />}
           />
         </Tooltip>
-        {/* <Typography>
-          Filter query: Gender[Male], Age[0-90], Pension[
-          <CheckOutlined />
-          ], Status[<Tag style={{ marginRight: 0 }}>Deceased</Tag>]
-        </Typography> */}
+        <Typography>
+          Gender: <Tag>{filter?.gender ?? ""}</Tag> Age:{" "}
+          <Tag>
+            {filter?.ageRange?.from ?? ""}-{filter?.ageRange?.to ?? ""}
+          </Tag>{" "}
+          Pension:{" "}
+          <Tag>
+            {" "}
+            {filter?.withPension ? <CheckOutlined /> : <CloseOutlined />}
+          </Tag>
+          SSS:{" "}
+          <Tag> {filter?.withSSS ? <CheckOutlined /> : <CloseOutlined />}</Tag>
+          Status:{" "}
+          <Tag>
+            {filter?.status?.length != 0 ? filter?.status?.join(", ") : ""}
+          </Tag>
+          Address: <Tag>{filter?.address ?? ""}</Tag>
+        </Typography>
       </Space>
       <Table
         dataSource={seniors}
@@ -208,6 +223,7 @@ const AdminPage = () => {
             onClick: () => setUpdateSenior({ open: true, data }),
           };
         }}
+        loading={loading}
         pagination={false}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
@@ -239,6 +255,7 @@ const AdminPage = () => {
           if (data != null) setSeniors(data);
           else setTrigger(trigger + 1);
         }}
+        setFilter={(e) => setFilter(e)}
       />
       <History
         open={openHistory}

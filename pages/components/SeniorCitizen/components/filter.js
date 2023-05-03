@@ -15,10 +15,11 @@ import {
 } from "antd";
 import axios from "axios";
 
-const Filter = ({ open, close, setSenior }) => {
+const Filter = ({ open, close, setSenior, setFilter }) => {
   const [minAge, setMinAge] = useState(60);
   const [ageRange, setAgeRange] = useState({ from: 60, to: 90 });
   const [withPension, setWithPension] = useState(false);
+  const [withSSS, setWithSSS] = useState(false);
   const [reset, setReset] = useState(false);
   const [form] = Form.useForm();
 
@@ -36,6 +37,7 @@ const Filter = ({ open, close, setSenior }) => {
             setReset(true);
             close();
             setSenior(null);
+            setFilter({});
           }}
         >
           Reset
@@ -62,7 +64,8 @@ const Filter = ({ open, close, setSenior }) => {
         colon={false}
         form={form}
         onFinish={async (val) => {
-          val = { ...val, ageRange, withPension };
+          val = { ...val, ageRange, withPension, withSSS };
+          setFilter(val);
           let { data } = await axios.get("/api/senior", {
             params: {
               mode: "filter-senior",
@@ -121,6 +124,13 @@ const Filter = ({ open, close, setSenior }) => {
           <Checkbox
             onChange={(e) => {
               setWithPension(e.target.checked);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="With SSS:" name="withPension">
+          <Checkbox
+            onChange={(e) => {
+              setWithSSS(e.target.checked);
             }}
           />
         </Form.Item>

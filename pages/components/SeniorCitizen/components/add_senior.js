@@ -34,6 +34,13 @@ const AddSenior = ({ open, close, refresh }) => {
       false
     );
 
+    if (age < 60) {
+      message.warning(
+        "Only senior with atleast 60 years of age is valid to register in the system."
+      );
+      return;
+    }
+
     val = { ...val, pensionStatus: pension, emergencyContact, age };
     let { data } = await axios.post("/api/senior", {
       payload: {

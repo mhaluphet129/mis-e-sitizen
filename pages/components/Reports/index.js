@@ -134,6 +134,11 @@ const Reports = () => {
         bodyStyle={{
           textAlign: "center",
         }}
+        style={{
+          width: 900,
+          marginLeft: "50%",
+          transform: "translateX(-50%)",
+        }}
       >
         <PDF ref={ref}>
           <CustomTable1 />

@@ -11,8 +11,13 @@ import {
   Form,
   Input,
   message,
+  Affix,
 } from "antd";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 
 import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
@@ -25,8 +30,9 @@ import Barangay from "../components/Barangay";
 import Reports from "../components/Reports";
 import UpdatePassword from "../components/Admin/components/update_password";
 import Cookies from "js-cookie";
+import { PageHeader } from "@ant-design/pro-layout";
 
-const Sider = ({ selectedIndex }) => {
+const Sider = ({ selectedIndex, selectedKey }) => {
   let [items, setItems] = useState([
     {
       label: "Dashboard",
@@ -71,32 +77,33 @@ const Sider = ({ selectedIndex }) => {
   }, []);
 
   return (
-    <Layout.Sider
-      style={{
-        minHeight: "92vh",
-      }}
-    >
-      <div
-        style={{
-          height: "25vh",
-          background: "#fff",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image preview={false} src="/menu-logo.png" alt="logo" width={150} />
-      </div>
-      <Menu
-        onClick={selectedIndex}
-        items={items}
-        defaultSelectedKeys="dashboard"
-        style={{
-          minHeight: "70vh",
-          fontSize: 17,
-        }}
-      />
-    </Layout.Sider>
+    <Affix>
+      <Layout.Sider collapsible theme="light">
+        <div
+          style={{
+            background: "#fff",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Image preview={false} src="/menu-logo.png" alt="logo" width={150} />
+        </div>
+        <Menu
+          onClick={selectedIndex}
+          selectedKeys={selectedKey}
+          items={items}
+          defaultSelectedKeys="dashboard"
+          style={{
+            height: "100vh",
+            fontSize: 17,
+            paddingLeft: 10,
+            paddingRight: 10,
+          }}
+        />
+      </Layout.Sider>
+    </Affix>
   );
 };
 
@@ -224,7 +231,7 @@ const Header = () => {
   );
 };
 
-const Content = ({ selectedKey }) => {
+const Content = ({ selectedKey, setSelectedKey }) => {
   return (
     <div
       style={{
@@ -234,11 +241,22 @@ const Content = ({ selectedKey }) => {
         overflow: "scroll",
       }}
     >
-      {selectedKey == "dashboard" ? <Dashboard /> : null}
-      {selectedKey == "admin" ? <AdminPage /> : null}
-      {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
-      {selectedKey == "barangay" ? <Barangay /> : null}
-      {selectedKey == "report" ? <Reports /> : null}
+      <PageHeader
+        title={
+          <Typography.Title level={5}>
+            {selectedKey.toString().toUpperCase()} <RightOutlined />{" "}
+            <a style={{ textDecoration: "underline" }}>HOME</a>
+          </Typography.Title>
+        }
+      >
+        {selectedKey == "dashboard" ? (
+          <Dashboard setSelectedKey={setSelectedKey} />
+        ) : null}
+        {selectedKey == "admin" ? <AdminPage /> : null}
+        {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
+        {selectedKey == "barangay" ? <Barangay /> : null}
+        {selectedKey == "report" ? <Reports /> : null}
+      </PageHeader>
     </div>
   );
 };
