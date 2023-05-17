@@ -1,37 +1,6 @@
 let mongoose = require("mongoose");
 
-let emergencyContactSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    contactNumber: {
-      type: String,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-  },
-  { _id: false }
-);
-
-let pensionSchema = new mongoose.Schema(
-  {
-    withPension: {
-      type: Boolean,
-      required: true,
-    },
-    monthlyPension: {
-      type: Number,
-    },
-  },
-  { _id: false }
-);
-
-let SeniorSchema = new mongoose.Schema(
+let nameSchema = new mongoose.Schema(
   {
     id: {
       type: String,
@@ -48,6 +17,50 @@ let SeniorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    extensionName: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
+let motherNameSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    middlename: {
+      type: String,
+    },
+    lastname: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
+let guardianSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    middlename: {
+      type: String,
+    },
+    lastname: {
+      type: String,
+    },
+    relationship: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
+let SeniorSchema = new mongoose.Schema(
+  // IDENTIFICATION
+  {
+    name: nameSchema,
     gender: {
       type: String,
       required: true,
@@ -56,32 +69,110 @@ let SeniorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    age: {
-      type: Number,
+    maritalStatus: {
+      type: String,
       required: true,
     },
     barangay: {
       type: String,
       required: true,
     },
-    address: {
+    contactNumber: {
       type: String,
       required: true,
     },
-    contactInformation: {
-      type: String,
-      required: true,
+    motherMaidenName: motherNameSchema,
+    authorizedRepresentative: {
+      type: Array,
+      default: [],
     },
-    pensionStatus: pensionSchema,
     withSSS: {
       type: Boolean,
-      default: false,
     },
-    status: {
+    withPension: {
+      type: Object,
+    },
+    guardian: guardianSchema,
+    //  SOCIOECONOMIC INFO
+    receivedPension: {
+      type: Boolean, // don't know = null
+    },
+    receivedPension6mos: {
+      type: Array,
+    },
+    sourceOfIncome: {
+      type: Object,
+      default: {
+        salary: {
+          status: false,
+          value: 0,
+        }, // if not false, then true then render the value
+        entrep: {
+          status: false,
+          value: 0,
+        },
+        householdMember: {
+          status: false,
+          value: 0,
+        },
+        domesticMember: {
+          status: false,
+          value: 0,
+        },
+        internationalMember: {
+          status: false,
+          value: 0,
+        },
+        fromFriends: {
+          status: false,
+          value: 0,
+        },
+        fromGovernment: {
+          status: false,
+          value: 0,
+        },
+        others: {
+          status: false,
+          value: 0,
+        },
+      },
+    },
+    livingWith: {
       type: String,
-      required: true,
+      // 0 - alone
+      // 1 - spouse
+      // 2 - legal_child
+      // 3 - other_relative
+      // 4 - other_unrelated
     },
-    emergencyContact: emergencyContactSchema,
+    frailQuestion: {
+      type: Object,
+      default: {
+        q1: null,
+        q2: null,
+        q3: null,
+        q4: null,
+        q5: null,
+        q6: null,
+      },
+    },
+    isPwd: {
+      type: Object,
+      // {
+      //   status: Boolean,
+      //   name: String
+      // }
+    },
+    hasIllness: {
+      type: Object,
+      // {
+      //   status: Boolean,
+      //   name: String
+      // }
+    },
+    mealsPerDay: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

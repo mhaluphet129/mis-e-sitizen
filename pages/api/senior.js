@@ -39,9 +39,9 @@ export default async function handler(req, res) {
 
             return await Senior.find({
               $or: [
-                { lastname: { $regex: re } },
-                { name: { $regex: re } },
-                { middlename: { $regex: re } },
+                { "name.lastname": { $regex: re } },
+                { "name.name": { $regex: re } },
+                { "name.middlename": { $regex: re } },
               ],
             })
               .collation({ locale: "en" })
