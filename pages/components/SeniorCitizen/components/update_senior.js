@@ -226,7 +226,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="With Pension ?">
             <Checkbox
-              checked={inputData?.withPension.status || ""}
+              checked={inputData?.withPension?.status || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return {

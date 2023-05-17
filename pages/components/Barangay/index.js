@@ -192,7 +192,7 @@ const Barangay = () => {
         <Table
           dataSource={seniors}
           columns={[
-            { title: "Senior ID", render: (_, row) => row?.name.id },
+            { title: "Senior ID", render: (_, row) => row?.name?.id },
             {
               title: "Name",
               render: (_, row) => (
