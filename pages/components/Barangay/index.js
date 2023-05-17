@@ -197,9 +197,11 @@ const Barangay = () => {
               title: "Name",
               render: (_, row) => (
                 <Typography>
-                  {row?.name.name}
-                  {row?.name.middlename ? " " + row?.name.middlename : ""}{" "}
-                  {row?.name.lastname}
+                  {row?.name?.name}
+                  {row?.name?.middlename
+                    ? " " + row?.name?.middlename
+                    : ""}{" "}
+                  {row?.name?.lastname}
                 </Typography>
               ),
             },

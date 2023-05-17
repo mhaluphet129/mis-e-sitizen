@@ -242,7 +242,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Monthly Pension">
             <InputNumber
-              value={inputData?.withPension.value || ""}
+              value={inputData?.withPension?.value || ""}
               formatter={(value) =>
                 `₱ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
