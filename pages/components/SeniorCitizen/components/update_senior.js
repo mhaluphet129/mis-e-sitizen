@@ -114,7 +114,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
         >
           <Form.Item label="Senior Citizen ID No.">
             <Input
-              value={inputData?.name.id || ""}
+              value={inputData?.name?.id || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, id: e.target.value };
@@ -124,7 +124,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="First Name">
             <Input
-              value={inputData?.name.name || ""}
+              value={inputData?.name?.name || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, name: e.target.value };
@@ -134,7 +134,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Middle Name (Optional)">
             <Input
-              value={inputData?.name.middlename || ""}
+              value={inputData?.name?.middlename || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, middlename: e.target.value };
@@ -144,7 +144,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Last Name">
             <Input
-              value={inputData?.name.lastname || ""}
+              value={inputData?.name?.lastname || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, lastname: e.target.value };
