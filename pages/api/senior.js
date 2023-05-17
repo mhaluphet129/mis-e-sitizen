@@ -166,6 +166,21 @@ export default async function handler(req, res) {
                   .json({ success: false, message: "Error: " + err });
               });
           }
+
+          case "delete-senior": {
+            const { _id } = req.body.payload;
+
+            return await Senior.findOneAndDelete({ _id })
+              .then(() => {
+                res.json({ status: 200, message: "Successfully deleted" });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
         }
       });
     }

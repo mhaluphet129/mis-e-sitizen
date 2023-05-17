@@ -59,6 +59,18 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
     } else message.error(res.data.message);
   };
 
+  const handleRemove = async (_id) => {
+    let res = await axios.post("/api/senior", {
+      payload: { mode: "delete-senior", _id },
+    });
+
+    if (res.data.status == 200) {
+      message.success(res.data.message);
+      close();
+      refresh();
+    } else message.error(res.data.message);
+  };
+
   useEffect(() => {
     setInputData(data);
   }, [data]);
@@ -90,7 +102,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
                 Modal.confirm({
                   title: "are you sure ?",
                   okText: "Confirm",
-                  onOk: () => alert("sanaol"),
+                  onOk: () => handleRemove(data._id),
                 });
               }}
             >
