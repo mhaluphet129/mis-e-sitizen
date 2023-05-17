@@ -44,21 +44,21 @@ const AdminPage = () => {
   const column = [
     {
       title: "Senior ID",
-      render: (_, row) => <Typography>{row?.name.id}</Typography>,
+      render: (_, row) => <Typography>{row?.name?.id}</Typography>,
     },
     {
       title: "Name",
       render: (_, row) => (
         <Typography>
           {row?.name.name}
-          {row?.name.middlename ? " " + row?.name.middlename : ""}{" "}
+          {row?.name.middlename ? " " + row?.name?.middlename : ""}{" "}
           {row?.name.lastname}
         </Typography>
       ),
     },
     {
       title: "Barangay",
-      render: (_, row) => <Typography>{row.barangay}</Typography>,
+      render: (_, row) => <Typography>{row?.barangay}</Typography>,
     },
     {
       title: "Gender",
@@ -108,16 +108,15 @@ const AdminPage = () => {
       render: (_, row) => (
         <Typography>
           <Typography>
-            {row?.motherMaidenName.name}
-            {row?.motherMaidenName.middlename
-              ? " " + row?.motherMaidenName.middlename
+            {row?.motherMaidenName?.name}
+            {row?.motherMaidenName?.middlename
+              ? " " + row?.motherMaidenName?.middlename
               : ""}{" "}
-            {row?.motherMaidenName.lastname}
+            {row?.motherMaidenName?.lastname}
           </Typography>
         </Typography>
       ),
     },
-
     {
       title: "Function",
       align: "center",
