@@ -13,7 +13,6 @@ import {
   Select,
   message,
 } from "antd";
-import moment from "moment";
 import dayjs from "dayjs";
 import axios from "axios";
 import { History } from "../components";
@@ -115,7 +114,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
         >
           <Form.Item label="Senior Citizen ID No.">
             <Input
-              value={inputData?.id || ""}
+              value={inputData?.name.id || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, id: e.target.value };
@@ -125,7 +124,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="First Name">
             <Input
-              value={inputData?.name || ""}
+              value={inputData?.name.name || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, name: e.target.value };
@@ -135,7 +134,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Middle Name (Optional)">
             <Input
-              value={inputData?.middlename || ""}
+              value={inputData?.name.middlename || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, middlename: e.target.value };
@@ -145,7 +144,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Last Name">
             <Input
-              value={inputData?.lastname || ""}
+              value={inputData?.name.lastname || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, lastname: e.target.value };
@@ -170,18 +169,11 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Date of Birth">
             <DatePicker
-              defaultValue={moment(inputData?.dateOfBirth)}
-              format="MMM DD YYYY"
-              onChange={(e) => {
-                let age = dayjs().diff(
-                  dayjs(e).format("YYYY-MM-DD"),
-                  "years",
-                  false
-                );
-                setInputData((_) => {
-                  return { ..._, dateOfBirth: e, age };
-                });
-              }}
+              defaultValue={dayjs(
+                dayjs(inputData?.dateOfBirth).format("YYYY/MM/DD"),
+                "YYYY/MM/DD"
+              )}
+              format={"MMM DD, YYYY"}
             />
           </Form.Item>
           <Form.Item label="Barangay">
@@ -206,19 +198,9 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
               allowClear
             />
           </Form.Item>
-          <Form.Item label="Address">
-            <Input
-              value={inputData?.address || ""}
-              onChange={(e) => {
-                setInputData((_) => {
-                  return { ..._, address: e.target.value };
-                });
-              }}
-            />
-          </Form.Item>
           <Form.Item label="Contact Number">
             <Input
-              value={inputData?.contactInformation || ""}
+              value={inputData?.contactNumber || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return { ..._, contactInformation: e.target.value };
@@ -226,9 +208,25 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
               }}
             />
           </Form.Item>
+          <Form.Item label="With SSS ?">
+            <Checkbox
+              checked={inputData?.withSSS || ""}
+              onChange={(e) => {
+                setInputData((_) => {
+                  return {
+                    ..._,
+                    pensionStatus: {
+                      ..._.pensionStatus,
+                      withPension: e.target.checked,
+                    },
+                  };
+                });
+              }}
+            />
+          </Form.Item>
           <Form.Item label="With Pension ?">
             <Checkbox
-              checked={inputData?.pensionStatus?.withPension || ""}
+              checked={inputData?.withPension.status || ""}
               onChange={(e) => {
                 setInputData((_) => {
                   return {
@@ -244,7 +242,7 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
           </Form.Item>
           <Form.Item label="Monthly Pension">
             <InputNumber
-              value={inputData?.pensionStatus?.monthlyPension || ""}
+              value={inputData?.withPension.value || ""}
               formatter={(value) =>
                 `₱ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
@@ -263,71 +261,6 @@ const UpdateSenior = ({ open, close, data, refresh, updateOpen }) => {
                 });
               }}
             />
-          </Form.Item>
-          <Form.Item label="Status">
-            <Radio.Group
-              value={inputData?.status || ""}
-              onChange={(e) => {
-                setInputData((_) => {
-                  return { ..._, status: e.target.value };
-                });
-              }}
-            >
-              <Space direction="vertical">
-                <Radio value="active">Active</Radio>
-                <Radio value="deceased">Deceased</Radio>
-                <Radio value="health">Health</Radio>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item label="Emergency Contact">
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <Input
-                placeholder="Name"
-                value={inputData?.emergencyContact?.name || ""}
-                onChange={(e) => {
-                  setInputData((_) => {
-                    return {
-                      ..._,
-                      emergencyContact: {
-                        ..._.emergencyContact,
-                        name: e.target.value,
-                      },
-                    };
-                  });
-                }}
-              />
-              <Input
-                placeholder="Contact Number"
-                value={inputData?.emergencyContact?.contactNumber || ""}
-                onChange={(e) => {
-                  setInputData((_) => {
-                    return {
-                      ..._,
-                      emergencyContact: {
-                        ..._.emergencyContact,
-                        contactNumber: e.target.value,
-                      },
-                    };
-                  });
-                }}
-              />
-              <Input
-                placeholder="Address"
-                value={inputData?.emergencyContact?.address || ""}
-                onChange={(e) => {
-                  setInputData((_) => {
-                    return {
-                      ..._,
-                      emergencyContact: {
-                        ..._.emergencyContact,
-                        address: e.target.value,
-                      },
-                    };
-                  });
-                }}
-              />
-            </Space>
           </Form.Item>
         </Form>
       </Drawer>

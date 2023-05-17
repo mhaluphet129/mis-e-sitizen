@@ -6,6 +6,7 @@ import { BsFillHouseFill } from "react-icons/bs";
 import { FaUserCheck, FaUserTimes, FaMale, FaFemale } from "react-icons/fa";
 import { TbOld } from "react-icons/tb";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const Dashboard = ({ setSelectedKey }) => {
   const [drawerData, setDrawerData] = useState({ open: false, data: {} });
@@ -179,15 +180,17 @@ const Dashboard = ({ setSelectedKey }) => {
                   title: "Name",
                   render: (_, row) => (
                     <Typography>
-                      {row.name}
-                      {row?.middlename ? " " + row?.middlename : ""}{" "}
-                      {row.lastname}
+                      {row?.name.name}
+                      {row?.name.middlename
+                        ? " " + row?.name.middlename
+                        : ""}{" "}
+                      {row?.name.lastname}
                     </Typography>
                   ),
                 },
                 {
-                  title: "Address",
-                  render: (_, row) => <Typography>{row.address}</Typography>,
+                  title: "Barangay",
+                  render: (_, row) => <Typography>{row.barangay}</Typography>,
                 },
                 {
                   title: "Gender",
@@ -198,7 +201,15 @@ const Dashboard = ({ setSelectedKey }) => {
                 {
                   title: "Age",
                   width: 50,
-                  render: (_, row) => <Typography>{row.age}</Typography>,
+                  render: (_, row) => (
+                    <Typography>
+                      {dayjs().diff(
+                        dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
+                        "years",
+                        false
+                      )}
+                    </Typography>
+                  ),
                 },
                 {
                   title: "With Pension ?",
@@ -221,12 +232,6 @@ const Dashboard = ({ setSelectedKey }) => {
                     ) : (
                       <CloseOutlined style={{ color: "#ff0000" }} />
                     ),
-                },
-                {
-                  title: "Status",
-                  width: 150,
-                  align: "center",
-                  render: (_, row) => <Tag>{row.status}</Tag>,
                 },
               ]}
               style={{ width: "100%" }}

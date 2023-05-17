@@ -13,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import dayjs from "dayjs";
 Chart.register(
   ArcElement,
   CategoryScale,
@@ -66,6 +67,7 @@ const Barangay = () => {
             value: (e.count / data?.data.totalSenior) * 100,
           };
         });
+
         setPieData(arr);
         setbarangayData(arr2);
         setSeniors(data.data?.seniors);
@@ -190,19 +192,29 @@ const Barangay = () => {
         <Table
           dataSource={seniors}
           columns={[
-            { title: "Senior ID", render: (_, row) => row?.id },
+            { title: "Senior ID", render: (_, row) => row?.name.id },
             {
               title: "Name",
               render: (_, row) => (
                 <Typography>
-                  {row.name}
-                  {row?.middlename ? " " + row?.middlename : ""} {row.lastname}
+                  {row?.name.name}
+                  {row?.name.middlename ? " " + row?.name.middlename : ""}{" "}
+                  {row?.name.lastname}
                 </Typography>
               ),
             },
             {
               title: "Gender",
-              render: (_, row) => <Typography>{row?.gender}</Typography>,
+              render: (_, row) => (
+                <Typography>
+                  {" "}
+                  {dayjs().diff(
+                    dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
+                    "years",
+                    false
+                  )}
+                </Typography>
+              ),
             },
             {
               title: "Age",

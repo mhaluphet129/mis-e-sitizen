@@ -26,6 +26,7 @@ import {
   AddHistory,
 } from "./components";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const AdminPage = () => {
   const [showAddSenior, setShowAddSenior] = useState(false);
@@ -43,20 +44,21 @@ const AdminPage = () => {
   const column = [
     {
       title: "Senior ID",
-      render: (_, row) => <Typography>{row?.id}</Typography>,
+      render: (_, row) => <Typography>{row?.name.id}</Typography>,
     },
     {
       title: "Name",
       render: (_, row) => (
         <Typography>
-          {row.name}
-          {row?.middlename ? " " + row?.middlename : ""} {row.lastname}
+          {row?.name.name}
+          {row?.name.middlename ? " " + row?.name.middlename : ""}{" "}
+          {row?.name.lastname}
         </Typography>
       ),
     },
     {
-      title: "Address",
-      render: (_, row) => <Typography>{row.address}</Typography>,
+      title: "Barangay",
+      render: (_, row) => <Typography>{row.barangay}</Typography>,
     },
     {
       title: "Gender",
@@ -66,8 +68,16 @@ const AdminPage = () => {
     },
     {
       title: "Age",
-      width: 50,
-      render: (_, row) => <Typography>{row.age}</Typography>,
+      width: 100,
+      render: (_, row) => (
+        <Typography>
+          {dayjs().diff(
+            dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
+            "years",
+            false
+          )}
+        </Typography>
+      ),
     },
     {
       title: "With Pension ?",
@@ -92,10 +102,20 @@ const AdminPage = () => {
         ),
     },
     {
-      title: "Status",
+      title: "Mother's Name",
       width: 150,
       align: "center",
-      render: (_, row) => <Tag>{row.status}</Tag>,
+      render: (_, row) => (
+        <Typography>
+          <Typography>
+            {row?.motherMaidenName.name}
+            {row?.motherMaidenName.middlename
+              ? " " + row?.motherMaidenName.middlename
+              : ""}{" "}
+            {row?.motherMaidenName.lastname}
+          </Typography>
+        </Typography>
+      ),
     },
 
     {
@@ -161,7 +181,9 @@ const AdminPage = () => {
       let { data } = await axios.get("/api/senior", {
         params: { mode: "fetch-all", search: _searchName },
       });
-      if (data.status == 200) setSeniors(data.senior);
+      if (data.status == 200) {
+        setSeniors(data.senior);
+      }
     })();
   }, [trigger]);
 

@@ -828,6 +828,9 @@ const AddSenior = ({ open, close, refresh }) => {
                     },
                   })
                 }
+                style={{
+                  marginLeft: -180,
+                }}
               >
                 <Radio value="alone" style={{ display: "flex" }}>
                   Living alone
