@@ -173,6 +173,19 @@ let SeniorSchema = new mongoose.Schema(
     mealsPerDay: {
       type: Number,
     },
+    description: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["ACTIVE", "DECEASED"],
+      default: "ACTIVE",
+    },
+    history: {
+      type: Array,
+      default: [],
+    },
   },
   { timestamps: true }
 );

@@ -37,8 +37,8 @@ const AdminPage = () => {
   const [trigger, setTrigger] = useState(0);
   const [_searchName, setSearchName] = useState("");
   const timerRef = useRef(null);
-  const [openHistory, setOpenHistory] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [openHistory, setOpenHistory] = useState({ open: false, data: null });
+  const [openModal, setOpenModal] = useState({ open: false, id: null });
   const [filter, setFilter] = useState({});
 
   const column = [
@@ -127,19 +127,18 @@ const AdminPage = () => {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                setOpenHistory(true);
+                setOpenHistory({ open: true, id: __?._id });
               }}
               icon={<EyeOutlined />}
             />
           </Tooltip>
-          <Tooltip title="Add History">
+          <Tooltip title="New Release">
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                setOpenModal(true);
+                setOpenModal({ open: true, id: __?._id });
               }}
               icon={<FileAddOutlined />}
-              disabled
             />
           </Tooltip>
           <Tooltip title="Edit Senior">
@@ -261,13 +260,8 @@ const AdminPage = () => {
             return { open: false, data: { ...e.data } };
           })
         }
-        updateOpen={() =>
-          setUpdateSenior((e) => {
-            return { open: true, data: { ...e.data } };
-          })
-        }
-        data={updateSenior.data}
         refresh={() => setTrigger(trigger + 1)}
+        id={updateSenior.data?._id}
       />
       <Filter
         open={openFilter}
@@ -279,13 +273,17 @@ const AdminPage = () => {
         setFilter={(e) => setFilter(e)}
       />
       <History
-        open={openHistory}
+        open={openHistory.open}
         close={() => {
-          setOpenHistory(false);
+          setOpenHistory({ open: false, data: null });
         }}
-        id="09"
+        id={openHistory.id}
       />
-      <AddHistory open={openModal} close={() => setOpenModal(false)} />
+      <AddHistory
+        open={openModal.open}
+        close={() => setOpenModal({ open: false, id: null })}
+        id={openModal.id}
+      />
     </div>
   );
 };

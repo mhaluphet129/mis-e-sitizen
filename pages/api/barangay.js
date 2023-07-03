@@ -21,11 +21,10 @@ export default async function handler(req, res) {
                   },
                 },
               ]);
-              let seniors = await Senior.find({ barangay: selectedBarangay });
               let totalSenior = await Senior.countDocuments();
               res.json({
                 status: 200,
-                data: { pieData, totalSenior, seniors },
+                data: { pieData, totalSenior },
               });
               resolve();
             } catch {

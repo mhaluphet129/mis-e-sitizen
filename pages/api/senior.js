@@ -1,5 +1,6 @@
 import Senior from "../../database/model/Senior";
 import dbConnect from "../../database/dbConnect";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -89,6 +90,20 @@ export default async function handler(req, res) {
               });
             resolve();
           }
+          case "search-senior-by-id": {
+            const { _id } = req.query;
+            return await Senior.findOne({ _id })
+              .then((e) => {
+                res.json({ status: 200, data: e });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+                resolve();
+              });
+          }
           case "dash-card": {
             let query = {};
 
@@ -112,6 +127,53 @@ export default async function handler(req, res) {
             }
 
             await Senior.find(query)
+              .then((e) => {
+                res.json({ status: 200, data: e });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
+
+          case "check-exist": {
+            return await Senior.findOne({
+              $and: [
+                { "name.name": req.query.senior.name },
+                { "name.lastname": req.query.senior.lastname },
+              ],
+            })
+              .then((doc) => {
+                if (doc) res.json({ status: 201 });
+                else res.json({ status: 200 });
+
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
+
+          case "get-senior-with-history": {
+            return await Senior.aggregate([
+              {
+                $match: {
+                  _id: mongoose.Types.ObjectId(req.query.id),
+                },
+              },
+              {
+                $lookup: {
+                  from: "histories",
+                  localField: "history",
+                  foreignField: "_id",
+                  as: "history",
+                },
+              },
+            ])
               .then((e) => {
                 res.json({ status: 200, data: e });
                 resolve();

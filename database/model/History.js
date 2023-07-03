@@ -4,15 +4,21 @@ let HistorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
     },
-    description: {
+    employerName: {
       type: String,
       required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    note: {
+      type: String,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Historu ||
+export default mongoose.models.History ||
   mongoose.model("History", HistorySchema);

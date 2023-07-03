@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Input,
   Modal,
@@ -16,16 +16,15 @@ import {
   Steps,
   theme,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 
-const AddSenior = ({ open, close, refresh }) => {
+const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
   const { token } = theme.useToken();
   const [authorizedRepresentative, setAuthorizedRepresentative] = useState([]);
   const [_label, _setLabel] = useState("");
   const [current, setCurrent] = useState(0);
-  const [checkFlag, setCheckFlag] = useState([false, false, false]);
 
   const [data, setData] = useState({
     part1: {
@@ -117,7 +116,9 @@ const AddSenior = ({ open, close, refresh }) => {
       },
       mealsPerDay: null,
     },
-    part3: {},
+    part3: {
+      description1: "",
+    },
   });
 
   const steps = [
@@ -153,7 +154,7 @@ const AddSenior = ({ open, close, refresh }) => {
             >
               SENIOR INFORMATION
             </Typography.Title>
-            <Form.Item label="Senior Citizen ID No." name="id">
+            <Form.Item label="Senior Citizen ID No." name="id" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -169,7 +170,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="First Name" name="name">
+            <Form.Item label="First Name" name="name" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -185,7 +186,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Middle Name (Optional)" name="middlename">
+            <Form.Item label="Middle Name" name="middlename">
               <Input
                 onChange={(e) =>
                   setData({
@@ -201,7 +202,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Last Name" name="lastname">
+            <Form.Item label="Last Name" name="lastname" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -234,7 +235,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Gender" name="gender" initialValue="male">
+            <Form.Item label="Gender" name="gender" required>
               <Radio.Group
                 defaultValue="male"
                 style={{ display: "flex" }}
@@ -257,7 +258,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 </Space>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="Date of Birth" name="dateOfBirth">
+            <Form.Item label="Date of Birth" name="dateOfBirth" required>
               <DatePicker
                 style={{ display: "flex", width: 150 }}
                 format="MMM DD, YYYY"
@@ -275,11 +276,11 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Marital Status" name="maritalstatus">
+            <Form.Item label="Marital Status" name="maritalstatus" required>
               <Select
                 style={{ width: 100, display: "flex" }}
-                value={data.part1.seniorInfo.maritalStatus}
-                defaultValue={data.part1.seniorInfo.maritalStatus}
+                value={data.part1?.seniorInfo.maritalStatus}
+                defaultValue={data.part1?.seniorInfo.maritalStatus}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -301,10 +302,10 @@ const AddSenior = ({ open, close, refresh }) => {
                 <Select.Option value="others">Others</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Barangay" name="barangay">
+            <Form.Item label="Barangay" name="barangay" required>
               <Select
                 showSearch
-                value={data.part1.seniorInfo.barangay}
+                value={data.part1?.seniorInfo.barangay}
                 placeholder="Select a barangay"
                 optionFilterProp="children"
                 style={{ width: 150, display: "flex", textAlign: "start" }}
@@ -336,8 +337,11 @@ const AddSenior = ({ open, close, refresh }) => {
                 allowClear
               />
             </Form.Item>
-
-            <Form.Item label="Contact Number" name="contactInformation">
+            <Form.Item
+              label="Contact Number"
+              name="contactInformation"
+              required
+            >
               <InputNumber
                 style={{ width: 200, display: "flex" }}
                 prefix="+63"
@@ -361,7 +365,7 @@ const AddSenior = ({ open, close, refresh }) => {
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               MOTHERS MAIDEN NAME
             </Typography.Title>
-            <Form.Item label="First Name" name="mothername">
+            <Form.Item label="First Name" name="mothername" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -377,7 +381,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Middle Name (Optional)" name="mothermiddlename">
+            <Form.Item label="Middle Name" name="mothermiddlename">
               <Input
                 onChange={(e) =>
                   setData({
@@ -393,7 +397,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Last Name" name="motherlastname">
+            <Form.Item label="Last Name" name="motherlastname" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -412,7 +416,7 @@ const AddSenior = ({ open, close, refresh }) => {
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               ETC
             </Typography.Title>
-            <Form.Item label="Authorized Representative">
+            <Form.Item label="Authorized Representative" required>
               <Input
                 onChange={(e) => _setLabel(e.target.value)}
                 value={_label}
@@ -423,14 +427,8 @@ const AddSenior = ({ open, close, refresh }) => {
                   display: "flex",
                 }}
                 suffix={
-                  <PlusOutlined
+                  <Button
                     disabled={authorizedRepresentative?.length >= 3}
-                    style={{
-                      backgroundColor: "#eee",
-                      padding: 10,
-                      borderRadius: 100,
-                      cursor: "pointer",
-                    }}
                     onClick={() => {
                       if (
                         authorizedRepresentative.filter((e) => e == _label)
@@ -450,7 +448,9 @@ const AddSenior = ({ open, close, refresh }) => {
 
                       _setLabel("");
                     }}
-                  />
+                  >
+                    ADD
+                  </Button>
                 }
               />
 
@@ -462,15 +462,17 @@ const AddSenior = ({ open, close, refresh }) => {
                   <div
                     style={{
                       borderRadius: 100,
-                      border: "1px solid rgb(255,0,0)",
-                      backgroundColor: "rgba(255,0,0, 0.5)",
-                      width: 30,
-                      height: 30,
-                      lineHeight: "30px",
+                      border: ".5px solid rgba(255,0,0, 0.5)",
+                      backgroundColor: "rgba(255,0,0, 0.1)",
+                      width: 25,
+                      height: 25,
+                      lineHeight: "25px",
                       textAlign: "center",
                       cursor: "pointer",
                       marginRight: 10,
                       marginTop: 5,
+                      padding: 0,
+                      color: "#F00",
                     }}
                     onClick={() =>
                       setAuthorizedRepresentative([
@@ -480,13 +482,13 @@ const AddSenior = ({ open, close, refresh }) => {
                       ])
                     }
                   >
-                    -
+                    <CloseOutlined />
                   </div>
-                  <div style={{ marginTop: 10 }}>{e}</div>
+                  <div style={{ marginTop: 7 }}>{e}</div>
                 </div>
               ))}
             </Form.Item>
-            <Form.Item label="With SSS ?" name="withSSS">
+            {/* <Form.Item label="With SSS ?" name="withSSS">
               <Checkbox
                 onChange={(e) => {
                   setData({
@@ -502,7 +504,7 @@ const AddSenior = ({ open, close, refresh }) => {
             </Form.Item>
             <Form.Item label="With Pension ?">
               <Checkbox
-                value={data.part1.etc.withPension}
+                value={data.part1?.etc.withPension}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -518,7 +520,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 style={{ display: "flex" }}
               />
             </Form.Item>
-            {data.part1.etc.withPension && (
+            {data.part1?.etc.withPension && (
               <Form.Item label="Monthly Pension">
                 <InputNumber
                   defaultValue={data.part1.etc.pensionMonthly}
@@ -542,11 +544,11 @@ const AddSenior = ({ open, close, refresh }) => {
                   disabled={!data.part1.etc.withPension}
                 />
               </Form.Item>
-            )}
+            )} */}
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               GUARDIAN/CARE GIVER NAME
             </Typography.Title>
-            <Form.Item label="First Name" name="guardianname">
+            <Form.Item label="First Name" name="guardianname" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -562,7 +564,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Middle Name (Optional)" name="guardianmiddlename">
+            <Form.Item label="Middle Name" name="guardianmiddlename">
               <Input
                 onChange={(e) =>
                   setData({
@@ -578,7 +580,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Last Name" name="guardianlastname">
+            <Form.Item label="Last Name" name="guardianlastname" required>
               <Input
                 onChange={(e) =>
                   setData({
@@ -598,6 +600,7 @@ const AddSenior = ({ open, close, refresh }) => {
               label="Relationship"
               name="guardianrelationship"
               style={{ paddingBottom: 10 }}
+              required
             >
               <Input
                 onChange={(e) =>
@@ -1031,7 +1034,13 @@ const AddSenior = ({ open, close, refresh }) => {
               paddingRight: 20,
             }}
           >
-            <Form.Item label="Where do you spend your Social Pension? "></Form.Item>
+            <Form.Item label="Where do you spend your Social Pension? ">
+              <Input.TextArea
+                onChange={(e) =>
+                  setData({ ...data, part3: { description1: e.target.value } })
+                }
+              />
+            </Form.Item>
           </div>
         </Form>
       ),
@@ -1051,7 +1060,7 @@ const AddSenior = ({ open, close, refresh }) => {
       extensionName,
       barangay,
     } = data.part1.seniorInfo;
-    console.log(barangay);
+
     let updatedData = {
       //  PART 1
       name: { id, name, middlename, lastname, extensionName },
@@ -1077,16 +1086,38 @@ const AddSenior = ({ open, close, refresh }) => {
       isPwd: { ...data.part2.isPwd },
       hasIllness: { ...data.part2.hasIllness },
       mealsPerDay: data.part2.mealsPerDay,
+      description: data.part3.description1,
     };
 
-    let res = await axios.post("/api/senior", {
-      payload: {
-        mode: "add-senior",
-        senior: updatedData,
+    let res2 = await axios.get("/api/senior", {
+      params: {
+        mode: "check-exist",
+        senior: {
+          name,
+          lastname,
+        },
       },
     });
 
-    console.log(res);
+    if (res2.data.status != 200) {
+      let res = await axios.post("/api/senior", {
+        payload: {
+          mode: "add-senior",
+          senior: updatedData,
+        },
+      });
+
+      if (res.data.status == 200) {
+        message.success(res.data.message);
+        close();
+        refresh();
+      } else message.error(res.data.message);
+    } else {
+      message.warning(
+        `Senior ${name} ${lastname} is already registered in another barangay`
+      );
+      return;
+    }
   };
 
   const checkValidate = () => {
@@ -1123,32 +1154,59 @@ const AddSenior = ({ open, close, refresh }) => {
       });
 
       if (missingFields.seniorInfo.length > 0) {
-        message.error(
-          `Please input missing fields. SENIOR (${missingFields.seniorInfo.join(
-            ", "
-          )})`
-        );
-        return;
+        if (
+          !(
+            missingFields.seniorInfo.includes("middlename") &&
+            missingFields.seniorInfo.length == 1
+          )
+        ) {
+          message.error(
+            `Please input missing fields. SENIOR (${missingFields.seniorInfo.join(
+              ", "
+            )})`
+          );
+          return;
+        }
       }
+
       if (missingFields.mothersInfo.length > 0) {
-        message.error(
-          `Please input missing fields. MOTHER (${missingFields.mothersInfo.join(
-            ", "
-          )})`
-        );
-        return;
+        if (
+          !(
+            missingFields.mothersInfo.includes("middlename") &&
+            missingFields.mothersInfo.length == 1
+          )
+        ) {
+          message.error(
+            `Please input missing fields. MOTHER (${missingFields.mothersInfo.join(
+              ", "
+            )})`
+          );
+          return;
+        }
       }
+
       if (missingFields.guardian.length > 0) {
-        message.error(
-          `Please input missing fields. GUARDIAN (${missingFields.guardian.join(
-            ", "
-          )})`
-        );
-        return;
+        if (
+          !(
+            missingFields.guardian.includes("middlename") &&
+            missingFields.guardian.length == 1
+          )
+        ) {
+          message.error(
+            `Please input missing fields. GUARDIAN (${missingFields.guardian.join(
+              ", "
+            )})`
+          );
+          return;
+        }
       }
     }
     setCurrent(current + 1);
   };
+
+  // useEffect(() => {
+  //   console.log(seniorInfo);
+  // }, [seniorInfo]);
 
   return (
     <Modal
