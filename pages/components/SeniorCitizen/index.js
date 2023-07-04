@@ -80,7 +80,7 @@ const AdminPage = () => {
       ),
     },
     {
-      title: "With Pension ?",
+      title: "Social Pensioner",
       width: 100,
       align: "center",
       render: (_, row) =>
@@ -91,7 +91,7 @@ const AdminPage = () => {
         ),
     },
     {
-      title: "With SSS ?",
+      title: "Private Pensioner",
       width: 100,
       align: "center",
       render: (_, row) =>

@@ -34,13 +34,13 @@ const Dashboard = ({ setSelectedKey }) => {
       icon: <TbOld />,
     },
     {
-      name: "With Pensions",
+      name: "Social Pensioners",
       value: data.withPension,
       color: "#00dddd",
       icon: <FaUserCheck />,
     },
     {
-      name: "Without Pensions",
+      name: "Private Pensioners",
       value: data.withoutPension,
       color: "#8b0000",
       icon: <FaUserTimes />,
@@ -126,7 +126,7 @@ const Dashboard = ({ setSelectedKey }) => {
       if (res.data.status == 200) {
         let _data = res?.data?.data?.seniors;
         setData({
-          barangay: 14,
+          barangay: 17,
           senior: _data?.length,
           withPension: _data?.filter((e) => e?.pensionStatus?.withPension)
             ?.length,
