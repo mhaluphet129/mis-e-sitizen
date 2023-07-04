@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
     >
       <Head>
         {/* <link rel='shortcut icon' href='/logo-icon.svg' /> */}
-        <title>INFORMATION AND HEALTH MONITORING SYSTEM</title>
+        <title>MANAGEMENT INFORMATION SYSTEM</title>
         <meta
           name="description"
           content="This system develop for DSWD to help Senior Citizen data and information to be manage."

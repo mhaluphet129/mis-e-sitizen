@@ -225,7 +225,7 @@ const Login = () => {
       </Col>
       <Col span={14} className="main-login-info">
         <Typography.Title
-          style={{ marginTop: "45vh", color: "#fff", fontFamily: "sans-serif" }}
+          style={{ marginTop: "25vh", color: "#de6b0d", fontFamily: "sans-serif" }}
         >
           E-Sitizen
         </Typography.Title>
@@ -234,10 +234,10 @@ const Login = () => {
           style={{
             fontStyle: "italic",
             textAlign: "center",
-            color: "#fff",
+            color: "#de6b0d",
           }}
         >
-          A Web-Based Information and Health Monitoring System For The Senior
+          e-SiTizen: A Web-Based Management Information System For The Senior
           Citizen of the Municipality of Kadingilan Bukidnon
         </Typography.Title>
       </Col>
@@ -248,7 +248,7 @@ const Login = () => {
         footer={null}
         closable={false}
       >
-        Wala ko kabalo say ibutang haha
+        ...
       </Modal>
       <FloatButton
         icon={<BsInfoCircle />}

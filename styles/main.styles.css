@@ -11,7 +11,7 @@ body {
 }
 
 .main-login-info {
-  background-image: url("../public/login-photo-senior.jpg");
+  background-image: url("../public/Senior.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
