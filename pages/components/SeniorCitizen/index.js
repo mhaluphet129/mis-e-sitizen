@@ -7,6 +7,8 @@ import {
   Space,
   Tooltip,
   AutoComplete,
+  List,
+  Modal,
 } from "antd";
 import {
   CheckOutlined,
@@ -40,6 +42,10 @@ const AdminPage = () => {
   const [openHistory, setOpenHistory] = useState({ open: false, data: null });
   const [openModal, setOpenModal] = useState({ open: false, id: null });
   const [filter, setFilter] = useState({});
+  const [openRepresentative, setOpenRepresentatives] = useState({
+    open: false,
+    data: null,
+  });
 
   const column = [
     {
@@ -102,19 +108,22 @@ const AdminPage = () => {
         ),
     },
     {
-      title: "Mother's Name",
+      title: "Representative(s)",
       width: 150,
       align: "center",
       render: (_, row) => (
-        <Typography>
-          <Typography>
-            {row?.motherMaidenName?.name}
-            {row?.motherMaidenName?.middlename
-              ? " " + row?.motherMaidenName?.middlename
-              : ""}{" "}
-            {row?.motherMaidenName?.lastname}
-          </Typography>
-        </Typography>
+        <Typography.Link
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpenRepresentatives({
+              open: true,
+              data: row?.authorizedRepresentative,
+            });
+          }}
+        >
+          Click to view
+        </Typography.Link>
       ),
     },
     {
@@ -173,6 +182,28 @@ const AdminPage = () => {
       searchName(key);
     }, 500);
   };
+
+  const RepresentativeList = () => (
+    <Modal
+      open={openRepresentative.open}
+      closable={false}
+      title={null}
+      footer={null}
+      onCancel={() => setOpenRepresentatives({ open: false, data: null })}
+    >
+      <List
+        header="List of all authorized representative(s)"
+        footer={`Total of: ${openRepresentative.data?.length ?? 0}`}
+        bordered
+        dataSource={openRepresentative.data ?? []}
+        renderItem={(item, i) => (
+          <List.Item>
+            <Typography.Text mark>{`${i + 1}.`}</Typography.Text> {item}
+          </List.Item>
+        )}
+      />
+    </Modal>
+  );
 
   useEffect(() => {
     (async () => {
@@ -247,7 +278,9 @@ const AdminPage = () => {
         pagination={false}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
+        style={{ width: 1200 }}
       />
+      <RepresentativeList />
       <AddSenior
         open={showAddSenior}
         close={() => setShowAddSenior(false)}

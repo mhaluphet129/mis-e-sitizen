@@ -170,12 +170,27 @@ export default async function handler(req, res) {
                   from: "histories",
                   localField: "history",
                   foreignField: "_id",
+                  pipeline: [
+                    {
+                      $sort: {
+                        createdAt: -1,
+                      },
+                    },
+                  ],
                   as: "history",
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                  history: 1,
+                  name: 1,
                 },
               },
             ])
               .then((e) => {
-                res.json({ status: 200, data: e });
+                console.log(e);
+                res.json({ status: 200, data: e[0] });
                 resolve();
               })
               .catch((err) => {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Card, Radio, Space, Table, Select, Typography, Tag } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { Card, Table, Select, Typography, Tag } from "antd";
 import axios from "axios";
 import {
   Chart,
@@ -14,6 +13,8 @@ import {
   Legend,
 } from "chart.js";
 import dayjs from "dayjs";
+import json from "../../assets/json/constant.json";
+
 Chart.register(
   ArcElement,
   CategoryScale,
@@ -62,13 +63,11 @@ const Barangay = () => {
   return (
     <Card
       bodyStyle={{
-        height: height * 0.84,
-        overflowY: "scroll",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
       }}
     >
-      <Card style={{ width: "65%" }}>
+      <Card style={{ width: "100%", marginBottom: 10 }}>
         <Bar
           options={{
             responsive: true,
@@ -91,7 +90,7 @@ const Barangay = () => {
           data={{
             labels: Array(17)
               .fill()
-              .map((e, i) => `Brgy ${i + 1}`),
+              .map((e, i) => json.barangay[i]),
             datasets: [
               {
                 label: "Seniors",
@@ -153,6 +152,9 @@ const Barangay = () => {
                 })();
               }}
               value={selectedBarangay}
+              style={{
+                width: 150,
+              }}
               filterOption={(input, option) =>
                 (option?.label ?? "")
                   .toLowerCase()
@@ -162,7 +164,7 @@ const Barangay = () => {
                 .fill({})
                 .map((_, i) => {
                   return {
-                    label: `Barangay ${i + 1}`,
+                    label: json.barangay[i],
                     value: `Barangay ${i + 1}`,
                   };
                 })}

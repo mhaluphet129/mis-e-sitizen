@@ -60,6 +60,7 @@ const AddHistory = ({ open, close, id }) => {
           suffix={
             <Checkbox
               value={isSenior}
+              defaultChecked={isSenior}
               onChange={(e) => setIsSenior(e.target.checked)}
             >
               Senior

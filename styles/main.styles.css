@@ -2,18 +2,11 @@ body {
   margin: 0;
 }
 
-.main-body-login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #eee;
-  min-height: 100vh;
-}
-
 .main-login-info {
   background-image: url("../public/Senior.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
+  background-position: center center;
   display: flex;
   align-items: center;
   flex-direction: column;

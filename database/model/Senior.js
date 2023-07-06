@@ -24,21 +24,6 @@ let nameSchema = new mongoose.Schema(
   { _id: false }
 );
 
-let motherNameSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-    },
-    middlename: {
-      type: String,
-    },
-    lastname: {
-      type: String,
-    },
-  },
-  { _id: false }
-);
-
 let guardianSchema = new mongoose.Schema(
   {
     name: {
@@ -81,7 +66,6 @@ let SeniorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    motherMaidenName: motherNameSchema,
     authorizedRepresentative: {
       type: Array,
       default: [],
