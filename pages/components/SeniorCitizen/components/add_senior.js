@@ -656,7 +656,8 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 />
               </div>
             </Form.Item>
-            <Form.Item label="Sources of Income and Financial Support in the past 6 months? (other than pension/s)">
+            <Form.Item label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
+            for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable.">
               <Table
                 columns={[
                   {

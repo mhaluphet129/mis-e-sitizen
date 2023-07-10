@@ -212,7 +212,7 @@ const Dashboard = ({ setSelectedKey }) => {
                   ),
                 },
                 {
-                  title: "With Pension ?",
+                  title: "Social Pensioner",
                   width: 100,
                   align: "center",
                   render: (_, row) =>
@@ -223,7 +223,7 @@ const Dashboard = ({ setSelectedKey }) => {
                     ),
                 },
                 {
-                  title: "With SSS ?",
+                  title: "Private Pensioner",
                   width: 100,
                   align: "center",
                   render: (_, row) =>
