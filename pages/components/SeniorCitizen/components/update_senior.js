@@ -20,6 +20,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 
+import JASON from "../../../assets/json/constant.json";
+
 const UpdateSenior = ({ open, close, refresh, id }) => {
   const { token } = theme.useToken();
   const [authorizedRepresentative, setAuthorizedRepresentative] = useState([]);
@@ -44,11 +46,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         barangay: "",
         contactNumber: "",
       },
-      mothersInfo: {
-        name: "",
-        middlename: "",
-        lastname: "",
-      },
       guardian: {
         name: "",
         middlename: "",
@@ -57,9 +54,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       },
       etc: {
         authorizedRepresentative: [],
-        withSSS: false,
-        withPension: false,
-        pensionMonthly: 3000,
       },
     },
     part2: {
@@ -323,14 +317,12 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={Array(17)
-                  .fill({})
-                  .map((_, i) => {
-                    return {
-                      label: `Barangay ${i + 1}`,
-                      value: `Barangay ${i + 1}`,
-                    };
-                  })}
+                options={JASON.barangay.map((_, i) => {
+                  return {
+                    label: _,
+                    value: _,
+                  };
+                })}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -366,58 +358,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 }
               />
             </Form.Item>
-
-            <Typography.Title level={5} style={{ textAlign: "center" }}>
-              MOTHERS MAIDEN NAME
-            </Typography.Title>
-            <Form.Item label="First Name" name="mothername">
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        name: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Middle Name (Optional)" name="mothermiddlename">
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        middlename: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Last Name" name="motherlastname">
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        lastname: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               ETC
             </Typography.Title>
@@ -432,14 +372,8 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   display: "flex",
                 }}
                 suffix={
-                  <PlusOutlined
+                  <Button
                     disabled={authorizedRepresentative?.length >= 3}
-                    style={{
-                      backgroundColor: "#eee",
-                      padding: 10,
-                      borderRadius: 100,
-                      cursor: "pointer",
-                    }}
                     onClick={() => {
                       if (
                         authorizedRepresentative.filter((e) => e == _label)
@@ -459,7 +393,9 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
                       _setLabel("");
                     }}
-                  />
+                  >
+                    ADD
+                  </Button>
                 }
               />
 
@@ -471,15 +407,17 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   <div
                     style={{
                       borderRadius: 100,
-                      border: "1px solid rgb(255,0,0)",
-                      backgroundColor: "rgba(255,0,0, 0.5)",
-                      width: 30,
-                      height: 30,
-                      lineHeight: "30px",
+                      border: ".5px solid rgba(255,0,0, 0.5)",
+                      backgroundColor: "rgba(255,0,0, 0.1)",
+                      width: 25,
+                      height: 25,
+                      lineHeight: "25px",
                       textAlign: "center",
                       cursor: "pointer",
                       marginRight: 10,
                       marginTop: 5,
+                      padding: 0,
+                      color: "#F00",
                     }}
                     onClick={() =>
                       setAuthorizedRepresentative([
@@ -495,63 +433,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 </div>
               ))}
             </Form.Item>
-            <Form.Item label="With SSS ?" name="withSSS">
-              <Checkbox
-                onChange={(e) => {
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      etc: { ...data.part1.etc, withSSS: e.target.checked },
-                    },
-                  });
-                }}
-                style={{ display: "flex" }}
-              />
-            </Form.Item>
-            <Form.Item label="With Pension ?" name="withPension">
-              <Checkbox
-                value={data.part1?.etc.withPension}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      etc: {
-                        ...data.part1.etc,
-                        withPension: e.target.checked,
-                      },
-                    },
-                  })
-                }
-                style={{ display: "flex" }}
-              />
-            </Form.Item>
-            {data.part1?.etc.withPension && (
-              <Form.Item label="Monthly Pension" name="monthlyPension">
-                <InputNumber
-                  defaultValue={data.part1.etc.pensionMonthly}
-                  formatter={(value) =>
-                    `₱ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                  parser={(value) => value.replace(/\₱\s?|(,*)/g, "")}
-                  style={{ width: 200 }}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      part1: {
-                        ...data.part1,
-                        etc: {
-                          ...data.part1.etc,
-                          pensionMonthly: e,
-                        },
-                      },
-                    })
-                  }
-                  disabled={!data.part1.etc.withPension}
-                />
-              </Form.Item>
-            )}
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               GUARDIAN/CARE GIVER NAME
             </Typography.Title>
@@ -654,6 +535,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             <Form.Item
               label="Receive any form of pension ?"
               name="receivedPension"
+              initialValue={
+                data.part2?.sourceIncomeInfo?.receivedPension ?? false
+              }
+              // here
             >
               <Radio.Group
                 style={{ display: "flex" }}
@@ -680,6 +565,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               name="receivedPension6mos"
             >
               <Checkbox.Group
+                value={data.part2?.sourceIncomeInfo?.receivedPension6mos ?? []}
                 options={[
                   {
                     label: "DSWD Social Pension",
@@ -713,20 +599,20 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 }
               />
               <div style={{ display: "flex" }}>
-                Others:{" "}
                 <Input
+                  prefix="Others: "
                   style={{
-                    width: 100,
-                    border: "none",
-                    borderBottom: "1px solid grey",
+                    width: 200,
                     background: "#eee",
                     borderRadius: 0,
                   }}
                 />
               </div>
             </Form.Item>
-            <Form.Item label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
-            for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable.">
+            <Form.Item
+              label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
+            for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable."
+            >
               <Table
                 columns={[
                   {
@@ -747,7 +633,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                       ];
                       return (
                         <Radio.Group
-                          value={sourceIncome[keys[index]].status}
+                          value={
+                            data.part2.sourceIncomeInfo.sourceOfIncome[
+                              keys[index]
+                            ].status ?? sourceIncome[keys[index]].status
+                          }
                           onChange={(e) => {
                             setData({
                               ...data,
@@ -760,9 +650,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                                       .sourceOfIncome,
                                     [keys[index]]: {
                                       status: e.target.value,
-                                      value:
-                                        data.part2.sourceIncomeInfo
-                                          .sourceOfIncome[keys[index]].value,
+                                      value: !e.target.value
+                                        ? 0
+                                        : data.part2.sourceIncomeInfo
+                                            .sourceOfIncome[keys[index]].value,
                                     },
                                   },
                                 },
@@ -793,7 +684,16 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                           Php{" "}
                           <Input
                             style={{ width: 100 }}
-                            value={sourceIncome[keys[index]].value}
+                            value={
+                              data.part2.sourceIncomeInfo.sourceOfIncome[
+                                keys[index]
+                              ].value ?? sourceIncome[keys[index]].value
+                            }
+                            disabled={
+                              !data.part2.sourceIncomeInfo.sourceOfIncome[
+                                keys[index]
+                              ].status ?? !sourceIncome[keys[index]].status
+                            }
                             onChange={(e) => {
                               setData({
                                 ...data,
@@ -843,6 +743,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             </Form.Item>
             <Form.Item label="Living With">
               <Radio.Group
+                value={data.part2.livingWith}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -883,6 +784,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   {
                     render: (_, row, index) => (
                       <Radio.Group
+                        value={data.part2.frailQuestion[`q${index + 1}`]}
                         onChange={(e) => {
                           setData({
                             ...data,
@@ -936,6 +838,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             <Form.Item label="Do you have any disability?">
               <Radio.Group
                 style={{ display: "flex" }}
+                value={data.part2.isPwd.status}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -959,6 +862,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                       borderBottom: "1px solid grey",
                       borderRadius: 0,
                     }}
+                    value={data.part2.isPwd.name}
                     onChange={(e) =>
                       setData({
                         ...data,
@@ -979,6 +883,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             <Form.Item label="Do you have any critical illness or disease?">
               <Radio.Group
                 style={{ display: "flex" }}
+                value={data.part2.hasIllness.status}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -995,6 +900,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 <Radio value={true}>
                   YES - Illness:{" "}
                   <Input
+                    value={data.part2.hasIllness.name}
                     style={{
                       width: 100,
                       background: "#eee",
@@ -1022,6 +928,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             <Form.Item label="On the average, how many meals did you have in a day during the past week?">
               <Radio.Group
                 style={{ display: "flex" }}
+                value={
+                  Number.parseInt(data.part2.mealsPerDay) > 3
+                    ? "3"
+                    : data.part2.mealsPerDay?.toString()
+                }
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -1057,6 +968,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
           >
             <Form.Item label="Where do you spend your Social Pension? ">
               <Input.TextArea
+                value={data.part3.description1}
                 onChange={(e) =>
                   setData({ ...data, part3: { description1: e.target.value } })
                 }
@@ -1074,7 +986,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       dateOfBirth,
       maritalStatus,
       contactNumber,
-      id,
       name,
       middlename,
       lastname,
@@ -1084,19 +995,19 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
     let updatedData = {
       //  PART 1
-      name: { id, name, middlename, lastname, extensionName },
+      name: {
+        id: data.part1.seniorInfo.id,
+        name,
+        middlename,
+        lastname,
+        extensionName,
+      },
       gender,
       dateOfBirth,
       maritalStatus,
       contactNumber,
       barangay,
-      motherMaidenName: { ...data.part1.mothersInfo },
       authorizedRepresentative,
-      withSSS: data.part1.etc.withSSS,
-      withPension: {
-        status: data.part1.etc.withPension,
-        value: data.part1.etc.pensionMonthly,
-      },
       guardian: data.part1.guardian,
       // PART 2
       receivedPension: data.part2.sourceIncomeInfo.receivedPension,
@@ -1112,8 +1023,9 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
     let res = await axios.post("/api/senior", {
       payload: {
-        mode: "add-senior",
-        senior: updatedData,
+        mode: "update-senior",
+        data: updatedData,
+        id,
       },
     });
 
@@ -1126,7 +1038,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
   const checkValidate = () => {
     if (current == 0) {
-      let missingFields = { seniorInfo: [], mothersInfo: [], guardian: [] };
+      let missingFields = { seniorInfo: [], guardian: [] };
 
       let age = dayjs().diff(
         dayjs(data.part1.seniorInfo.dateOfBirth).format("YYYY-MM-DD"),
@@ -1150,9 +1062,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         if (e != "extension" && data.part1.seniorInfo[e] == "")
           missingFields.seniorInfo.push(e);
       });
-      Object.keys(data.part1.mothersInfo).forEach((e) => {
-        if (data.part1.mothersInfo[e] == "") missingFields.mothersInfo.push(e);
-      });
       Object.keys(data.part1.guardian).forEach((e) => {
         if (data.part1.guardian[e] == "") missingFields.guardian.push(e);
       });
@@ -1166,22 +1075,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         ) {
           message.error(
             `Please input missing fields. SENIOR (${missingFields.seniorInfo.join(
-              ", "
-            )})`
-          );
-          return;
-        }
-      }
-
-      if (missingFields.mothersInfo.length > 0) {
-        if (
-          !(
-            missingFields.mothersInfo.includes("middlename") &&
-            missingFields.mothersInfo.length == 1
-          )
-        ) {
-          message.error(
-            `Please input missing fields. MOTHER (${missingFields.mothersInfo.join(
               ", "
             )})`
           );
@@ -1228,18 +1121,15 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               barangay: res.data.data?.barangay,
               contactNumber: res.data.data?.contactNumber,
             },
-            mothersInfo: { ...res.data.data?.motherMaidenName },
             guardian: {
               ...res.data.data?.guardian,
             },
             etc: {
               authorizedRepresentative:
                 res.data.data?.authorizedRepresentative ?? [],
-              withSSS: res.data.data?.withSSS,
-              withPension: res.data.data?.withPension?.status,
-              pensionMonthly: res.data.data?.withPension?.value,
             },
           },
+          // here
           part2: {
             sourceIncomeInfo: {
               receivedPension: res.data.data?.receivedPension,
@@ -1282,9 +1172,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
           mothername: _?.motherMaidenName.name,
           mothermiddlename: _?.motherMaidenName.middlename,
           motherlastname: _?.motherMaidenName.lastname,
-          withSSS: _?.withSSS,
-          withPension: _?.withPension.status,
-          monthlyPension: _?.withPension.value,
           guardianname: _?.guardian.name,
           guardianmiddlename: _?.guardian.middlename,
           guardianlastname: _?.guardian.lastname,
@@ -1299,7 +1186,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         setSourceIncome(_?.sourceOfIncome);
       }
     })();
-  }, [id]);
+  }, [id, open]);
 
   return (
     <Modal
@@ -1312,10 +1199,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       footer={
         current == 2 && (
           <Button type="primary" onClick={handleFinish}>
-            Add Senior
+            UPDATE
           </Button>
         )
       }
+      destroyOnClose
     >
       <Steps
         current={current}

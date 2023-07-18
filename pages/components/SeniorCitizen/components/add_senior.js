@@ -48,9 +48,6 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       },
       etc: {
         authorizedRepresentative: [],
-        withSSS: false,
-        withPension: false,
-        pensionMonthly: 3000,
       },
     },
     part2: {
@@ -432,63 +429,6 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 </div>
               ))}
             </Form.Item>
-            {/* <Form.Item label="With SSS ?" name="withSSS">
-              <Checkbox
-                onChange={(e) => {
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      etc: { ...data.part1.etc, withSSS: e.target.checked },
-                    },
-                  });
-                }}
-                style={{ display: "flex" }}
-              />
-            </Form.Item>
-            <Form.Item label="With Pension ?">
-              <Checkbox
-                value={data.part1?.etc.withPension}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      etc: {
-                        ...data.part1.etc,
-                        withPension: e.target.checked,
-                      },
-                    },
-                  })
-                }
-                style={{ display: "flex" }}
-              />
-            </Form.Item>
-            {data.part1?.etc.withPension && (
-              <Form.Item label="Monthly Pension">
-                <InputNumber
-                  defaultValue={data.part1.etc.pensionMonthly}
-                  formatter={(value) =>
-                    `₱ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                  parser={(value) => value.replace(/\₱\s?|(,*)/g, "")}
-                  style={{ width: 200 }}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      part1: {
-                        ...data.part1,
-                        etc: {
-                          ...data.part1.etc,
-                          pensionMonthly: e,
-                        },
-                      },
-                    })
-                  }
-                  disabled={!data.part1.etc.withPension}
-                />
-              </Form.Item>
-            )} */}
             <Typography.Title level={5} style={{ textAlign: "center" }}>
               GUARDIAN/CARE GIVER NAME
             </Typography.Title>
@@ -656,8 +596,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 />
               </div>
             </Form.Item>
-            <Form.Item label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
-            for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable.">
+            <Form.Item
+              label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
+            for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable."
+            >
               <Table
                 columns={[
                   {
@@ -1015,11 +957,6 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       contactNumber,
       barangay,
       authorizedRepresentative,
-      withSSS: data.part1.etc.withSSS,
-      withPension: {
-        status: data.part1.etc.withPension,
-        value: data.part1.etc.pensionMonthly,
-      },
       guardian: data.part1.guardian,
       // PART 2
       receivedPension: data.part2.sourceIncomeInfo.receivedPension,
@@ -1149,6 +1086,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
           </Button>
         )
       }
+      destroyOnClose
     >
       <Steps
         current={current}

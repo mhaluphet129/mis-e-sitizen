@@ -151,7 +151,10 @@ const AdminPage = () => {
             />
           </Tooltip>
           <Tooltip title="Edit Senior">
-            <Button icon={<EditOutlined />} />
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => setUpdateSenior({ open: true, data: __ })}
+            />
           </Tooltip>
         </Space>
       ),
@@ -269,13 +272,8 @@ const AdminPage = () => {
       <Table
         dataSource={seniors}
         columns={column}
-        onRow={(data) => {
-          return {
-            onClick: () => setUpdateSenior({ open: true, data }),
-          };
-        }}
         loading={loading}
-        pagination={false}
+        pagination={{ pageSize: 10 }}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
         style={{ width: 1200 }}

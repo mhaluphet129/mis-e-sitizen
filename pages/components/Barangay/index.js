@@ -67,7 +67,7 @@ const Barangay = () => {
         flexDirection: "column",
       }}
     >
-      <Card style={{ width: "100%", marginBottom: 10 }}>
+      <Card style={{ width: "80%", marginBottom: 10 }}>
         <Bar
           options={{
             responsive: true,

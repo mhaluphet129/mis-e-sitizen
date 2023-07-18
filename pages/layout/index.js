@@ -241,14 +241,7 @@ const Content = ({ selectedKey, setSelectedKey }) => {
         overflow: "scroll",
       }}
     >
-      <PageHeader
-        title={
-          <Typography.Title level={5}>
-            {selectedKey.toString().toUpperCase()} <RightOutlined />{" "}
-            <a style={{ textDecoration: "underline" }}>HOME</a>
-          </Typography.Title>
-        }
-      >
+      <PageHeader>
         {selectedKey == "dashboard" ? (
           <Dashboard setSelectedKey={setSelectedKey} />
         ) : null}
