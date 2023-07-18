@@ -141,8 +141,8 @@ export default async function handler(req, res) {
           case "check-exist": {
             return await Senior.findOne({
               $and: [
-                { "name.name": req.query.senior.name },
-                { "name.lastname": req.query.senior.lastname },
+                { "name.name": req.query.name },
+                { "name.lastname": req.query.lastname },
               ],
             })
               .then((doc) => {

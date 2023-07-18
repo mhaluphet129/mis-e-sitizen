@@ -16,9 +16,11 @@ import {
   Steps,
   theme,
 } from "antd";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
+
+import JASON from "../../../assets/json/constant.json";
 
 const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
   const { token } = theme.useToken();
@@ -306,14 +308,12 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={Array(17)
-                  .fill({})
-                  .map((_, i) => {
-                    return {
-                      label: `Barangay ${i + 1}`,
-                      value: `Barangay ${i + 1}`,
-                    };
-                  })}
+                options={JASON.barangay.map((_, i) => {
+                  return {
+                    label: _,
+                    value: _,
+                  };
+                })}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -630,9 +630,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                                   ...data.part2.sourceIncomeInfo.sourceOfIncome,
                                   [keys[index]]: {
                                     status: e.target.value,
-                                    value:
-                                      data.part2.sourceIncomeInfo
-                                        .sourceOfIncome[keys[index]].value,
+                                    value: !e.target.value
+                                      ? 0
+                                      : data.part2.sourceIncomeInfo
+                                          .sourceOfIncome[keys[index]].value,
                                   },
                                 },
                               },
@@ -647,44 +648,65 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                   },
                   {
                     title: "C. Income",
-                    render: (_, row, index) => (
-                      <>
-                        Php{" "}
-                        <Input
-                          style={{ width: 100 }}
-                          onChange={(e) => {
-                            let keys = [
-                              "salary",
-                              "entrep",
-                              "householdMember",
-                              "domesticMember",
-                              "internationalMember",
-                              "fromFriends",
-                              "fromGovernment",
-                            ];
-                            setData({
-                              ...data,
-                              part2: {
-                                ...data.part2,
-                                sourceIncomeInfo: {
-                                  ...data.part2.sourceIncomeInfo,
-                                  sourceOfIncome: {
-                                    ...data.part2.sourceIncomeInfo
-                                      .sourceOfIncome,
-                                    [keys[index]]: {
-                                      status:
-                                        data.part2.sourceIncomeInfo
-                                          .sourceOfIncome[keys[index]].status,
-                                      value: e.target.value,
+                    render: (_, row, index) => {
+                      let keys = [
+                        "salary",
+                        "entrep",
+                        "householdMember",
+                        "domesticMember",
+                        "internationalMember",
+                        "fromFriends",
+                        "fromGovernment",
+                      ];
+                      return (
+                        <>
+                          Php{" "}
+                          <Input
+                            style={{ width: 100 }}
+                            value={
+                              data.part2.sourceIncomeInfo.sourceOfIncome[
+                                keys[index]
+                              ].value ?? sourceIncome[keys[index]].value
+                            }
+                            disabled={
+                              !data.part2.sourceIncomeInfo.sourceOfIncome[
+                                keys[index]
+                              ].status ?? !sourceIncome[keys[index]].status
+                            }
+                            onChange={(e) => {
+                              let keys = [
+                                "salary",
+                                "entrep",
+                                "householdMember",
+                                "domesticMember",
+                                "internationalMember",
+                                "fromFriends",
+                                "fromGovernment",
+                              ];
+                              setData({
+                                ...data,
+                                part2: {
+                                  ...data.part2,
+                                  sourceIncomeInfo: {
+                                    ...data.part2.sourceIncomeInfo,
+                                    sourceOfIncome: {
+                                      ...data.part2.sourceIncomeInfo
+                                        .sourceOfIncome,
+                                      [keys[index]]: {
+                                        status:
+                                          data.part2.sourceIncomeInfo
+                                            .sourceOfIncome[keys[index]].status,
+                                        value: e.target.value,
+                                      },
                                     },
                                   },
                                 },
-                              },
-                            });
-                          }}
-                        />
-                      </>
-                    ),
+                              });
+                            }}
+                          />
+                        </>
+                      );
+                    },
                   },
                 ]}
                 dataSource={[
@@ -973,10 +995,8 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     let res2 = await axios.get("/api/senior", {
       params: {
         mode: "check-exist",
-        senior: {
-          name,
-          lastname,
-        },
+        name,
+        lastname,
       },
     });
 
@@ -1073,7 +1093,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
 
   return (
     <Modal
-      // title={"SENIOR CITIZEN INFORMATION REGISTRATION FORM"}
+      title={"SENIOR CITIZEN INFORMATION REGISTRATION FORM"}
       open={open}
       onCancel={close}
       closable={false}
