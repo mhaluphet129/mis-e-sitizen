@@ -1187,9 +1187,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
   return (
     <Modal
-      // title={"SENIOR CITIZEN INFORMATION REGISTRATION FORM"}
       open={open}
-      onCancel={close}
+      onCancel={() => {
+        close();
+      }}
       closable={false}
       width={800}
       style={{ top: 10 }}

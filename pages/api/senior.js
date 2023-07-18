@@ -146,7 +146,7 @@ export default async function handler(req, res) {
               ],
             })
               .then((doc) => {
-                if (doc) res.json({ status: 201 });
+                if (doc == null) res.json({ status: 201 });
                 else res.json({ status: 200 });
 
                 resolve();

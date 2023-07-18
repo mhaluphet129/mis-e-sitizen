@@ -1019,6 +1019,8 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       );
       return;
     }
+
+    setCurrent(0);
   };
 
   const checkValidate = () => {
@@ -1095,7 +1097,11 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     <Modal
       title={"SENIOR CITIZEN INFORMATION REGISTRATION FORM"}
       open={open}
-      onCancel={close}
+      onCancel={() => {
+        close();
+        setCurrent(0);
+        setAuthorizedRepresentative([]);
+      }}
       closable={false}
       width={800}
       style={{ top: 10 }}
