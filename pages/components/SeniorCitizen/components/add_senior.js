@@ -354,9 +354,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               />
             </Form.Item>
 
-            <Typography.Title level={5} style={{ textAlign: "center" }}>
-              ETC
-            </Typography.Title>
+            <Typography.Title level={5}>ETC</Typography.Title>
             <Form.Item label="Authorized Representative" required>
               <Input
                 onChange={(e) => _setLabel(e.target.value)}
@@ -1088,10 +1086,6 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     }
     setCurrent(current + 1);
   };
-
-  // useEffect(() => {
-  //   console.log(seniorInfo);
-  // }, [seniorInfo]);
 
   return (
     <Modal

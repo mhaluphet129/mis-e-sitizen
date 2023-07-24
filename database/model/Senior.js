@@ -163,7 +163,7 @@ let SeniorSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["ACTIVE", "DECEASED"],
+      enum: ["ACTIVE", "DECEASED", "ACTIVE_WITH_ILLNESS"],
       default: "ACTIVE",
     },
     history: {

@@ -3,7 +3,7 @@ import { Input, Modal, Typography, Button, Alert, message } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-const AddAdmin = ({ open, close, refresh }) => {
+const AddAdmin = ({ open, close, refresh, extra, mode = "admin" }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState({ show: false, description: "" });
 
@@ -35,6 +35,7 @@ const AddAdmin = ({ open, close, refresh }) => {
       </Typography.Title>
       <Input.Group>
         <Input
+          name="email"
           prefix={<UserAddOutlined />}
           style={{
             width: "calc(100% - 70px)",
@@ -52,18 +53,21 @@ const AddAdmin = ({ open, close, refresh }) => {
               let { data } = await axios.post("/api/admin", {
                 payload: {
                   mode: "add-admin",
+                  type: mode,
                   email,
+                  barangay: extra?.barangay ?? null,
                 },
               });
-
               if (data.status == 409)
                 setError({
                   show: true,
-                  description: "Email is already taken. ",
+                  description: data.message,
                 });
+              else if (data.status == 410)
+                setError({ show: true, description: data.message });
               else if (data.status == 200) {
                 message.success(data.message);
-                refresh();
+                if (refresh != null && typeof refresh == "function") refresh();
                 close();
               }
             }

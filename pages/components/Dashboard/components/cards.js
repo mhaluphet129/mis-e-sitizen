@@ -2,7 +2,12 @@ import { Card, Row, Col, Typography } from "antd";
 
 const DashboardCards = (props) => {
   return (
-    <Card bodyStyle={{ padding: 5 }} onClick={() => props.onClick()} hoverable>
+    <Card
+      bodyStyle={{ padding: 5 }}
+      onClick={() => props.onClick()}
+      style={{ width: "30%" }}
+      hoverable
+    >
       <Row gutter={[16, 0]}>
         <Col>
           <div
@@ -20,13 +25,7 @@ const DashboardCards = (props) => {
             {props?.icon != null ? props.icon : ""}
           </div>
         </Col>
-        <Col
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
+        <Col>
           <Typography.Title level={5}>{props.name}</Typography.Title>
           <Typography.Text style={{ fontSize: 40 }}>
             {props.value}

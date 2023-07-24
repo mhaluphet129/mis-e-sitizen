@@ -1,4 +1,5 @@
 import Senior from "../../database/model/Senior";
+import Admin from "../../database/model/Admin";
 import dbConnect from "../../database/dbConnect";
 
 export default async function handler(req, res) {
@@ -11,7 +12,6 @@ export default async function handler(req, res) {
         const { mode } = req.query;
         switch (mode) {
           case "dashboard-data": {
-            let { selectedBarangay } = req.query;
             try {
               let pieData = await Senior.aggregate([
                 {
@@ -38,10 +38,13 @@ export default async function handler(req, res) {
             let { barangay } = req.query;
 
             return await Senior.find({ barangay })
-              .then((doc) => {
+              .then(async (doc) => {
+                // get the current admin
+                let admin = await Admin.findOne({ role: "admin", barangay });
                 res.json({
                   status: 200,
                   data: doc,
+                  admin,
                 });
                 resolve();
               })

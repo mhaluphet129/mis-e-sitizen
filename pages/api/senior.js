@@ -189,7 +189,6 @@ export default async function handler(req, res) {
               },
             ])
               .then((e) => {
-                console.log(e);
                 res.json({ status: 200, data: e[0] });
                 resolve();
               })

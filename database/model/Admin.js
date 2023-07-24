@@ -23,6 +23,10 @@ let AdminSchema = new mongoose.Schema(
       type: String,
       default: "admin",
     },
+    // if barangay-admin
+    barangay: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

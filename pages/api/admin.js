@@ -29,12 +29,43 @@ export default async function handler(req, res) {
 
         switch (mode) {
           case "add-admin": {
+            const { type, barangay } = req.body.payload;
             let currentAdmin = await Admin.find({ email });
 
             if (currentAdmin.length > 0) {
-              res.json({
-                status: 409,
-                message: "This email is already registered.",
+              if (
+                type == "barangay-admin" &&
+                [null, undefined, ""].includes(currentAdmin?.barangay)
+              ) {
+                return await Admin.findOneAndUpdate(
+                  { email },
+                  { $set: { barangay } }
+                ).then((e) => {
+                  res.json({
+                    status: 200,
+                    message: `Successfully added admin to barangay ${barangay}`,
+                  });
+                  resolve();
+                });
+              } else if (
+                type == "barangay-admin" &&
+                ![null, undefined, ""].includes(currentAdmin?.barangay)
+              ) {
+                res.json({
+                  status: 409,
+                  message: `This email is already registered in barangay ${barangay}`,
+                });
+              } else
+                res.json({
+                  status: 409,
+                  message: "This email is already registered.",
+                });
+            }
+
+            if (type == "barangay-admin" && currentAdmin.length == 0) {
+              return res.json({
+                status: 410,
+                message: `Email not found`,
               });
             }
 

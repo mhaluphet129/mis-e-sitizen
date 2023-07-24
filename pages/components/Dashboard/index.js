@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Col, Drawer, Row, Spin, Table, Typography, Tag, Space } from "antd";
+import {
+  Col,
+  Drawer,
+  Row,
+  Spin,
+  Table,
+  Typography,
+  Select,
+  Space,
+  List,
+  Card,
+} from "antd";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import Cards from "./components/cards";
 import { BsFillHouseFill } from "react-icons/bs";
@@ -7,11 +18,39 @@ import { FaUserCheck, FaUserTimes, FaMale, FaFemale } from "react-icons/fa";
 import { TbOld } from "react-icons/tb";
 import axios from "axios";
 import dayjs from "dayjs";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import json from "../../assets/json/constant.json";
+
+Chart.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = ({ setSelectedKey }) => {
   const [drawerData, setDrawerData] = useState({ open: false, data: {} });
   const [isFetching, setFetching] = useState(false);
   const [senior, setSenior] = useState([]);
+  const [barData, setBarData] = useState([]);
+  // const [seniors, setSeniors] = useState([]);
+  let [max, setMax] = useState(10);
+  // const [selectedBarangay, setSelectedBarangay] = useState("Barangay 1");
+  const [totalPerBarangay, setTotalPerBarangay] = useState([]);
+
   let [data, setData] = useState({
     barangay: "-",
     senior: "-",
@@ -20,6 +59,7 @@ const Dashboard = ({ setSelectedKey }) => {
     male: "-",
     female: "-",
   });
+
   let _data = [
     {
       name: "Barangay",
@@ -138,21 +178,191 @@ const Dashboard = ({ setSelectedKey }) => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      let { data } = await axios.get("/api/barangay", {
+        params: {
+          mode: "dashboard-data",
+          // selectedBarangay,
+        },
+      });
+
+      if (data?.status == 200) {
+        let arr = Array(17)
+          .fill()
+          .map((_, i) => {
+            return { name: json.barangay[i], value: 0 };
+          });
+
+        setTotalPerBarangay(data?.data?.pieData);
+
+        data?.data?.pieData?.forEach((e) => {
+          let index = arr.map((_) => _.name).indexOf(e._id);
+          arr[index].value = e.count;
+        });
+
+        setBarData(arr);
+      }
+    })();
+  }, []);
+
   return (
     <>
       <Row gutter={[16, 16]}>
-        {_data.map((e, i) => (
-          <Col span={12} key={e?.name + i}>
-            <Cards
-              key={e?.name + i}
-              name={e?.name}
-              value={e?.value}
-              color={e?.color}
-              icon={e?.icon}
-              onClick={() => onClick(i)}
+        <Col span={6}>
+          <Card title="Total Seniors per Barangay">
+            <List
+              itemLayout="horizontal"
+              dataSource={barData}
+              renderItem={(item) => (
+                <List.Item style={{ padding: 0 }}>
+                  <List.Item.Meta title={item.name} description={item.value} />
+                </List.Item>
+              )}
             />
-          </Col>
-        ))}
+          </Card>
+        </Col>
+        <Col span={18}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 10,
+            }}
+          >
+            {_data.map((e, i) => (
+              <Cards
+                key={e?.name + i}
+                name={e?.name}
+                value={e?.value}
+                color={e?.color}
+                icon={e?.icon}
+                onClick={() => onClick(i)}
+              />
+            ))}
+          </div>
+          <Bar
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Senior Citizen Bar Chart",
+                },
+              },
+              scales: {
+                y: {
+                  min: 0,
+                  max,
+                },
+              },
+            }}
+            data={{
+              labels: Array(17)
+                .fill()
+                .map((e, i) => json.barangay[i]),
+              datasets: [
+                {
+                  label: "Seniors",
+                  data: barData.map((e) => e.value),
+                  backgroundColor: "rgba(0,185,107,0.5)",
+                },
+              ],
+            }}
+          />
+          {/* <Row>
+            <Col
+              span={12}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+              }}
+            >
+              {_data.map((e, i) => (
+                <Cards
+                  key={e?.name + i}
+                  name={e?.name}
+                  value={e?.value}
+                  color={e?.color}
+                  icon={e?.icon}
+                  onClick={() => onClick(i)}
+                />
+              ))}
+            </Col>
+            {/* <Col spa={8}>
+              <Table
+                dataSource={seniors}
+                columns={[
+                  {
+                    title: "Name",
+                    render: (_, row) => (
+                      <Typography>
+                        {row?.name?.name}
+                        {row?.name?.middlename
+                          ? " " + row?.name?.middlename
+                          : ""}{" "}
+                        {row?.name?.lastname}
+                      </Typography>
+                    ),
+                  },
+                  {
+                    title: "Gender",
+                    dataIndex: "gender",
+                  },
+                  {
+                    title: "Age",
+                    render: (_, row) =>
+                      dayjs().diff(dayjs(row.dateOfBirth), "year"),
+                  },
+                ]}
+                title={() => (
+                  <Select
+                    showSearch
+                    placeholder="Select Barangay"
+                    optionFilterProp="children"
+                    onChange={(e) => {
+                      setSelectedBarangay(e);
+                      (async () => {
+                        let { data } = await axios.get("/api/barangay", {
+                          params: {
+                            mode: "fetch-seniors",
+                            barangay: e,
+                          },
+                        });
+
+                        if (data.status == 200) setSeniors(data?.data);
+                      })();
+                    }}
+                    value={selectedBarangay}
+                    style={{
+                      width: 150,
+                    }}
+                    filterOption={(input, option) =>
+                      (option?.label ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    options={Array(17)
+                      .fill({})
+                      .map((_, i) => {
+                        return {
+                          label: json.barangay[i],
+                          value: `Barangay ${i + 1}`,
+                        };
+                      })}
+                  />
+                )}
+              />
+            </Col> 
+          </Row> */}
+        </Col>
       </Row>
       <Drawer
         open={drawerData.open}
