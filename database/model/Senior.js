@@ -69,6 +69,12 @@ let SeniorSchema = new mongoose.Schema(
     authorizedRepresentative: {
       type: Array,
       default: [],
+
+      // {
+      //   name: "",
+      //   number: "",
+      //   realtionship: ""
+      // }
     },
     withSSS: {
       type: Boolean,

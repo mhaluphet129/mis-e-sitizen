@@ -201,7 +201,8 @@ const AdminPage = () => {
         dataSource={openRepresentative.data ?? []}
         renderItem={(item, i) => (
           <List.Item>
-            <Typography.Text mark>{`${i + 1}.`}</Typography.Text> {item}
+            <Typography.Text mark>{`${i + 1}.`}</Typography.Text> {item.name} |{" "}
+            {item.contactNumber} | {item.relationship}
           </List.Item>
         )}
       />

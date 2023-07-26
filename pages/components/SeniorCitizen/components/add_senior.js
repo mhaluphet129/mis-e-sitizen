@@ -15,6 +15,7 @@ import {
   Table,
   Steps,
   theme,
+  Tooltip,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -26,6 +27,8 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
   const { token } = theme.useToken();
   const [authorizedRepresentative, setAuthorizedRepresentative] = useState([]);
   const [_label, _setLabel] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [relationship, setRelationship] = useState("");
   const [current, setCurrent] = useState(0);
 
   const [data, setData] = useState({
@@ -362,36 +365,78 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 disabled={authorizedRepresentative?.length >= 3}
                 style={{
                   marginBottom: 10,
-                  width: 300,
+                  width: 330,
                   display: "flex",
                 }}
-                suffix={
-                  <Button
-                    disabled={authorizedRepresentative?.length >= 3}
-                    onClick={() => {
-                      if (
-                        authorizedRepresentative.filter((e) => e == _label)
-                          .length > 0 ||
-                        authorizedRepresentative?.length >= 3
-                      )
-                        return;
-
-                      if (_label == "" || _label == null) {
-                        message.warning("Can't add. Its empty dude");
-                        return;
-                      }
-                      setAuthorizedRepresentative([
-                        ...authorizedRepresentative,
-                        _label,
-                      ]);
-
-                      _setLabel("");
-                    }}
-                  >
-                    ADD
-                  </Button>
+                prefix={
+                  <Typography.Text type="secondary">Name: </Typography.Text>
                 }
               />
+              <InputNumber
+                onChange={(e) => setContactNumber(e)}
+                value={contactNumber}
+                disabled={authorizedRepresentative?.length >= 3}
+                style={{
+                  marginBottom: 10,
+                  width: 330,
+                  display: "flex",
+                }}
+                maxLength={11}
+                prefix={
+                  <Typography.Text type="secondary">
+                    Contact Number:{" "}
+                  </Typography.Text>
+                }
+              />
+              <Input
+                onChange={(e) => setRelationship(e.target.value)}
+                value={relationship}
+                disabled={authorizedRepresentative?.length >= 3}
+                style={{
+                  marginBottom: 10,
+                  width: 330,
+                  display: "flex",
+                }}
+                prefix={
+                  <Typography.Text type="secondary">
+                    Relationship:{" "}
+                  </Typography.Text>
+                }
+              />
+              <Button
+                disabled={authorizedRepresentative?.length >= 3}
+                onClick={() => {
+                  if (
+                    authorizedRepresentative.filter((e) => e.name == _label)
+                      .length > 0 ||
+                    authorizedRepresentative?.length >= 3
+                  )
+                    return;
+
+                  if (
+                    _label == "" ||
+                    contactNumber == "" ||
+                    relationship == ""
+                  ) {
+                    message.warning("Please fill the blanks before adding");
+                    return;
+                  }
+                  setAuthorizedRepresentative((e) => {
+                    e.push({
+                      name: _label,
+                      contactNumber,
+                      relationship,
+                    });
+                    return e;
+                  });
+
+                  _setLabel("");
+                  setContactNumber("");
+                  setRelationship("");
+                }}
+              >
+                ADD
+              </Button>
 
               {authorizedRepresentative.map((e, index) => (
                 <div
@@ -423,7 +468,17 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                   >
                     <CloseOutlined />
                   </div>
-                  <div style={{ marginTop: 7 }}>{e}</div>
+                  <Tooltip
+                    title={
+                      <>
+                        {e.name} <br />
+                        +63{e.contactNumber} <br />
+                        {e.relationship}
+                      </>
+                    }
+                  >
+                    <div style={{ marginTop: 7 }}>{e.name}</div>
+                  </Tooltip>
                 </div>
               ))}
             </Form.Item>

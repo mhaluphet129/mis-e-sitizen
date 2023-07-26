@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 
+import Profile from "./profile";
+
 const History = ({ open, close, id }) => {
   let [history, setHistory] = useState([]);
   let [user, setUser] = useState({});
@@ -21,7 +23,8 @@ const History = ({ open, close, id }) => {
     {
       title: "Authorized Person Name",
       width: 250,
-      render: (_, row) => row.name ?? user?.name + " " + user?.lastname ?? "",
+      render: (_, row) =>
+        row.name ?? user?.name?.name + " " + user?.name?.lastname ?? "",
     },
     {
       title: "Processed By",
@@ -86,7 +89,7 @@ const History = ({ open, close, id }) => {
       });
       if (data.status == 200) {
         setHistory(data.data?.history);
-        setUser(data.data?.name);
+        setUser(data.data);
       } else message.error("Error in server");
     })();
   }, [id]);
@@ -98,6 +101,7 @@ const History = ({ open, close, id }) => {
       placement="bottom"
       height="100%"
       title="History"
+      style={{ width: 1400, marginLeft: "50%", transform: "translateX(-50%)" }}
       extra={
         <Space
           style={{
@@ -107,7 +111,7 @@ const History = ({ open, close, id }) => {
           }}
         >
           <Segmented
-            options={["Table", "Timeline"]}
+            options={["Table", "Timeline", "Personal Info"]}
             onChange={(e) => setMode(e)}
           />
           {/* <div>
@@ -126,7 +130,7 @@ const History = ({ open, close, id }) => {
             <Timeline.Item label={dayjs(e?.createdAt).format("MMMM D, YYYY")}>
               <Typography.Text>
                 <strong>Authorized Person:</strong>{" "}
-                {e.name ?? user?.name + " " + user?.lastname ?? ""}
+                {e.name ?? user?.name?.name + " " + user?.name?.lastname ?? ""}
               </Typography.Text>
               <br />
               <Typography.Text>
@@ -147,6 +151,7 @@ const History = ({ open, close, id }) => {
           ))}
         </Timeline>
       )}
+      {mode == "Personal Info" && <Profile id={id} />}
     </Drawer>
   );
 };

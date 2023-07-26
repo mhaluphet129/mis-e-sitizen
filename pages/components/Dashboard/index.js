@@ -248,11 +248,16 @@ const Dashboard = ({ setSelectedKey }) => {
               responsive: true,
               plugins: {
                 legend: {
-                  position: "top",
+                  display: false,
                 },
                 title: {
                   display: true,
                   text: "Senior Citizen Bar Chart",
+                  position: "top",
+                  font: {
+                    size: "20px",
+                    family: "Sans-Serif",
+                  },
                 },
               },
               scales: {
