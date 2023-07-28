@@ -2,6 +2,8 @@ import Senior from "../../database/model/Senior";
 import Admin from "../../database/model/Admin";
 import dbConnect from "../../database/dbConnect";
 
+import json from "../assets/json/constant.json";
+
 export default async function handler(req, res) {
   await dbConnect();
   const { method } = req;
@@ -53,6 +55,20 @@ export default async function handler(req, res) {
                   .status(500)
                   .json({ success: false, message: "Error: " + err });
               });
+          }
+
+          case "barangay-admin": {
+            return await Admin.find({ role: "admin" }).then((docs) => {
+              let barangay = json.barangay.map((e) => {
+                return { name: e, status: false };
+              });
+              docs.forEach((e) => {
+                const index = barangay.map((_) => _.name).indexOf(e?.barangay);
+                barangay[index].status = true;
+              });
+
+              res.json({ success: true, barangay });
+            });
           }
         }
       });

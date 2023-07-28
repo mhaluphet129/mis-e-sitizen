@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Badge, Card, Tabs, Typography } from "antd";
 
 import json from "../../assets/json/constant.json";
 import TabView from "./components/TabView";
+import axios from "axios";
 
 const Barangay = () => {
+  const [barangayWithAdmin, setBarangayWithAdmin] = useState([]);
+  useEffect(() => {
+    (async (_) => {
+      let { data } = await _.get("/api/barangay", {
+        params: {
+          mode: "barangay-admin",
+        },
+      });
+
+      setBarangayWithAdmin(data?.barangay);
+    })(axios);
+  }, []);
+
   return (
     <Card
       // bodyStyle={{
@@ -20,7 +34,14 @@ const Barangay = () => {
         items={json.barangay.map((e) => {
           return {
             label: (
-              <Badge dot={false} color="green">
+              <Badge
+                color={
+                  barangayWithAdmin?.filter((_) => _.name == e)[0]?.status
+                    ? "green"
+                    : "red"
+                }
+                dot
+              >
                 <Typography.Text>{e}</Typography.Text>
               </Badge>
             ),

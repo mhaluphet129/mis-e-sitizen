@@ -173,7 +173,7 @@ const Profile = ({ id }) => {
         </Typography>
         <Typography>Received Pension in the last 6 months:</Typography>
         <div style={{ marginLeft: 30 }}>
-          {user.receivedPension6mos.map((e) => (
+          {user.receivedPension6mos?.map((e) => (
             <>
               <strong> - {e.toUpperCase()}</strong>
               <br />

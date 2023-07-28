@@ -198,6 +198,24 @@ export default async function handler(req, res) {
                   .json({ success: false, message: "Error: " + err });
               });
           }
+
+          case "update-status": {
+            const { id, status } = req.query;
+            console.log(req.query);
+            return await Senior.findOneAndUpdate(
+              { _id: id },
+              { $set: { status } }
+            )
+              .then(() => {
+                res.json({ status: 200 });
+                resolve();
+              })
+              .catch(() => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
         }
       });
     case "POST": {

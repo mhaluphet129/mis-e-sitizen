@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Table, Typography } from "antd";
+import { Button, Row, Table, Tag, Typography } from "antd";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import dayjs from "dayjs";
 
 import AddAdmin from "../../Admin/components/add_admin";
+import ChangeStatus from "./ChangeStatus";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -16,8 +17,17 @@ const TabView = ({ barangay }) => {
   const [active, setActive] = useState(0);
   const [deceased, setDeceased] = useState(0);
   const [activeWithIllness, setActiveWithIllness] = useState(0);
+  const [statusChange, setStatusChange] = useState({
+    open: false,
+    value: null,
+  });
+  const [trigger, setTrigger] = useState(0);
 
   useEffect(() => {
+    let _active = 0;
+    let _deceased = 0;
+    let _activeWithIllness = 0;
+
     (async (_) => {
       let { data } = await _.get("/api/barangay", {
         params: {
@@ -42,17 +52,19 @@ const TabView = ({ barangay }) => {
       if (data.status == 200) {
         setSeniors(data.data);
         setCurrentAdmin(data?.admin ?? null);
-        console.log(data.data);
-        // update piedata
+
         data.data.forEach((e) => {
-          if (e.status == "ACTIVE") setActive(active + 1);
-          else if (e.status == "DECEASED") setDeceased(deceased + 1);
-          else if (e.status == "ACTIVE_WITH_ILLNESS")
-            setActiveWithIllness(activeWithIllness + 1);
+          if (e.status == "ACTIVE") _active++;
+          else if (e.status == "DECEASED") _deceased++;
+          else if (e.status == "ACTIVE_WITH_ILLNESS") _activeWithIllness++;
         });
+
+        setActive(_active);
+        setDeceased(_deceased);
+        setActiveWithIllness(_activeWithIllness);
       }
     })(axios);
-  }, []);
+  }, [trigger]);
 
   return (
     <>
@@ -61,6 +73,17 @@ const TabView = ({ barangay }) => {
         close={() => setOpenBarangayAdmin(false)}
         mode="barangay-admin"
         extra={{ barangay }}
+      />
+      <ChangeStatus
+        open={statusChange.open}
+        close={() => setStatusChange({ open: false, value: null })}
+        value={statusChange.value}
+        refresh={() => {
+          setActive(0);
+          setDeceased(0);
+          setActiveWithIllness(0);
+          setTrigger(trigger + 1);
+        }}
       />
       <Row
         style={{
@@ -103,6 +126,11 @@ const TabView = ({ barangay }) => {
               dataIndex: "gender",
             },
             {
+              title: "Birthday",
+              render: (_, row) =>
+                dayjs(row?.dateOfBirth).format("MMMM DD, YYYY"),
+            },
+            {
               title: "Age",
               align: "center",
               render: (_, row) => (
@@ -115,6 +143,33 @@ const TabView = ({ barangay }) => {
                 </Typography>
               ),
             },
+            {
+              title: "Status",
+              align: "center",
+              render: (_, row) => (
+                <Tag
+                  color={
+                    row?.status == "ACTIVE"
+                      ? "green"
+                      : row?.status == "DECEASED"
+                      ? "red"
+                      : "yellow"
+                  }
+                >
+                  {row?.status}
+                </Tag>
+              ),
+            },
+            {
+              align: "center",
+              render: (_, row) => (
+                <Button
+                  onClick={() => setStatusChange({ open: true, value: row })}
+                >
+                  UPDATE
+                </Button>
+              ),
+            },
           ]}
           dataSource={seniors}
           pagination={false}
@@ -122,7 +177,7 @@ const TabView = ({ barangay }) => {
         />
         <div
           style={{
-            width: 400,
+            width: 300,
           }}
         >
           {![active, deceased, activeWithIllness].every((e) => e == 0) ? (
@@ -140,20 +195,20 @@ const TabView = ({ barangay }) => {
                 },
               }}
               data={{
-                labels: ["ACTIVE", "DECEASED", "ACTIVE WITH DESEASE"],
+                labels: ["ACTIVE", "DECEASED", "ACTIVE WITH DISEASE"],
                 datasets: [
                   {
                     label: "count: ",
                     data: [active, deceased, activeWithIllness],
                     backgroundColor: [
-                      "rgba(255, 99, 132, 0.2)",
-                      "rgba(54, 162, 235, 0.2)",
-                      "rgba(255, 206, 86, 0.2)",
+                      "rgba(0,255,0,0.2)",
+                      "rgba(255, 0, 0, 0.2)",
+                      "rgba(200, 200, 0, 0.2)",
                     ],
                     borderColor: [
-                      "rgba(255, 99, 132, 1)",
-                      "rgba(54, 162, 235, 1)",
-                      "rgba(255, 206, 86, 1)",
+                      "rgb(0,255,0)",
+                      "rgba(255, 0, 0)",
+                      "rgba(200, 200, 0)",
                     ],
                     borderWidth: 1,
                   },
