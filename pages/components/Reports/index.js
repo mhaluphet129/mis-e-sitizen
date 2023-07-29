@@ -67,7 +67,7 @@ const Reports = () => {
             title: "FIRST",
             width: 200,
 
-            render: (_, row) => row?.name?.toUpperCase(),
+            render: (_, row) => row?.firstname?.toUpperCase(),
           },
           {
             title: "MIDDLE",
@@ -109,7 +109,7 @@ const Reports = () => {
         bordered
       />
       <Col span={5} style={{ marginTop: 100 }}>
-        <Typography.Text>Jean Paulith Bacarisan</Typography.Text>
+        <Typography.Text>Jean Paulith B. Elcano</Typography.Text>
         <br />
         <Typography.Text style={{ borderTop: "1px solid #000" }}>
           Social Welfare Assistant
