@@ -239,6 +239,59 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
+            <Typography.Title level={5} style={{ textAlign: "center" }}>
+              MOTHERS NAME
+            </Typography.Title>
+            <Form.Item label="First Name" name="guardianname" required>
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      guardian: {
+                        ...data.part1.guardian,
+                        name: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Middle Name" name="guardianmiddlename">
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      guardian: {
+                        ...data.part1.guardian,
+                        middlename: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Last Name" name="guardianlastname" required>
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      guardian: {
+                        ...data.part1.guardian,
+                        lastname: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+           
+            
             <Form.Item label="Gender" name="gender" required>
               <Radio.Group
                 defaultValue="male"
@@ -347,7 +400,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               <InputNumber
                 style={{ width: 200, display: "flex" }}
                 prefix="+63"
-                maxLength={10}
+                maxLength={9}
                 controls={false}
                 onChange={(e) =>
                   setData({
