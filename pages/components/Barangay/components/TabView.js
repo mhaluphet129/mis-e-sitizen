@@ -5,12 +5,12 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import dayjs from "dayjs";
 
-import AddAdmin from "../../Admin/components/add_admin";
 import ChangeStatus from "./ChangeStatus";
+import NewAdminBarangay from "./NewAdminBarangay";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TabView = ({ barangay }) => {
+const TabView = ({ barangay, refresh }) => {
   const [seniors, setSeniors] = useState([]);
   const [openAddBarangayAdmin, setOpenBarangayAdmin] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState(null);
@@ -68,11 +68,14 @@ const TabView = ({ barangay }) => {
 
   return (
     <>
-      <AddAdmin
+      <NewAdminBarangay
         open={openAddBarangayAdmin}
         close={() => setOpenBarangayAdmin(false)}
-        mode="barangay-admin"
-        extra={{ barangay }}
+        refresh={() => {
+          setTrigger(trigger + 1);
+          refresh();
+        }}
+        barangay={barangay}
       />
       <ChangeStatus
         open={statusChange.open}

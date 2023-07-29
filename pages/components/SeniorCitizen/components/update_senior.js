@@ -160,8 +160,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               label="Senior Citizen ID No."
               name="id"
               initialValue={data.part1.seniorInfo.id}
+              style={{ textAlign: "start" }}
             >
-              <Input
+              <InputNumber
+                maxLength={6}
+                controls={false}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -169,7 +172,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                       ...data.part1,
                       seniorInfo: {
                         ...data.part1.seniorInfo,
-                        id: e.target.value,
+                        id: e,
                       },
                     },
                   })

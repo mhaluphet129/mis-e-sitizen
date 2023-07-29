@@ -7,6 +7,7 @@ import axios from "axios";
 
 const Barangay = () => {
   const [barangayWithAdmin, setBarangayWithAdmin] = useState([]);
+  const [trigger, setTrigger] = useState(0);
   useEffect(() => {
     (async (_) => {
       let { data } = await _.get("/api/barangay", {
@@ -17,7 +18,7 @@ const Barangay = () => {
 
       setBarangayWithAdmin(data?.barangay);
     })(axios);
-  }, []);
+  }, [trigger]);
 
   return (
     <Card
@@ -46,7 +47,9 @@ const Barangay = () => {
               </Badge>
             ),
             key: e,
-            children: <TabView barangay={e} />,
+            children: (
+              <TabView barangay={e} refresh={() => setTrigger(trigger + 1)} />
+            ),
           };
         })}
       />

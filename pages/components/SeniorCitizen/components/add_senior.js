@@ -151,8 +151,15 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
             >
               SENIOR INFORMATION
             </Typography.Title>
-            <Form.Item label="Senior Citizen ID No." name="id" required>
-              <Input
+            <Form.Item
+              label="Senior Citizen ID No."
+              name="id"
+              style={{ textAlign: "start" }}
+              required
+            >
+              <InputNumber
+                maxLength={6}
+                controls={false}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -160,7 +167,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                       ...data.part1,
                       seniorInfo: {
                         ...data.part1.seniorInfo,
-                        id: e.target.value,
+                        id: e,
                       },
                     },
                   })

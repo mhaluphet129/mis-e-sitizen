@@ -42,7 +42,10 @@ export default async function handler(req, res) {
             return await Senior.find({ barangay })
               .then(async (doc) => {
                 // get the current admin
-                let admin = await Admin.findOne({ role: "admin", barangay });
+                let admin = await Admin.findOne({
+                  role: "barangay-admin",
+                  barangay,
+                });
                 res.json({
                   status: 200,
                   data: doc,
@@ -57,8 +60,77 @@ export default async function handler(req, res) {
               });
           }
 
+          case "fetch-senior-specific": {
+            var re = new RegExp(req.query.searchKeyword.trim(), "i");
+            return await Admin.find({
+              $and: [
+                {
+                  role: "barangay-admin",
+                },
+                {
+                  $or: [
+                    { name: { $regex: re } },
+                    { lastname: { $regex: re } },
+                    { email: { $regex: re } },
+                  ],
+                },
+              ],
+            })
+              .then((doc) => {
+                res.json({
+                  status: 200,
+                  data: doc,
+                });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
+
+          case "check-and-add-admin": {
+            let { id, barangay } = req.query;
+
+            return await Admin.findOne({ _id: id })
+              .then(async (doc) => {
+                if (doc != null) {
+                  if (![null, "", undefined].includes(doc?.barangay)) {
+                    res.json({
+                      status: 201,
+                      message: `Admin is already assign in barangay ${doc.barangay}`,
+                    });
+                    resolve();
+                  } else {
+                    return await Admin.findOneAndUpdate(
+                      { _id: id },
+                      { $set: { barangay } }
+                    ).then(() => {
+                      res.json({
+                        status: 200,
+                        message: `Successfully added`,
+                      });
+                      resolve();
+                    });
+                  }
+                } else {
+                  res.json({
+                    status: 404,
+                    message: `Admin not found`,
+                  });
+                  resolve();
+                }
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
+          }
+
           case "barangay-admin": {
-            return await Admin.find({ role: "admin" }).then((docs) => {
+            return await Admin.find({ role: "barangay-admin" }).then((docs) => {
               let barangay = json.barangay.map((e) => {
                 return { name: e, status: false };
               });
