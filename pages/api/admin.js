@@ -75,7 +75,7 @@ export default async function handler(req, res) {
               { _id: id },
               { $set: { password } }
             )
-              .then(() => {
+              .then((e) => {
                 res.json({ status: 200, message: "Successfully updated" });
                 resolve();
               })

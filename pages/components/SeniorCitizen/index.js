@@ -29,6 +29,7 @@ import {
 } from "./components";
 import axios from "axios";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
 const AdminPage = () => {
   const [showAddSenior, setShowAddSenior] = useState(false);
@@ -47,6 +48,8 @@ const AdminPage = () => {
     data: null,
   });
 
+  const barangay =
+    Cookies.get("barangay") == "false" ? null : Cookies.get("barangay");
   const column = [
     {
       title: "Senior ID",
@@ -212,7 +215,7 @@ const AdminPage = () => {
   useEffect(() => {
     (async () => {
       let { data } = await axios.get("/api/senior", {
-        params: { mode: "fetch-all", search: _searchName },
+        params: { mode: "fetch-all", search: _searchName, barangay },
       });
       if (data.status == 200) {
         setSeniors(data.senior);

@@ -63,7 +63,11 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
 
   return (
     <>
-      <UpdatePassword open={openModal} close={() => setOpenModal(false)} />
+      <UpdatePassword
+        open={openModal}
+        close={() => setOpenModal(false)}
+        id={data?._id}
+      />
       <Drawer
         open={open}
         onClose={close}

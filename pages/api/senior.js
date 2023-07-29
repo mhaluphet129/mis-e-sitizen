@@ -13,9 +13,12 @@ export default async function handler(req, res) {
 
         switch (mode) {
           case "fetch-all": {
+            const { search, barangay } = req.query;
+            let query = {};
+            if (barangay) query.barangay = barangay;
             if (!["", undefined].includes(req.query.search)) {
-              const { search } = req.query;
-              return await Senior.find({ _id: search }).then((e) => {
+              query._id = search;
+              return await Senior.find(query).then((e) => {
                 res.json({
                   status: 200,
                   message: "Successfully fetched the data",
@@ -24,7 +27,7 @@ export default async function handler(req, res) {
                 resolve();
               });
             } else {
-              return await Senior.find().then((e) => {
+              return await Senior.find(query).then((e) => {
                 res.json({
                   status: 200,
                   message: "Successfully fetched the data",

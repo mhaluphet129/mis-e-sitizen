@@ -14,8 +14,12 @@ export default async function handler(req, res) {
         switch (mode) {
           case "dashboard-data": {
             try {
-              let seniors = await Senior.find();
-              res.json({ status: 200, data: { barangay: 0, seniors } });
+              let seniors = await Senior.find(
+                req.query.hasOwnProperty("barangay")
+                  ? { barangay: req.query.barangay }
+                  : {}
+              );
+              res.json({ status: 200, data: { seniors } });
               resolve();
             } catch {
               res.status(500).json({ message: "Error in the server." });

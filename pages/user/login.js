@@ -44,6 +44,7 @@ const Login = () => {
     else if (data.status == 200) {
       Cookies.set("currentUser", JSON.stringify(data.currentUser));
       Cookies.set("loggedIn", "true");
+      Cookies.set("barangay", data.currentUser?.barangay ?? false);
       message.success(data.message);
       location?.reload();
     }
