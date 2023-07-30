@@ -49,6 +49,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         barangay: "",
         contactNumber: "",
       },
+      mothersInfo: {
+        name: "",
+        middlename: "",
+        lastname: "",
+      },
       guardian: {
         name: "",
         middlename: "",
@@ -244,57 +249,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 }
               />
             </Form.Item>
-            <Typography.Title level={5} style={{ textAlign: "center" }}>
-              MOTHERS NAME
-            </Typography.Title>
-            <Form.Item label="First Name" name="guardianname" required>
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
-                        name: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Middle Name" name="guardianmiddlename">
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
-                        middlename: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Last Name" name="guardianlastname" required>
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
-                        lastname: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
             <Form.Item label="Gender" name="gender">
               <Radio.Group
                 defaultValue="male"
@@ -409,6 +363,57 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                       seniorInfo: {
                         ...data.part1.seniorInfo,
                         contactNumber: e,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Typography.Title level={5} style={{ textAlign: "center" }}>
+              MOTHERS MAIDEN NAME
+            </Typography.Title>
+            <Form.Item label="First Name" name="mothername">
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        name: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Middle Name (Optional)" name="mothermiddlename">
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        middlename: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Last Name" name="motherlastname">
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        lastname: e.target.value,
                       },
                     },
                   })
@@ -672,10 +677,24 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             <Form.Item
               label="Pension/s receive in the past 6 months?"
               name="receivedPension6mos"
+              initialValue={data.part2?.sourceIncomeInfo?.receivedPension6mos}
             >
-              <Checkbox.Group
-                value={data.part2?.sourceIncomeInfo?.receivedPension6mos ?? []}
-                options={[
+              <Radio.Group
+                style={{ display: "flex" }}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part2: {
+                      ...data.part2,
+                      sourceIncomeInfo: {
+                        ...data.part2.sourceIncomeInfo,
+                        receivedPension6mos: e.target.value,
+                      },
+                    },
+                  })
+                }
+              >
+                {[
                   {
                     label: "DSWD Social Pension",
                     value: "dswd",
@@ -692,21 +711,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     label: "AFPSLAI",
                     value: "afpslai",
                   },
-                ]}
-                style={{ display: "flex" }}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part2: {
-                      ...data.part2,
-                      sourceIncomeInfo: {
-                        ...data.part2.sourceIncomeInfo,
-                        receivedPension6mos: e,
-                      },
-                    },
-                  })
-                }
-              />
+                ].map((_) => (
+                  <Radio value={_.value}>{_.label}</Radio>
+                ))}
+              </Radio.Group>
               <div style={{ display: "flex" }}>
                 <Input
                   prefix="Others: "
@@ -1116,6 +1124,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       maritalStatus,
       contactNumber,
       barangay,
+      motherMaidenName: { ...data.part1.mothersInfo },
       authorizedRepresentative,
       guardian: data.part1.guardian,
       // PART 2
@@ -1147,7 +1156,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
   const checkValidate = () => {
     if (current == 0) {
-      let missingFields = { seniorInfo: [], guardian: [] };
+      let missingFields = { seniorInfo: [], mothersInfo: [], guardian: [] };
 
       let age = dayjs().diff(
         dayjs(data.part1.seniorInfo.dateOfBirth).format("YYYY-MM-DD"),
@@ -1171,6 +1180,9 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         if (e != "extension" && data.part1.seniorInfo[e] == "")
           missingFields.seniorInfo.push(e);
       });
+      Object.keys(data.part1.mothersInfo).forEach((e) => {
+        if (data.part1.mothersInfo[e] == "") missingFields.mothersInfo.push(e);
+      });
       Object.keys(data.part1.guardian).forEach((e) => {
         if (data.part1.guardian[e] == "") missingFields.guardian.push(e);
       });
@@ -1184,6 +1196,22 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         ) {
           message.error(
             `Please input missing fields. SENIOR (${missingFields.seniorInfo.join(
+              ", "
+            )})`
+          );
+          return;
+        }
+      }
+
+      if (missingFields.mothersInfo.length > 0) {
+        if (
+          !(
+            missingFields.mothersInfo.includes("middlename") &&
+            missingFields.mothersInfo.length == 1
+          )
+        ) {
+          message.error(
+            `Please input missing fields. MOTHER (${missingFields.mothersInfo.join(
               ", "
             )})`
           );
@@ -1230,6 +1258,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               barangay: res.data.data?.barangay,
               contactNumber: res.data.data?.contactNumber,
             },
+            mothersInfo: { ...res.data.data?.motherMaidenName },
             guardian: {
               ...res.data.data?.guardian,
             },

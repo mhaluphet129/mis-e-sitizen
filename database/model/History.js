@@ -13,6 +13,10 @@ let HistorySchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    semester: {
+      type: Array,
+      default: [],
+    },
     note: {
       type: String,
     },

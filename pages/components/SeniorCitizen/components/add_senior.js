@@ -45,6 +45,11 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
         barangay: "",
         contactNumber: "",
       },
+      mothersInfo: {
+        name: "",
+        middlename: "",
+        lastname: "",
+      },
       guardian: {
         name: "",
         middlename: "",
@@ -240,17 +245,17 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               />
             </Form.Item>
             <Typography.Title level={5} style={{ textAlign: "center" }}>
-              MOTHERS NAME
+              MOTHERS MAIDEN NAME
             </Typography.Title>
-            <Form.Item label="First Name" name="guardianname" required>
+            <Form.Item label="First Name" name="mothername" required>
               <Input
                 onChange={(e) =>
                   setData({
                     ...data,
                     part1: {
                       ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
                         name: e.target.value,
                       },
                     },
@@ -258,15 +263,15 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Middle Name" name="guardianmiddlename">
+            <Form.Item label="Middle Name" name="mothermiddlename">
               <Input
                 onChange={(e) =>
                   setData({
                     ...data,
                     part1: {
                       ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
                         middlename: e.target.value,
                       },
                     },
@@ -274,15 +279,15 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Last Name" name="guardianlastname" required>
+            <Form.Item label="Last Name" name="motherlastname" required>
               <Input
                 onChange={(e) =>
                   setData({
                     ...data,
                     part1: {
                       ...data.part1,
-                      guardian: {
-                        ...data.part1.guardian,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
                         lastname: e.target.value,
                       },
                     },
@@ -290,8 +295,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
-           
-            
+
             <Form.Item label="Gender" name="gender" required>
               <Radio.Group
                 defaultValue="male"
@@ -1138,7 +1142,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
 
   const checkValidate = () => {
     if (current == 0) {
-      let missingFields = { seniorInfo: [], guardian: [] };
+      let missingFields = { seniorInfo: [], mothersInfo: [], guardian: [] };
 
       let age = dayjs().diff(
         dayjs(data.part1.seniorInfo.dateOfBirth).format("YYYY-MM-DD"),
@@ -1163,6 +1167,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
           missingFields.seniorInfo.push(e);
       });
 
+      Object.keys(data.part1.mothersInfo).forEach((e) => {
+        if (data.part1.mothersInfo[e] == "") missingFields.mothersInfo.push(e);
+      });
+
       Object.keys(data.part1.guardian).forEach((e) => {
         if (data.part1.guardian[e] == "") missingFields.guardian.push(e);
       });
@@ -1176,6 +1184,22 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
         ) {
           message.error(
             `Please input missing fields. SENIOR (${missingFields.seniorInfo.join(
+              ", "
+            )})`
+          );
+          return;
+        }
+      }
+
+      if (missingFields.mothersInfo.length > 0) {
+        if (
+          !(
+            missingFields.mothersInfo.includes("middlename") &&
+            missingFields.mothersInfo.length == 1
+          )
+        ) {
+          message.error(
+            `Please input missing fields. MOTHER (${missingFields.mothersInfo.join(
               ", "
             )})`
           );

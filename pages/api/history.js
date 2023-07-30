@@ -16,11 +16,13 @@ export default async function handler(req, res) {
         switch (mode) {
           case "add-history": {
             let { name, lastname } = JSON.parse(req.cookies.currentUser);
-            const { id, amount, note, authorizedName } = req.body.payload;
+            const { id, amount, note, authorizedName, semester } =
+              req.body.payload;
             let _history = History({
               amount,
               note,
               employerName: name + " " + lastname,
+              semester,
             });
 
             if (authorizedName) _history.name = authorizedName;

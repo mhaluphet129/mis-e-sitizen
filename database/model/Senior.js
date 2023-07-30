@@ -24,6 +24,21 @@ let nameSchema = new mongoose.Schema(
   { _id: false }
 );
 
+let motherNameSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    middlename: {
+      type: String,
+    },
+    lastname: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
 let guardianSchema = new mongoose.Schema(
   {
     name: {
@@ -66,6 +81,10 @@ let SeniorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    pensionerType: {
+      type: String,
+    },
+    motherMaidenName: motherNameSchema,
     authorizedRepresentative: {
       type: Array,
       default: [],
@@ -88,7 +107,7 @@ let SeniorSchema = new mongoose.Schema(
       type: Boolean, // don't know = null
     },
     receivedPension6mos: {
-      type: Array,
+      type: String,
     },
     sourceOfIncome: {
       type: Object,
@@ -179,5 +198,11 @@ let SeniorSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+SeniorSchema.pre("validate", function (next) {
+  if (this.receivedPension6mos == "dswd") this.pensionerType = "social";
+  else this.pensionerType = "social";
+  next();
+});
 
 export default mongoose.models.Senior || mongoose.model("Senior", SeniorSchema);

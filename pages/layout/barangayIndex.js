@@ -12,19 +12,21 @@ import {
   Input,
   message,
   Affix,
+  Tag,
 } from "antd";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
+import { FcBullish } from "react-icons/fc";
 import { TbOld, TbReport } from "react-icons/tb";
-import { FaHouseUser } from "react-icons/fa";
 import SeniorCitizenPage from "../components/SeniorCitizen";
 import Dashboard from "../components/Barangay/components/dashboard";
-// import Reports from "../components/Reports";
 import UpdatePassword from "../components/Admin/components/update_password";
 import Cookies from "js-cookie";
 import { PageHeader } from "@ant-design/pro-layout";
+import json from "../assets/json/constant.json";
+
+const barangay = Cookies.get("barangay");
 
 const Sider = ({ selectedIndex, selectedKey }) => {
   let [items, setItems] = useState([
@@ -93,10 +95,12 @@ const Header = () => {
   const [openChangePass, setOpenChangePass] = useState(false);
   const [form] = Form.useForm();
   const [location, setLocation] = useState();
+  const [color, setColor] = useState(null);
 
   useEffect(() => {
     setLocation(window.location);
     setCurrentUser(JSON.parse(Cookies.get("currentUser")));
+    setColor(json["barangay-color-theme"][barangay]);
   }, []);
 
   return (
@@ -170,10 +174,11 @@ const Header = () => {
           backgroundColor: "#aaa",
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           paddingInline: 20,
         }}
       >
+        <Tag color={color}>{barangay}</Tag>
         <Space>
           <Tooltip title="Profile Settings">
             <Button
@@ -201,6 +206,7 @@ const Header = () => {
               onClick={() => {
                 Cookies.remove("currentUser");
                 Cookies.remove("loggedIn");
+                Cookies.remove("barangay");
                 location?.reload();
               }}
             />

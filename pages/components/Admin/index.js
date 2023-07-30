@@ -45,6 +45,15 @@ const AdminPage = () => {
       ),
     },
     {
+      title: "Assigned to",
+      render: (_, row) =>
+        row?.barangay ?? (
+          <Typography.Text type="secondary" italic>
+            Not Applicable
+          </Typography.Text>
+        ),
+    },
+    {
       title: "Email",
       render: (_, row) => <Typography>{row.email}</Typography>,
     },

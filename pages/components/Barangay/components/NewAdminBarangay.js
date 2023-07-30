@@ -55,6 +55,7 @@ const NewAdminBarangay = ({ open, close, refresh, barangay }) => {
       if (data.status == 201) message.warning(data.message);
       else if (data.status == 200) {
         message.success(data.message);
+        close();
         refresh();
       }
     })(axios);

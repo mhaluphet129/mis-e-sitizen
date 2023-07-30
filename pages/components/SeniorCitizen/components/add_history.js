@@ -1,5 +1,4 @@
 import { Button, Checkbox, Input, InputNumber, Modal, message } from "antd";
-import Cookies from "js-cookie";
 import axios from "axios";
 import { useState } from "react";
 
@@ -9,6 +8,7 @@ const AddHistory = ({ open, close, id }) => {
   let [note, setNote] = useState(null);
   let [isSenior, setIsSenior] = useState(true);
   let [name, setName] = useState(null);
+  let [semester, setSemester] = useState(null);
 
   const validate = async () => {
     setLoading("loading");
@@ -24,6 +24,7 @@ const AddHistory = ({ open, close, id }) => {
         amount,
         note,
         authorizedName: name,
+        semester,
       },
     });
 
@@ -75,6 +76,22 @@ const AddHistory = ({ open, close, id }) => {
           prefix="₱"
           style={{ width: 300 }}
           onChange={(e) => setAmount(e)}
+        />
+      </div>
+      <div>
+        Semester: <br />
+        <Checkbox.Group
+          options={[
+            {
+              label: "First Semester",
+              value: "first",
+            },
+            {
+              label: "Second Semester",
+              value: "second",
+            },
+          ]}
+          onChange={(e) => setSemester(e)}
         />
       </div>
       <div>

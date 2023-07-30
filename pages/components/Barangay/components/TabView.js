@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Table, Tag, Typography } from "antd";
+import {
+  Button,
+  Popconfirm,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Typography,
+  message,
+} from "antd";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -22,6 +32,23 @@ const TabView = ({ barangay, refresh }) => {
     value: null,
   });
   const [trigger, setTrigger] = useState(0);
+
+  const handleRemoveAdmin = () => {
+    (async (_) => {
+      let { data } = await axios.get("/api/barangay", {
+        params: {
+          mode: "remove-admin",
+          id: currentAdmin?._id ?? "",
+        },
+      });
+
+      if (data.status == 200) {
+        message.success(data.message);
+        setCurrentAdmin(null);
+        refresh();
+      } else message.error(data.message);
+    })(axios);
+  };
 
   useEffect(() => {
     let _active = 0;
@@ -96,10 +123,23 @@ const TabView = ({ barangay, refresh }) => {
       >
         <Typography.Title level={3}>{barangay}</Typography.Title>
         <div>
-          ADMIN:{" "}
           {currentAdmin != null ? (
             currentAdmin.name != null ? (
-              currentAdmin.name + " " + currentAdmin.lastname
+              <Space>
+                {currentAdmin.name + " " + currentAdmin.lastname}
+                <Popconfirm
+                  title="Are you sure?"
+                  okText="Confirm"
+                  onConfirm={handleRemoveAdmin}
+                >
+                  <DeleteOutlined
+                    style={{
+                      fontSize: 20,
+                      color: "rgba(255,0,0,0.5)",
+                    }}
+                  />
+                </Popconfirm>
+              </Space>
             ) : (
               <Typography.Text type="secondary">Not Set</Typography.Text>
             )

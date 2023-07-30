@@ -221,6 +221,7 @@ const Header = () => {
               onClick={() => {
                 Cookies.remove("currentUser");
                 Cookies.remove("loggedIn");
+                Cookies.remove("barangay");
                 location?.reload();
               }}
             />

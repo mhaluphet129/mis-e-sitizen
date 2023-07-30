@@ -50,6 +50,7 @@ const AdminPage = () => {
 
   const barangay =
     Cookies.get("barangay") == "false" ? null : Cookies.get("barangay");
+
   const column = [
     {
       title: "Senior ID",
@@ -89,25 +90,35 @@ const AdminPage = () => {
       ),
     },
     {
-      title: "Social Pensioner",
-      width: 100,
-      align: "center",
-      render: (_, row) =>
-        row?.pensionStatus?.withPension ? (
-          <CheckOutlined style={{ color: "#42ba96" }} />
-        ) : (
-          <CloseOutlined style={{ color: "#ff0000" }} />
-        ),
+      title: "Status",
+      width: 150,
+      render: (_, row) => (
+        <Tag
+          color={
+            row?.status == "ACTIVE"
+              ? "green"
+              : row?.status == "DECEASED"
+              ? "red"
+              : "yellow"
+          }
+        >
+          {row?.status}
+        </Tag>
+      ),
     },
     {
-      title: "Private Pensioner",
+      title: "Pensioner Type",
       width: 100,
       align: "center",
       render: (_, row) =>
-        row?.withSSS ? (
-          <CheckOutlined style={{ color: "#42ba96" }} />
+        row?.pensionerType == "social" ? (
+          <Tag color="green">Social</Tag>
+        ) : row?.pensionerType == "private" ? (
+          <Tag color="blue">Private</Tag>
         ) : (
-          <CloseOutlined style={{ color: "#ff0000" }} />
+          <Typography.Text type="secondary" italic>
+            No Data
+          </Typography.Text>
         ),
     },
     {
@@ -232,7 +243,6 @@ const AdminPage = () => {
             width: 200,
           }}
           loading={loading}
-          placeholder="Search by name"
           filterOption={(inputValue, option) =>
             option.value?.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
           }
@@ -254,24 +264,6 @@ const AdminPage = () => {
             icon={<SettingOutlined />}
           />
         </Tooltip>
-        <Typography>
-          Gender: <Tag>{filter?.gender ?? ""}</Tag> Age:{" "}
-          <Tag>
-            {filter?.ageRange?.from ?? ""}-{filter?.ageRange?.to ?? ""}
-          </Tag>{" "}
-          Pension:{" "}
-          <Tag>
-            {" "}
-            {filter?.withPension ? <CheckOutlined /> : <CloseOutlined />}
-          </Tag>
-          SSS:{" "}
-          <Tag> {filter?.withSSS ? <CheckOutlined /> : <CloseOutlined />}</Tag>
-          Status:{" "}
-          <Tag>
-            {filter?.status?.length != 0 ? filter?.status?.join(", ") : ""}
-          </Tag>
-          Address: <Tag>{filter?.address ?? ""}</Tag>
-        </Typography>
       </Space>
       <Table
         dataSource={seniors}
@@ -280,7 +272,7 @@ const AdminPage = () => {
         pagination={{ pageSize: 10 }}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
-        style={{ width: 1200 }}
+        style={{ width: 1250 }}
       />
       <RepresentativeList />
       <AddSenior

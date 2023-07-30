@@ -17,5 +17,24 @@
     "Salvacion",
     "San Andres",
     "Kibogtok"
-  ]
+  ],
+  "barangay-color-theme": {
+    "Bagongbayan": "#9DC183",
+    "Bagor": "#708238",
+    "Balaoro": "#3F704D",
+    "Baroy": "#4F7942",
+    "Cabadiangan": "#8A9A5B",
+    "Husayan": "#4B5320",
+    "Kibalagon": "#344C38",
+    "Mabuhay": "#043927",
+    "Malinao": "#2E8B57",
+    "Matampay": "#00A572",
+    "Sibonga": "#769267",
+    "Pay-as": "#00A86B",
+    "Pinamanguhan": "#50C878",
+    "Poblacion": "#708238",
+    "Salvacion": "#D0F0C0X",
+    "San Andres": "#4B5320",
+    "Kibogtok": "#29AB87"
+  }
 }

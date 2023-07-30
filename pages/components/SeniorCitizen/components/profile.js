@@ -171,26 +171,27 @@ const Profile = ({ id }) => {
           Is Receiving Pension:{" "}
           <strong>{user.receivedPension == true ? "Yes" : "No"}</strong>
         </Typography>
-        <Typography>Received Pension in the last 6 months:</Typography>
-        <div style={{ marginLeft: 30 }}>
-          {user.receivedPension6mos?.map((e) => (
-            <>
-              <strong> - {e.toUpperCase()}</strong>
-              <br />
-            </>
-          ))}
-        </div>
+        <Typography>
+          Received Pension in the last 6 months:{" "}
+          <strong>{user.receivedPension6mos?.toUpperCase()}</strong>
+          {user.receivedPension6mos?.length == 0 && <strong>None</strong>}
+        </Typography>
+
         <Typography>Source of income: </Typography>
         <div style={{ marginLeft: 30 }}>
           {Object.keys(user.sourceOfIncome ?? {}).map((e) => {
             if (user.sourceOfIncome[e].status)
               return (
-                <strong>
-                  {customLabels(e)}: ₱{user.sourceOfIncome[e].value}
-                </strong>
+                <>
+                  {customLabels(e)}:{" "}
+                  <strong>₱{user.sourceOfIncome[e].value}</strong>
+                  <br />
+                </>
               );
           })}
         </div>
+      </Col>
+      <Col span={8}>
         <Typography.Title level={4} underline>
           Guardian
         </Typography.Title>
@@ -198,8 +199,6 @@ const Profile = ({ id }) => {
           {guardian?.name} {guardian?.middlename} {guardian.lastname}
         </Typography.Title>
         <Typography>{guardian?.relationship}</Typography>
-      </Col>
-      <Col span={8}>
         <Typography.Title level={4} underline>
           Authorized Representative
         </Typography.Title>

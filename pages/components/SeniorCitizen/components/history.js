@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  DatePicker,
   Drawer,
   Space,
   Table,
@@ -8,6 +7,7 @@ import {
   Typography,
   message,
   Timeline,
+  Tag,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -18,6 +18,26 @@ const History = ({ open, close, id }) => {
   let [history, setHistory] = useState([]);
   let [user, setUser] = useState({});
   let [mode, setMode] = useState("Table");
+
+  const semesterLabel = (_) => {
+    if (_?.length > 1) {
+      return (
+        <Space>
+          <Tag>First Semester</Tag>
+          <Tag>Second Semester</Tag>
+        </Space>
+      );
+    } else if ([null, undefined, ""].includes(_) || _?.length == 0) {
+      return (
+        <Typography.Text type="secondary" italic>
+          No data
+        </Typography.Text>
+      );
+    } else
+      return (
+        <Tag>{_[0] == "first" ? "First Semester" : "Second Semester"}</Tag>
+      );
+  };
 
   const columns = [
     {
@@ -40,6 +60,12 @@ const History = ({ open, close, id }) => {
       title: "Date released",
       width: 250,
       render: (_, row) => dayjs(row?.createdAt).format("MMMM D, YYYY"),
+    },
+    {
+      title: "Semester",
+      width: 250,
+      align: "center",
+      render: (_, row) => semesterLabel(row?.semester ?? []),
     },
     {
       title: "Notes/Remarks",

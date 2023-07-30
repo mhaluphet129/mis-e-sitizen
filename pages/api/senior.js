@@ -39,13 +39,15 @@ export default async function handler(req, res) {
           }
           case "search-senior": {
             const { searchKeyword } = req.query;
-            var re = new RegExp(searchKeyword.trim(), "i");
+            var re = new RegExp(searchKeyword.toLowerCase().trim(), "i");
 
             return await Senior.find({
               $or: [
                 { "name.lastname": { $regex: re } },
                 { "name.name": { $regex: re } },
                 { "name.middlename": { $regex: re } },
+                { "name.id": { $regex: re } },
+                { barangay: { $regex: re } },
               ],
             })
               .collation({ locale: "en" })
@@ -65,21 +67,45 @@ export default async function handler(req, res) {
             let _ = JSON.parse(filter);
 
             let option = [];
-
+            console.log(_);
             if (_.hasOwnProperty("gender")) option.push({ gender: _.gender });
-            if (_.hasOwnProperty("withPension"))
-              option.push({ "pensionStatus.withPension": _.withPension });
-            if (_.hasOwnProperty("withSSS"))
-              option.push({ "pensionStatus.withSSS": _.withSSS });
+            if (_.hasOwnProperty("pensionerType"))
+              option.push({ pensionerType: _.pensionerType });
             if (_.hasOwnProperty("address"))
-              option.push({ address: _.address });
+              option.push({ barangay: { $in: [..._.address] } });
             if (_.hasOwnProperty("status"))
               option.push({ status: { $in: [..._.status] } });
             if (_.hasOwnProperty("ageRange"))
               option.push({
-                age: {
-                  $gte: _.ageRange.from,
-                  $lte: _.ageRange.to,
+                $expr: {
+                  $and: [
+                    {
+                      $gte: [
+                        {
+                          $toDouble: {
+                            $subtract: [
+                              new Date(),
+                              { $toDate: "$dateOfBirth" },
+                            ],
+                          },
+                        },
+                        _.ageRange.from * 365 * 24 * 60 * 60 * 1000,
+                      ],
+                    },
+                    {
+                      $lt: [
+                        {
+                          $toDouble: {
+                            $subtract: [
+                              new Date(),
+                              { $toDate: "$dateOfBirth" },
+                            ],
+                          },
+                        },
+                        _.ageRange.to * 365 * 24 * 60 * 60 * 1000,
+                      ],
+                    },
+                  ],
                 },
               });
             await Senior.find({ $and: [...option] })
@@ -111,12 +137,12 @@ export default async function handler(req, res) {
             let query = {};
 
             switch (req.query?.filter) {
-              case "withPension": {
-                query = { "pensionStatus.withPension": true };
+              case "social": {
+                query = { pensionerType: "social" };
                 break;
               }
-              case "withoutPension": {
-                query = { "pensionStatus.withPension": false };
+              case "private": {
+                query = { pensionerType: "private" };
                 break;
               }
               case "male": {
@@ -242,12 +268,17 @@ export default async function handler(req, res) {
               });
           }
           case "update-senior": {
-            const { id } = req.body.payload;
+            const { id, data } = req.body.payload;
+            const { receivedPension6mos } = data;
 
             delete req.body.payload.data._id;
             delete req.body.payload.data.createdAt;
             delete req.body.payload.data.updatedAt;
             delete req.body.payload.data.__v;
+
+            if (receivedPension6mos == "dswd")
+              req.body.payload.data.pensionerType = "social";
+            else req.body.payload.data.pensionerType = "private";
 
             return await Senior.findOneAndUpdate(
               { _id: id },

@@ -6,10 +6,10 @@ import {
   Spin,
   Table,
   Typography,
-  Select,
   Space,
   List,
   Card,
+  Tag,
 } from "antd";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import Cards from "./components/cards";
@@ -28,6 +28,9 @@ import {
   Title,
   Tooltip,
   Legend,
+  LineController,
+  LineElement,
+  PointElement,
 } from "chart.js";
 import json from "../../assets/json/constant.json";
 
@@ -36,6 +39,9 @@ Chart.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  LineController,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
   Legend
@@ -46,16 +52,13 @@ const Dashboard = ({ setSelectedKey }) => {
   const [isFetching, setFetching] = useState(false);
   const [senior, setSenior] = useState([]);
   const [barData, setBarData] = useState([]);
-  // const [seniors, setSeniors] = useState([]);
-  let [max, setMax] = useState(10);
-  // const [selectedBarangay, setSelectedBarangay] = useState("Barangay 1");
-  const [totalPerBarangay, setTotalPerBarangay] = useState([]);
+  const [total, setTotal] = useState([]);
 
   let [data, setData] = useState({
     barangay: "-",
     senior: "-",
-    withPension: "-",
-    withoutPension: "-",
+    social: "-",
+    private: "-",
     male: "-",
     female: "-",
   });
@@ -75,13 +78,13 @@ const Dashboard = ({ setSelectedKey }) => {
     },
     {
       name: "Social Pensioners",
-      value: data.withPension,
+      value: data.social,
       color: "#00dddd",
       icon: <FaUserCheck />,
     },
     {
       name: "Private Pensioners",
-      value: data.withoutPension,
+      value: data.private,
       color: "#8b0000",
       icon: <FaUserTimes />,
     },
@@ -107,14 +110,14 @@ const Dashboard = ({ setSelectedKey }) => {
       case 2: {
         setDrawerData({
           open: true,
-          data: { filter: "withPension", title: "Seniors with Pensions" },
+          data: { filter: "social", title: "Seniors with Pensions" },
         });
         break;
       }
       case 3: {
         setDrawerData({
           open: true,
-          data: { filter: "withoutPension", title: "Seniors without Pensions" },
+          data: { filter: "private", title: "Seniors without Pensions" },
         });
         break;
       }
@@ -168,10 +171,8 @@ const Dashboard = ({ setSelectedKey }) => {
         setData({
           barangay: 17,
           senior: _data?.length,
-          withPension: _data?.filter((e) => e?.pensionStatus?.withPension)
-            ?.length,
-          withoutPension: _data?.filter((e) => !e?.pensionStatus?.withPension)
-            ?.length,
+          social: _data?.filter((e) => e?.pensionerType == "social")?.length,
+          private: _data?.filter((e) => e?.pensionerType == "private")?.length,
           male: _data?.filter((e) => e?.gender == "male")?.length,
           female: _data?.filter((e) => e?.gender == "female")?.length,
         });
@@ -195,7 +196,7 @@ const Dashboard = ({ setSelectedKey }) => {
             return { name: json.barangay[i], value: 0 };
           });
 
-        setTotalPerBarangay(data?.data?.pieData);
+        setTotal(data.data?.pieData.reduce((p, n) => p + n.count, 0));
 
         data?.data?.pieData?.forEach((e) => {
           let index = arr.map((_) => _.name).indexOf(e._id);
@@ -246,24 +247,56 @@ const Dashboard = ({ setSelectedKey }) => {
           <Bar
             options={{
               responsive: true,
+              animations: {
+                y: {
+                  easing: "easeInOutElastic",
+                  from: (ctx) => {
+                    if (ctx.type === "data") {
+                      if (ctx.mode === "default" && !ctx.dropped) {
+                        ctx.dropped = true;
+                        return 0;
+                      }
+                    }
+                  },
+                },
+              },
               plugins: {
                 legend: {
                   display: false,
                 },
                 title: {
                   display: true,
-                  text: "Senior Citizen Bar Chart",
+                  text: "Senior Citizen Chart",
                   position: "top",
                   font: {
                     size: "20px",
                     family: "Sans-Serif",
                   },
                 },
+                tooltip: {
+                  callbacks: {
+                    label: (item) => item.dataset.data[item.dataIndex] + "%",
+                  },
+                },
               },
               scales: {
                 y: {
                   min: 0,
-                  max,
+                  max: 100,
+                  stacked: true,
+                  title: {
+                    display: true,
+                    text: "Total percentage (%)",
+                  },
+                  ticks: {
+                    callback: (_) => _ + "%",
+                  },
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: "Barangay in Kadingilan",
+                  },
                 },
               },
             }}
@@ -272,101 +305,22 @@ const Dashboard = ({ setSelectedKey }) => {
                 .fill()
                 .map((e, i) => json.barangay[i]),
               datasets: [
+                // {
+                //   label: "Seniors",
+                //   data: barData.map((e) => (e.value / total) * 100),
+                //   backgroundColor: "rgba(0,185,107,0.5)",
+                //   borderColor: "grey",
+                //   type: "line",
+                // },
                 {
                   label: "Seniors",
-                  data: barData.map((e) => e.value),
+                  data: barData.map((e) => (e.value / total) * 100),
                   backgroundColor: "rgba(0,185,107,0.5)",
+                  type: "bar",
                 },
               ],
             }}
           />
-          {/* <Row>
-            <Col
-              span={12}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-              }}
-            >
-              {_data.map((e, i) => (
-                <Cards
-                  key={e?.name + i}
-                  name={e?.name}
-                  value={e?.value}
-                  color={e?.color}
-                  icon={e?.icon}
-                  onClick={() => onClick(i)}
-                />
-              ))}
-            </Col>
-            {/* <Col spa={8}>
-              <Table
-                dataSource={seniors}
-                columns={[
-                  {
-                    title: "Name",
-                    render: (_, row) => (
-                      <Typography>
-                        {row?.name?.name}
-                        {row?.name?.middlename
-                          ? " " + row?.name?.middlename
-                          : ""}{" "}
-                        {row?.name?.lastname}
-                      </Typography>
-                    ),
-                  },
-                  {
-                    title: "Gender",
-                    dataIndex: "gender",
-                  },
-                  {
-                    title: "Age",
-                    render: (_, row) =>
-                      dayjs().diff(dayjs(row.dateOfBirth), "year"),
-                  },
-                ]}
-                title={() => (
-                  <Select
-                    showSearch
-                    placeholder="Select Barangay"
-                    optionFilterProp="children"
-                    onChange={(e) => {
-                      setSelectedBarangay(e);
-                      (async () => {
-                        let { data } = await axios.get("/api/barangay", {
-                          params: {
-                            mode: "fetch-seniors",
-                            barangay: e,
-                          },
-                        });
-
-                        if (data.status == 200) setSeniors(data?.data);
-                      })();
-                    }}
-                    value={selectedBarangay}
-                    style={{
-                      width: 150,
-                    }}
-                    filterOption={(input, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    options={Array(17)
-                      .fill({})
-                      .map((_, i) => {
-                        return {
-                          label: json.barangay[i],
-                          value: `Barangay ${i + 1}`,
-                        };
-                      })}
-                  />
-                )}
-              />
-            </Col> 
-          </Row> */}
         </Col>
       </Row>
       <Drawer
@@ -427,25 +381,14 @@ const Dashboard = ({ setSelectedKey }) => {
                   ),
                 },
                 {
-                  title: "Social Pensioner",
+                  title: "Pensioner Type",
                   width: 100,
                   align: "center",
                   render: (_, row) =>
-                    row?.pensionStatus?.withPension ? (
-                      <CheckOutlined style={{ color: "#42ba96" }} />
+                    row?.pensionerType == "social" ? (
+                      <Tag color="green">Social</Tag>
                     ) : (
-                      <CloseOutlined style={{ color: "#ff0000" }} />
-                    ),
-                },
-                {
-                  title: "Private Pensioner",
-                  width: 100,
-                  align: "center",
-                  render: (_, row) =>
-                    row?.withSSS ? (
-                      <CheckOutlined style={{ color: "#42ba96" }} />
-                    ) : (
-                      <CloseOutlined style={{ color: "#ff0000" }} />
+                      <Tag color="blue">Private</Tag>
                     ),
                 },
               ]}

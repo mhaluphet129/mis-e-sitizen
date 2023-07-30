@@ -96,7 +96,7 @@ export default async function handler(req, res) {
             return await Admin.findOne({ _id: id })
               .then(async (doc) => {
                 if (doc != null) {
-                  if (![null, "", undefined].includes(doc?.barangay)) {
+                  if (![null, "", undefined, "false"].includes(doc?.barangay)) {
                     res.json({
                       status: 201,
                       message: `Admin is already assign in barangay ${doc.barangay}`,
@@ -136,11 +136,30 @@ export default async function handler(req, res) {
               });
               docs.forEach((e) => {
                 const index = barangay.map((_) => _.name).indexOf(e?.barangay);
-                barangay[index].status = true;
+                if (index > -1) barangay[index].status = true;
               });
 
               res.json({ success: true, barangay });
             });
+          }
+
+          case "remove-admin": {
+            return await Admin.findOneAndUpdate(
+              { _id: req.query.id },
+              { $set: { barangay: false } }
+            )
+              .then(() => {
+                res.json({
+                  status: 200,
+                  message: `Remove successfully`,
+                });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
           }
         }
       });

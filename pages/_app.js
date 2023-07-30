@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ConfigProvider, message } from "antd";
 import Head from "next/head";
 import "../styles/main.styles.css";
 import axios from "axios";
+import json from "./assets/json/constant.json";
+import Cookies from "js-cookie";
 
 function MyApp({ Component, pageProps }) {
+  const [color, setColor] = useState("#00b96b");
+
   useEffect(() => {
-    (async () => {
-      let { data } = await axios.get("/api/etc", {
+    (async (_) => {
+      let { data } = await _.get("/api/etc", {
         params: {
           mode: "check-admin-exist",
         },
@@ -15,7 +19,7 @@ function MyApp({ Component, pageProps }) {
 
       if (data.status == 200)
         if (data.data?.length == 0) {
-          let res = await axios.post("/api/etc", {
+          let res = await _.post("/api/etc", {
             payload: {
               mode: "init",
             },
@@ -23,13 +27,19 @@ function MyApp({ Component, pageProps }) {
 
           if (res.data.status == 200) message.success(res.data.message);
         }
-    })();
+    })(axios);
+    setColor(
+      Cookies.get("barangay") != "false" && Cookies.get("barangay") != undefined
+        ? json["barangay-color-theme"][Cookies.get("barangay")]
+        : "#00b96b"
+    );
   }, []);
+
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#00b96b",
+          colorPrimary: color,
         },
       }}
     >

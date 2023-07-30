@@ -3,23 +3,22 @@ import { CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   Modal,
   Button,
-  Input,
   Form,
   Space,
   Radio,
   InputNumber,
   Tooltip,
-  Checkbox,
   Select,
   message,
 } from "antd";
 import axios from "axios";
 
+import json from "../../../assets/json/constant.json";
+
 const Filter = ({ open, close, setSenior, setFilter }) => {
   const [minAge, setMinAge] = useState(60);
   const [ageRange, setAgeRange] = useState({ from: 60, to: 90 });
-  const [withPension, setWithPension] = useState(false);
-  const [withSSS, setWithSSS] = useState(false);
+  const [pensionerType, setPensionerType] = useState(null);
   const [reset, setReset] = useState(false);
   const [form] = Form.useForm();
 
@@ -35,9 +34,11 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
           key="key 1"
           onClick={() => {
             setReset(true);
-            close();
             setSenior(null);
+            setPensionerType(null);
             setFilter({});
+            form.resetFields();
+            close();
           }}
         >
           Reset
@@ -64,8 +65,12 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
         colon={false}
         form={form}
         onFinish={async (val) => {
-          val = { ...val, ageRange, withPension, withSSS };
+          console.log(val);
+          val = { ...val, ageRange };
+
+          if (pensionerType != null) val = { ...val, pensionerType };
           setFilter(val);
+
           let { data } = await axios.get("/api/senior", {
             params: {
               mode: "filter-senior",
@@ -74,7 +79,6 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
           });
 
           if (data.status == 200) {
-            message.success("Search done.");
             close();
             setSenior(data.searchData);
           }
@@ -120,36 +124,45 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="With Pension:" name="withPension">
-          <Checkbox
+        <Form.Item label="Pensioner Type:" name="pensionerType">
+          <Select
             onChange={(e) => {
-              setWithPension(e.target.checked);
+              setPensionerType(e);
             }}
-          />
-        </Form.Item>
-        <Form.Item label="With SSS:" name="withPension">
-          <Checkbox
-            onChange={(e) => {
-              setWithSSS(e.target.checked);
-            }}
-          />
+          >
+            {["social", "private"].map((_) => (
+              <Select.Option key={_}>{_.toUpperCase()}</Select.Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item label="By Address:" name="address">
-          <Input />
-        </Form.Item>
-        <Form.Item label="By status:" name="status">
           <Select
             mode="multiple"
+            placeholder="You can select 1 or more"
             allowClear
             style={{
               width: "100%",
             }}
-            placeholder="You can select 1 or more"
           >
-            {/* sample only */}
-            <Select.Option key="active">Active</Select.Option>
-            <Select.Option key="deceased">Deceased</Select.Option>
-            <Select.Option key="health">Health</Select.Option>
+            {json.barangay.map((_) => (
+              <Select.Option key={_}>{_}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="By status:" name="status">
+          <Select
+            mode="multiple"
+            placeholder="You can select 1 or more"
+            allowClear
+            style={{
+              width: "100%",
+            }}
+          >
+            <Select.Option key="ACTIVE">Active</Select.Option>
+            <Select.Option key="DECEASED">Deceased</Select.Option>
+            <Select.Option key="ACTIVE_WITH_ILLNESS">
+              Actve with Illness
+            </Select.Option>
           </Select>
         </Form.Item>
       </Form>
