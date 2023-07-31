@@ -244,57 +244,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
-            <Typography.Title level={5} style={{ textAlign: "center" }}>
-              MOTHERS MAIDEN NAME
-            </Typography.Title>
-            <Form.Item label="First Name" name="mothername" required>
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        name: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Middle Name" name="mothermiddlename">
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        middlename: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Last Name" name="motherlastname" required>
-              <Input
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part1: {
-                      ...data.part1,
-                      mothersInfo: {
-                        ...data.part1.mothersInfo,
-                        lastname: e.target.value,
-                      },
-                    },
-                  })
-                }
-              />
-            </Form.Item>
+           
 
             <Form.Item label="Gender" name="gender" required>
               <Radio.Group
@@ -414,6 +364,58 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                       seniorInfo: {
                         ...data.part1.seniorInfo,
                         contactNumber: e,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+
+            <Typography.Title level={5} style={{ textAlign: "center" }}>
+              MOTHERS MAIDEN NAME
+            </Typography.Title>
+            <Form.Item label="First Name" name="mothername" required>
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        name: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Middle Name" name="mothermiddlename">
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        middlename: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Last Name" name="motherlastname" required>
+              <Input
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part1: {
+                      ...data.part1,
+                      mothersInfo: {
+                        ...data.part1.mothersInfo,
+                        lastname: e.target.value,
                       },
                     },
                   })

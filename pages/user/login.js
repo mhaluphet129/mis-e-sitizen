@@ -70,7 +70,7 @@ const Login = () => {
       <div className="main-login-info">
         <Typography.Title
           style={{
-            marginTop: "25vh",
+            marginTop: "23vh",
             color: "#de6b0d",
             fontFamily: "sans-serif",
           }}
@@ -78,7 +78,7 @@ const Login = () => {
           E-Sitizen
         </Typography.Title>
         <Typography.Title
-          level={5}
+          level={4}
           style={{
             fontStyle: "italic",
             textAlign: "center",
