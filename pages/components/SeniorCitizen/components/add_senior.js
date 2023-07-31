@@ -63,7 +63,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     part2: {
       sourceIncomeInfo: {
         receivedPension: null,
-        receivedPension6mos: [],
+        receivedPension6mos: "",
         sourceOfIncome: {
           salary: {
             status: false,
@@ -667,8 +667,22 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               </Radio.Group>
             </Form.Item>
             <Form.Item label="Pension/s receive in the past 6 months?">
-              <Checkbox.Group
-                options={[
+              <Radio.Group
+                style={{ display: "flex" }}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    part2: {
+                      ...data.part2,
+                      sourceIncomeInfo: {
+                        ...data.part2.sourceIncomeInfo,
+                        receivedPension6mos: e.target.value,
+                      },
+                    },
+                  })
+                }
+              >
+                {[
                   {
                     label: "DSWD Social Pension",
                     value: "dswd",
@@ -685,21 +699,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                     label: "AFPSLAI",
                     value: "afpslai",
                   },
-                ]}
-                style={{ display: "flex" }}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    part2: {
-                      ...data.part2,
-                      sourceIncomeInfo: {
-                        ...data.part2.sourceIncomeInfo,
-                        receivedPension6mos: e,
-                      },
-                    },
-                  })
-                }
-              />
+                ].map((_) => (
+                  <Radio value={_.value}>{_.label}</Radio>
+                ))}
+              </Radio.Group>
               <div style={{ display: "flex" }}>
                 Others:{" "}
                 <Input
@@ -1090,6 +1093,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     let updatedData = {
       //  PART 1
       name: { id, name, middlename, lastname, extensionName },
+      motherMaidenName: { ...data.part1.mothersInfo },
       gender,
       dateOfBirth,
       maritalStatus,

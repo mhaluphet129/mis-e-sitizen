@@ -67,7 +67,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
     part2: {
       sourceIncomeInfo: {
         receivedPension: null,
-        receivedPension6mos: [],
+        receivedPension6mos: "",
         sourceOfIncome: {
           salary: {
             status: false,
@@ -1267,14 +1267,13 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 res.data.data?.authorizedRepresentative ?? [],
             },
           },
-          // here
           part2: {
             sourceIncomeInfo: {
               receivedPension: res.data.data?.receivedPension,
               receivedPension6mos:
                 res.data.data?.receivedPension6mos != null
-                  ? [...res.data.data?.receivedPension6mos]
-                  : [],
+                  ? res.data.data?.receivedPension6mos
+                  : "",
               sourceOfIncome: {
                 ...res.data.data?.sourceOfIncome,
               },
@@ -1311,6 +1310,9 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
           guardianmiddlename: _?.guardian.middlename,
           guardianlastname: _?.guardian.lastname,
           guardianrelationship: _?.guardian.relationship,
+          mothername: _?.motherMaidenName.name,
+          mothermiddlename: _?.motherMaidenName.middlename,
+          motherlastname: _?.motherMaidenName.lastname,
         });
 
         form2.setFieldsValue({

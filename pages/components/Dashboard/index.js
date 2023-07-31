@@ -275,7 +275,8 @@ const Dashboard = ({ setSelectedKey }) => {
                 },
                 tooltip: {
                   callbacks: {
-                    label: (item) => item.dataset.data[item.dataIndex] + "%",
+                    label: (item) =>
+                      item.dataset.data[item.dataIndex]?.toFixed(2) + "%",
                   },
                 },
               },
