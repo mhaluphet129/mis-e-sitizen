@@ -126,7 +126,10 @@ const Profile = ({ id }) => {
         </div>
         <small>id: {name.id}</small>
         <Typography.Title level={5}>
-          {name?.name} {name?.middlename} {name.lastname}
+          {name?.name} {name?.middlename} {name.lastname}{" "}
+          {![null, undefined, ""].includes(name?.extensionName)
+            ? name.extensionName
+            : ""}
         </Typography.Title>
         <Typography>
           {dayjs(user.dateOfBirth).format("MMMM DD, YYYY")}{" "}

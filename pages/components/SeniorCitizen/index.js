@@ -54,15 +54,20 @@ const AdminPage = () => {
   const column = [
     {
       title: "Senior ID",
+      width: 100,
       render: (_, row) => <Typography>{row?.name?.id}</Typography>,
     },
     {
       title: "Name",
+      width: 300,
       render: (_, row) => (
         <Typography>
           {row?.name?.name}
           {row?.name?.middlename ? " " + row?.name?.middlename : ""}{" "}
-          {row?.name?.lastname}
+          {row?.name?.lastname}{" "}
+          {![null, undefined, ""].includes(row?.name?.extensionName)
+            ? row?.name?.extensionName
+            : ""}
         </Typography>
       ),
     },
@@ -99,7 +104,9 @@ const AdminPage = () => {
               ? "green"
               : row?.status == "DECEASED"
               ? "red"
-              : "yellow"
+              : row?.status == "ACTIVE_WITH_ILLNESS"
+              ? "yellow"
+              : null
           }
         >
           {row?.status}
@@ -115,6 +122,8 @@ const AdminPage = () => {
           <Tag color="green">Social</Tag>
         ) : row?.pensionerType == "private" ? (
           <Tag color="blue">Private</Tag>
+        ) : row?.pensionerType == "none" ? (
+          <Tag color="grey">For Validation</Tag>
         ) : (
           <Typography.Text type="secondary" italic>
             No Data
@@ -272,7 +281,7 @@ const AdminPage = () => {
         pagination={{ pageSize: 10 }}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
-        style={{ width: 1250 }}
+        style={{ width: 1300 }}
       />
       <RepresentativeList />
       <AddSenior

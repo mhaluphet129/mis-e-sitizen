@@ -41,6 +41,7 @@ const AddAdmin = ({ open, close, refresh }) => {
           }}
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+          name="email"
         />
         <Button
           onClick={async () => {

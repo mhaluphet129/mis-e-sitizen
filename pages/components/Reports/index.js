@@ -12,6 +12,7 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+import dayjs from "dayjs";
 
 class PDF extends React.Component {
   render() {
@@ -61,28 +62,23 @@ const Reports = () => {
           {
             title: "LAST",
             width: 200,
-            render: (_, row) => row?.lastname?.toUpperCase(),
+            render: (_, row) => row?.name?.lastname?.toUpperCase(),
           },
           {
             title: "FIRST",
             width: 200,
 
-            render: (_, row) => row?.firstname?.toUpperCase(),
+            render: (_, row) => row?.name?.name?.toUpperCase(),
           },
           {
             title: "MIDDLE",
             width: 200,
-            render: (_, row) => row?.middlename?.toUpperCase(),
+            render: (_, row) => row?.name?.middlename?.toUpperCase(),
           },
           {
             title: "EXT.",
             width: 50,
             render: (_, row) => row?.title?.toUpperCase(),
-          },
-          {
-            title: "HOUSE NO. / ZONE / PUROK / SITIO",
-            width: 180,
-            render: (_, row) => row?.address?.toUpperCase(),
           },
           {
             title: "BARANGAY",
@@ -98,7 +94,12 @@ const Reports = () => {
           {
             title: "AGE",
             width: 1,
-            render: (_, row) => row?.age,
+            render: (_, row) =>
+              dayjs().diff(
+                dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
+                "years",
+                false
+              ),
           },
           {
             title: "GENDER",

@@ -155,6 +155,8 @@ export default async function handler(req, res) {
               }
             }
 
+            if (req.query.barangay != null) query.barangay = req.query.barangay;
+
             await Senior.find(query)
               .then((e) => {
                 res.json({ status: 200, data: e });
@@ -275,9 +277,11 @@ export default async function handler(req, res) {
             delete req.body.payload.data.createdAt;
             delete req.body.payload.data.updatedAt;
             delete req.body.payload.data.__v;
-
+            console.log(req.body.payload.data);
             if (receivedPension6mos == "dswd")
               req.body.payload.data.pensionerType = "social";
+            else if (receivedPension6mos == "none")
+              req.body.payload.data.pensionerType = "none";
             else req.body.payload.data.pensionerType = "private";
 
             return await Senior.findOneAndUpdate(

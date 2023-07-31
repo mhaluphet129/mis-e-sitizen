@@ -201,6 +201,7 @@ let SeniorSchema = new mongoose.Schema(
 
 SeniorSchema.pre("validate", function (next) {
   if (this.receivedPension6mos == "dswd") this.pensionerType = "social";
+  else if (this.receivedPension6mos == "none") this.pensionerType = "none";
   else this.pensionerType = "social";
   next();
 });

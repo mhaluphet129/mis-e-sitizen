@@ -42,7 +42,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         name: "",
         middlename: "",
         lastname: "",
-        extension: "",
+        extensionName: "",
         gender: "male",
         dateOfBirth: "",
         maritalStatus: "married",
@@ -232,7 +232,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Extension" name="extension">
+            <Form.Item label="Extension" name="extensionName">
               <Input
                 style={{ width: 100, display: "flex" }}
                 onChange={(e) =>
@@ -242,7 +242,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                       ...data.part1,
                       seniorInfo: {
                         ...data.part1.seniorInfo,
-                        extension: e.target.value,
+                        extensionName: e.target.value,
                       },
                     },
                   })
@@ -711,6 +711,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     label: "AFPSLAI",
                     value: "afpslai",
                   },
+                  {
+                    label: "None",
+                    value: "none",
+                  },
                 ].map((_) => (
                   <Radio value={_.value}>{_.label}</Radio>
                 ))}
@@ -727,7 +731,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               </div>
             </Form.Item>
             <Form.Item
-              label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
+              label="What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
             for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable."
             >
               <Table
@@ -747,13 +751,16 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                         "internationalMember",
                         "fromFriends",
                         "fromGovernment",
+                        "others",
                       ];
+
+                      if (index == 7) return <></>;
                       return (
                         <Radio.Group
                           value={
                             data.part2.sourceIncomeInfo.sourceOfIncome[
                               keys[index]
-                            ].status ?? sourceIncome[keys[index]].status
+                            ]?.status ?? sourceIncome[keys[index]]?.status
                           }
                           onChange={(e) => {
                             setData({
@@ -795,6 +802,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                         "internationalMember",
                         "fromFriends",
                         "fromGovernment",
+                        "others",
                       ];
                       return (
                         <>
@@ -804,12 +812,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                             value={
                               data.part2.sourceIncomeInfo.sourceOfIncome[
                                 keys[index]
-                              ].value ?? sourceIncome[keys[index]].value
-                            }
-                            disabled={
-                              !data.part2.sourceIncomeInfo.sourceOfIncome[
-                                keys[index]
-                              ].status ?? !sourceIncome[keys[index]].status
+                              ]?.value ?? sourceIncome[keys[index]]?.value
                             }
                             onChange={(e) => {
                               setData({
@@ -846,13 +849,13 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   { question: "International Family Members/Relatives" },
                   { question: "Friends/Neighbors" },
                   { question: "Transfer from the Government" },
-                  // {
-                  //   question: (
-                  //     <>
-                  //       Others <Input style={{ width: 150 }} />
-                  //     </>
-                  //   ),
-                  // },
+                  {
+                    question: (
+                      <>
+                        Others <Input style={{ width: 150 }} />
+                      </>
+                    ),
+                  },
                 ]}
                 rowKey={(_) => _.question}
                 pagination={false}
@@ -1177,7 +1180,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       }
 
       Object.keys(data.part1.seniorInfo).forEach((e) => {
-        if (e != "extension" && data.part1.seniorInfo[e] == "")
+        if (e != "extensionName" && data.part1.seniorInfo[e] == "")
           missingFields.seniorInfo.push(e);
       });
       Object.keys(data.part1.mothersInfo).forEach((e) => {
@@ -1300,7 +1303,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
           name: _?.name.name,
           middlename: _?.name.middlename,
           lastname: _?.name.lastname,
-          extension: _?.name.extensionName,
+          extensionName: _?.name.extensionName,
           gender: _?.gender,
           dateOfBirth: dayjs(_?.dateOfBirth),
           maritalstatus: _?.maritalStatus,

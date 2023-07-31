@@ -110,14 +110,14 @@ const Dashboard = ({ setSelectedKey }) => {
       case 2: {
         setDrawerData({
           open: true,
-          data: { filter: "social", title: "Seniors with Pensions" },
+          data: { filter: "social", title: "Social Pensioner" },
         });
         break;
       }
       case 3: {
         setDrawerData({
           open: true,
-          data: { filter: "private", title: "Seniors without Pensions" },
+          data: { filter: "private", title: "Private Pensioner" },
         });
         break;
       }

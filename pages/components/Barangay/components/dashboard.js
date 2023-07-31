@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Col, Drawer, Spin, Table, Typography, Space } from "antd";
-import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
+import { Col, Drawer, Spin, Table, Typography, Space, Tag } from "antd";
 import Cards from "../../Dashboard/components/cards";
-import { BsFillHouseFill } from "react-icons/bs";
 import { FaUserCheck, FaUserTimes, FaMale, FaFemale } from "react-icons/fa";
 import { TbOld } from "react-icons/tb";
 import axios from "axios";
 import dayjs from "dayjs";
-import { Bar } from "react-chartjs-2";
+
 import {
   Chart,
   ArcElement,
@@ -19,7 +17,6 @@ import {
   Legend,
 } from "chart.js";
 import Cookies from "js-cookie";
-import json from "../../../assets/json/constant.json";
 
 Chart.register(
   ArcElement,
@@ -38,13 +35,11 @@ const Dashboard = ({ setSelectedKey }) => {
 
   const barangay = Cookies.get("barangay");
 
-  // ! update bar chart to percentage bar chart
-
   let [data, setData] = useState({
     barangay: "-",
     senior: "-",
-    withPension: "-",
-    withoutPension: "-",
+    social: "-",
+    private: "-",
     male: "-",
     female: "-",
   });
@@ -58,13 +53,13 @@ const Dashboard = ({ setSelectedKey }) => {
     },
     {
       name: "Social Pensioners",
-      value: data.withPension,
+      value: data.social,
       color: "#00dddd",
       icon: <FaUserCheck />,
     },
     {
       name: "Private Pensioners",
-      value: data.withoutPension,
+      value: data.private,
       color: "#8b0000",
       icon: <FaUserTimes />,
     },
@@ -80,35 +75,31 @@ const Dashboard = ({ setSelectedKey }) => {
   const onClick = (index) => {
     switch (index) {
       case 0: {
-        setSelectedKey("barangay");
+        setSelectedKey("senior");
         break;
       }
       case 1: {
-        setSelectedKey("senior");
+        setDrawerData({
+          open: true,
+          data: { filter: "social", title: "Social Pensioner" },
+        });
         break;
       }
       case 2: {
         setDrawerData({
           open: true,
-          data: { filter: "withPension", title: "Seniors with Pensions" },
+          data: { filter: "private", title: "Private Pensioner" },
         });
         break;
       }
       case 3: {
         setDrawerData({
           open: true,
-          data: { filter: "withoutPension", title: "Seniors without Pensions" },
-        });
-        break;
-      }
-      case 4: {
-        setDrawerData({
-          open: true,
           data: { filter: "male", title: "Male Seniors" },
         });
         break;
       }
-      case 5: {
+      case 4: {
         setDrawerData({
           open: true,
           data: { filter: "female", title: "Female Seniors" },
@@ -127,6 +118,7 @@ const Dashboard = ({ setSelectedKey }) => {
           params: {
             mode: "dash-card",
             filter: drawerData?.data?.filter,
+            barangay,
           },
         });
 
@@ -152,10 +144,8 @@ const Dashboard = ({ setSelectedKey }) => {
         setData({
           barangay: 17,
           senior: _data?.length,
-          withPension: _data?.filter((e) => e?.pensionStatus?.withPension)
-            ?.length,
-          withoutPension: _data?.filter((e) => !e?.pensionStatus?.withPension)
-            ?.length,
+          social: _data?.filter((e) => e?.pensionerType == "social")?.length,
+          private: _data?.filter((e) => e?.pensionerType == "private")?.length,
           male: _data?.filter((e) => e?.gender == "male")?.length,
           female: _data?.filter((e) => e?.gender == "female")?.length,
         });
@@ -244,25 +234,14 @@ const Dashboard = ({ setSelectedKey }) => {
                   ),
                 },
                 {
-                  title: "Social Pensioner",
+                  title: "Pensioner Type",
                   width: 100,
                   align: "center",
                   render: (_, row) =>
-                    row?.pensionStatus?.withPension ? (
-                      <CheckOutlined style={{ color: "#42ba96" }} />
+                    row?.pensionerType == "social" ? (
+                      <Tag color="green">Social</Tag>
                     ) : (
-                      <CloseOutlined style={{ color: "#ff0000" }} />
-                    ),
-                },
-                {
-                  title: "Private Pensioner",
-                  width: 100,
-                  align: "center",
-                  render: (_, row) =>
-                    row?.withSSS ? (
-                      <CheckOutlined style={{ color: "#42ba96" }} />
-                    ) : (
-                      <CloseOutlined style={{ color: "#ff0000" }} />
+                      <Tag color="blue">Private</Tag>
                     ),
                 },
               ]}

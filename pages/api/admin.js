@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             let currentAdmin = await Admin.find({ email });
 
             if (currentAdmin.length > 0) {
-              res.json({
+              return res.json({
                 status: 409,
                 message: "This email is already registered.",
               });

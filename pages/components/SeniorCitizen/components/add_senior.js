@@ -38,7 +38,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
         name: "",
         middlename: "",
         lastname: "",
-        extension: "",
+        extensionName: "",
         gender: "male",
         dateOfBirth: "",
         maritalStatus: "married",
@@ -227,7 +227,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                 }
               />
             </Form.Item>
-            <Form.Item label="Extension" name="extension">
+            <Form.Item label="Extension" name="extensionName">
               <Input
                 style={{ width: 100, display: "flex" }}
                 onChange={(e) =>
@@ -237,14 +237,13 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                       ...data.part1,
                       seniorInfo: {
                         ...data.part1.seniorInfo,
-                        extension: e.target.value,
+                        extensionName: e.target.value,
                       },
                     },
                   })
                 }
               />
             </Form.Item>
-           
 
             <Form.Item label="Gender" name="gender" required>
               <Radio.Group
@@ -701,6 +700,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                     label: "AFPSLAI",
                     value: "afpslai",
                   },
+                  {
+                    label: "None",
+                    value: "none",
+                  },
                 ].map((_) => (
                   <Radio value={_.value}>{_.label}</Radio>
                 ))}
@@ -719,7 +722,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               </div>
             </Form.Item>
             <Form.Item
-              label=" What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
+              label="What are your Sources of Income and Financial Support in the past 6 months? (other than your pension/s)? you ma y read the options. 
             for each options. For each source, indicate if it is regular then  record the estimated amount of income and devide by the household size, if applicable."
             >
               <Table
@@ -730,43 +733,48 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                   },
                   {
                     title: "B. Is it regular?",
-                    render: (_, row, index) => (
-                      <Radio.Group
-                        onChange={(e) => {
-                          let keys = [
-                            "salary",
-                            "entrep",
-                            "householdMember",
-                            "domesticMember",
-                            "internationalMember",
-                            "fromFriends",
-                            "fromGovernment",
-                          ];
-                          setData({
-                            ...data,
-                            part2: {
-                              ...data.part2,
-                              sourceIncomeInfo: {
-                                ...data.part2.sourceIncomeInfo,
-                                sourceOfIncome: {
-                                  ...data.part2.sourceIncomeInfo.sourceOfIncome,
-                                  [keys[index]]: {
-                                    status: e.target.value,
-                                    value: !e.target.value
-                                      ? 0
-                                      : data.part2.sourceIncomeInfo
-                                          .sourceOfIncome[keys[index]].value,
+                    render: (_, row, index) => {
+                      if (index == 7) return <></>;
+                      return (
+                        <Radio.Group
+                          onChange={(e) => {
+                            let keys = [
+                              "salary",
+                              "entrep",
+                              "householdMember",
+                              "domesticMember",
+                              "internationalMember",
+                              "fromFriends",
+                              "fromGovernment",
+                              "others",
+                            ];
+                            setData({
+                              ...data,
+                              part2: {
+                                ...data.part2,
+                                sourceIncomeInfo: {
+                                  ...data.part2.sourceIncomeInfo,
+                                  sourceOfIncome: {
+                                    ...data.part2.sourceIncomeInfo
+                                      .sourceOfIncome,
+                                    [keys[index]]: {
+                                      status: e.target.value,
+                                      value: !e.target.value
+                                        ? 0
+                                        : data.part2.sourceIncomeInfo
+                                            .sourceOfIncome[keys[index]].value,
+                                    },
                                   },
                                 },
                               },
-                            },
-                          });
-                        }}
-                      >
-                        <Radio value={false}>No</Radio>
-                        <Radio value={true}>Yes</Radio>
-                      </Radio.Group>
-                    ),
+                            });
+                          }}
+                        >
+                          <Radio value={false}>No</Radio>
+                          <Radio value={true}>Yes</Radio>
+                        </Radio.Group>
+                      );
+                    },
                   },
                   {
                     title: "C. Income",
@@ -779,6 +787,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                         "internationalMember",
                         "fromFriends",
                         "fromGovernment",
+                        "others",
                       ];
                       return (
                         <>
@@ -788,12 +797,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                             value={
                               data.part2.sourceIncomeInfo.sourceOfIncome[
                                 keys[index]
-                              ].value ?? sourceIncome[keys[index]].value
-                            }
-                            disabled={
-                              !data.part2.sourceIncomeInfo.sourceOfIncome[
-                                keys[index]
-                              ].status ?? !sourceIncome[keys[index]].status
+                              ]?.value ?? sourceIncome[keys[index]]?.value
                             }
                             onChange={(e) => {
                               let keys = [
@@ -1169,7 +1173,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       }
 
       Object.keys(data.part1.seniorInfo).forEach((e) => {
-        if (e != "extension" && data.part1.seniorInfo[e] == "")
+        if (e != "extensionName" && data.part1.seniorInfo[e] == "")
           missingFields.seniorInfo.push(e);
       });
 
