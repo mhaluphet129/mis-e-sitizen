@@ -404,7 +404,7 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
               <InputNumber
                 style={{ width: 200, display: "flex" }}
                 prefix="+63"
-                maxLength={9}
+                maxLength={10}
                 controls={false}
                 onChange={(e) =>
                   setData({
