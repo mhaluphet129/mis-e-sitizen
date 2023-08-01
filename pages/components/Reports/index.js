@@ -33,7 +33,7 @@ const Reports = () => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ flex: 1, marginRight: "10px" }}>
-          <img src="/logo.png" style={{ height: "50px", width: "50px" }} />
+          <img src="/logo.png" style={{ height: "100px", width: "100px" }} />
         </div>
         <div style={{ flex: 2, textAlign: "center" }}>
           <Typography.Title level={5} style={{ margin: 0 }}>
@@ -47,7 +47,7 @@ const Reports = () => {
           </Typography.Title>
         </div>
         <div style={{ flex: 1,  marginLeft: "10px" }}>
-          <img src="/logo-mswd.png" style={{ height: "50px", width: "50px" }} />
+          <img src="/logo-mswd.png" style={{ height: "90px", width: "90px" }} />
         </div>
       </div>
       <br />
@@ -85,11 +85,7 @@ const Reports = () => {
             width: 200,
             render: (_, row) => row?.name?.middlename?.toUpperCase(),
           },
-          {
-            title: "EXT.",
-            width: 50,
-            render: (_, row) => row?.title?.toUpperCase(),
-          },
+         
           {
             title: "BARANGAY",
             width: 180,
@@ -115,6 +111,11 @@ const Reports = () => {
             title: "GENDER",
             width: 1,
             render: (_, row) => row?.gender?.toUpperCase(),
+          },
+          {
+            title: "ID",
+            width: 50,
+            render: (_, row) => row?.title?.id?.toUpperCase(),
           },
         ]}
         bordered
