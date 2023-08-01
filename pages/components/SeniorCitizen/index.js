@@ -59,7 +59,7 @@ const AdminPage = () => {
     },
     {
       title: "Name",
-      width: 300,
+      width: 270,
       render: (_, row) => (
         <Typography>
           {row?.name?.name}
@@ -73,6 +73,7 @@ const AdminPage = () => {
     },
     {
       title: "Barangay",
+      width: 130,
       render: (_, row) => <Typography>{row?.barangay}</Typography>,
     },
     {
