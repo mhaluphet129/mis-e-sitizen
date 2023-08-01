@@ -32,7 +32,7 @@ const Reports = () => {
   const CustomTable1 = () => (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ flex: 1, textAlign: "left", marginRight: "10px" }}>
+        <div style={{ flex: 1, marginRight: "10px" }}>
           <img src="/logo.png" style={{ height: "50px", width: "50px" }} />
         </div>
         <div style={{ flex: 2, textAlign: "center" }}>
@@ -46,8 +46,8 @@ const Reports = () => {
             Municipality of Kadingilan
           </Typography.Title>
         </div>
-        <div style={{ flex: 1, textAlign: "right", marginLeft: "10px" }}>
-          <img src="/logo.png" style={{ height: "50px", width: "50px" }} />
+        <div style={{ flex: 1,  marginLeft: "10px" }}>
+          <img src="/logo-mswd.png" style={{ height: "50px", width: "50px" }} />
         </div>
       </div>
       <br />
