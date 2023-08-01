@@ -31,11 +31,8 @@ const Reports = () => {
 
   const CustomTable1 = () => (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ flex: 1, marginRight: "10px" }}>
-          <img src="/logo.png" style={{ height: "100px", width: "100px" }} />
-        </div>
-        <div style={{ flex: 2, textAlign: "center" }}>
+    
+        <div style={{ flex: 2, textAlign: "center", justifyContent: "left"}}>
           <Typography.Title level={5} style={{ margin: 0 }}>
             Republic of the Philippines
           </Typography.Title>
@@ -46,17 +43,21 @@ const Reports = () => {
             Municipality of Kadingilan
           </Typography.Title>
         </div>
-        <div style={{ flex: 1,  marginLeft: "10px" }}>
-          <img src="/logo-mswd.png" style={{ height: "90px", width: "90px" }} />
-        </div>
-      </div>
       <br />
+      <Typography.Title
+        level={4}
+        style={{ margin: 0, marginBottom: 0, textAlign: "center" }}
+      >
+        SOCIAL PENSION PROGRAM POTENTIAL LIST OF BENEFICIARIES/WAITLISTED 
+      </Typography.Title>
       <Typography.Title
         level={4}
         style={{ margin: 0, marginBottom: 10, textAlign: "center" }}
       >
-        MUNICIPAL SOCIAL WELFARE AND DEVELOPMENT OFFICE
+        Control Number: Kadingilan-2023-2024
+       
       </Typography.Title>
+     
       <Table
         dataSource={seniors}
         className="myTable"
@@ -85,14 +86,14 @@ const Reports = () => {
             width: 200,
             render: (_, row) => row?.name?.middlename?.toUpperCase(),
           },
-         
+        
           {
             title: "BARANGAY",
             width: 180,
             render: (_, row) => row?.barangay?.toUpperCase(),
           },
           {
-            title: "BIRTHDATE (DAY/MONTH/YEAR)",
+            title: "BIRTHDATE ",
             width: 1,
             render: (_, row) =>
               moment(row?.dateOfBirth?.toUpperCase()).format("DD/MM/YYYY"),
@@ -107,16 +108,23 @@ const Reports = () => {
                 false
               ),
           },
+          
           {
             title: "GENDER",
             width: 1,
             render: (_, row) => row?.gender?.toUpperCase(),
           },
           {
-            title: "ID",
+            title: "CIVIL STATUS",
             width: 50,
-            render: (_, row) => row?.title?.id?.toUpperCase(),
+            render: (_, row) => row?.maritalStatus?.toUpperCase(),
           },
+          {
+            title: "OSCA ID NO.",
+            width: 50,
+            render: (_, row) => row?.id?.toUpperCase(),
+          },
+   
         ]}
         bordered
       />
