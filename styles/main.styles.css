@@ -32,3 +32,8 @@ thead {
   size: legal;
   margin: 0.5in;
 }
+
+.barangay-label {
+  font-size: 24px;
+}
+

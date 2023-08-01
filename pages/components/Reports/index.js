@@ -31,15 +31,25 @@ const Reports = () => {
 
   const CustomTable1 = () => (
     <div>
-      <Typography.Title level={5} style={{ margin: 0, textAlign: "center" }}>
-        Republic of the Philippines
-      </Typography.Title>
-      <Typography.Title level={5} style={{ margin: 0, textAlign: "center" }}>
-        Province of Bukidnon
-      </Typography.Title>
-      <Typography.Title level={5} style={{ margin: 0, textAlign: "center" }}>
-        Municipality of Kadingilan
-      </Typography.Title>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ flex: 1, textAlign: "left", marginRight: "10px" }}>
+          <img src="/logo.png" style={{ height: "50px", width: "50px" }} />
+        </div>
+        <div style={{ flex: 2, textAlign: "center" }}>
+          <Typography.Title level={5} style={{ margin: 0 }}>
+            Republic of the Philippines
+          </Typography.Title>
+          <Typography.Title level={5} style={{ margin: 0 }}>
+            Province of Bukidnon
+          </Typography.Title>
+          <Typography.Title level={5} style={{ margin: 0 }}>
+            Municipality of Kadingilan
+          </Typography.Title>
+        </div>
+        <div style={{ flex: 1, textAlign: "right", marginLeft: "10px" }}>
+          <img src="/logo.png" style={{ height: "50px", width: "50px" }} />
+        </div>
+      </div>
       <br />
       <Typography.Title
         level={4}

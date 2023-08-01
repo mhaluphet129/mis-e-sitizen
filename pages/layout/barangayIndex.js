@@ -178,7 +178,7 @@ const Header = () => {
           paddingInline: 20,
         }}
       >
-        <Tag color={color}>{barangay}</Tag>
+        <Tag color={color} className="barangay-label" >{barangay} </Tag>
         <Space>
           <Tooltip title="Profile Settings">
             <Button
