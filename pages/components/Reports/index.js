@@ -122,7 +122,7 @@ const Reports = () => {
           {
             title: "OSCA ID NO.",
             width: 50,
-            render: (_, row) => row?.id?.toUpperCase(),
+            render: (_, row) => row?.name.id?.toUpperCase(),
           },
    
         ]}
