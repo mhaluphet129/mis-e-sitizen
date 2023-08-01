@@ -123,7 +123,10 @@ const History = ({ open, close, id }) => {
   return (
     <Drawer
       open={open}
-      onClose={close}
+      onClose={() => {
+        setMode("Table");
+        close();
+      }}
       placement="bottom"
       height="100%"
       title="History"
@@ -139,6 +142,7 @@ const History = ({ open, close, id }) => {
           <Segmented
             options={["Table", "Timeline", "Personal Info"]}
             onChange={(e) => setMode(e)}
+            value={mode}
           />
           {/* <div>
               Date Range: <DatePicker.RangePicker format="MMM DD YYYY" />

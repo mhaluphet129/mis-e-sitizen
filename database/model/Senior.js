@@ -61,6 +61,9 @@ let SeniorSchema = new mongoose.Schema(
   // IDENTIFICATION
   {
     name: nameSchema,
+    profileImage: {
+      type: String,
+    },
     gender: {
       type: String,
       required: true,

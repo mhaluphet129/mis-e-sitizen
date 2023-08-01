@@ -15,7 +15,7 @@ import axios from "axios";
 
 import json from "../../../assets/json/constant.json";
 
-const Filter = ({ open, close, setSenior, setFilter }) => {
+const Filter = ({ open, close, setSenior }) => {
   const [minAge, setMinAge] = useState(60);
   const [ageRange, setAgeRange] = useState({ from: 60, to: 90 });
   const [pensionerType, setPensionerType] = useState(null);
@@ -36,7 +36,6 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
             setReset(true);
             setSenior(null);
             setPensionerType(null);
-            setFilter({});
             form.resetFields();
             close();
           }}
@@ -69,7 +68,6 @@ const Filter = ({ open, close, setSenior, setFilter }) => {
           val = { ...val, ageRange };
 
           if (pensionerType != null) val = { ...val, pensionerType };
-          setFilter(val);
 
           let { data } = await axios.get("/api/senior", {
             params: {

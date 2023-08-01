@@ -17,11 +17,16 @@ import {
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import axios from "axios";
 
+// ICONS
 import { FcBullish } from "react-icons/fc";
 import { TbOld, TbReport } from "react-icons/tb";
+import { FaHouseUser } from "react-icons/fa";
+
 import SeniorCitizenPage from "../components/SeniorCitizen";
 import Dashboard from "../components/Barangay/components/dashboard";
 import UpdatePassword from "../components/Admin/components/update_password";
+import Reports from "../components/Barangay/components/Report";
+import TabView from "../components/Barangay/components/TabView";
 import Cookies from "js-cookie";
 import { PageHeader } from "@ant-design/pro-layout";
 import json from "../assets/json/constant.json";
@@ -40,6 +45,11 @@ const Sider = ({ selectedIndex, selectedKey }) => {
       label: "Senior",
       key: "senior",
       icon: <TbOld />,
+    },
+    {
+      label: "Barangay",
+      key: "barangay",
+      icon: <FaHouseUser />,
     },
     {
       label: "Report",
@@ -178,7 +188,9 @@ const Header = () => {
           paddingInline: 20,
         }}
       >
-        <Tag color={color} className="barangay-label" >{barangay} </Tag>
+        <Tag color={color} className="barangay-label">
+          {barangay}
+        </Tag>
         <Space>
           <Tooltip title="Profile Settings">
             <Button
@@ -231,9 +243,11 @@ const Content = ({ selectedKey, setSelectedKey }) => {
         {selectedKey == "dashboard" ? (
           <Dashboard setSelectedKey={setSelectedKey} />
         ) : null}
-
         {selectedKey == "senior" ? <SeniorCitizenPage /> : null}
-        {/* {selectedKey == "report" ? <Reports /> : null} */}
+        {selectedKey == "barangay" ? (
+          <TabView barangay={barangay} hideExtra={true} refresh={() => {}} />
+        ) : null}
+        {selectedKey == "report" ? <Reports /> : null}
       </PageHeader>
     </div>
   );

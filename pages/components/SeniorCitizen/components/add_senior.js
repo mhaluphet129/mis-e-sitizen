@@ -7,7 +7,6 @@ import {
   Space,
   DatePicker,
   InputNumber,
-  Checkbox,
   Button,
   Select,
   message,
@@ -16,20 +15,26 @@ import {
   Steps,
   theme,
   Tooltip,
+  Image,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
+import { PickerDropPane } from "filestack-react";
 
 import JASON from "../../../assets/json/constant.json";
 
-const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
+const AddSenior = ({ open, close, refresh }) => {
   const { token } = theme.useToken();
   const [authorizedRepresentative, setAuthorizedRepresentative] = useState([]);
   const [_label, _setLabel] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [relationship, setRelationship] = useState("");
   const [current, setCurrent] = useState(0);
+  const [othersContent, setOthersContent] = useState("");
+  const [othersIncome, setOthersIncome] = useState("");
+  const [incomeIn6mos, setIncomeIn6mos] = useState("");
+  const [image, setImage] = useState(null);
 
   const [data, setData] = useState({
     part1: {
@@ -123,6 +128,41 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
     },
   });
 
+  const description = [
+    {
+      label: "Food",
+      value: "food",
+    },
+    {
+      label: "Medicines and Vitamins",
+      value: "medicines",
+    },
+    {
+      label: "Health check-up and other hospital/medical services",
+      value: "health",
+    },
+    {
+      label: "Clothing",
+      value: "clothing",
+    },
+    {
+      label: "Utilities (e.g. electric and water bills)",
+      value: "utilities",
+    },
+    {
+      label: "Debt payment",
+      value: "debt",
+    },
+    {
+      label: "Livelihood/Entreprenurial Activities",
+      value: "activities",
+    },
+    {
+      label: "Others",
+      value: "others",
+    },
+  ];
+
   const steps = [
     {
       title: "I. IDENTIFICATION",
@@ -156,6 +196,52 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
             >
               SENIOR INFORMATION
             </Typography.Title>
+            <Form.Item label="Image Profile" style={{ marginTop: 20 }}>
+              <div
+                style={{ width: 255, cursor: "pointer" }}
+                id="picker-container"
+              >
+                {image == null || image == "" ? (
+                  <PickerDropPane
+                    apikey={"AKXY0x47MRoyw21abVGzJz"}
+                    onUploadDone={(res) => setImage(res?.filesUploaded[0]?.url)}
+                    pickerOptions={{ container: "picker-container" }}
+                  />
+                ) : null}
+              </div>
+
+              {image != null && image != "" ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    position: "relative",
+                    width: 200,
+                  }}
+                >
+                  <Image src={image} alt="random_photo" width="100%" />
+                  <Button
+                    style={{
+                      padding: 0,
+                      fontSize: 15,
+                      position: "absolute",
+                      width: 32,
+                      borderRadius: "100%",
+                      aspectRatio: 1 / 1,
+                      right: 5,
+                      top: 5,
+                    }}
+                    danger
+                    onClick={() => {
+                      setImage(null);
+                    }}
+                  >
+                    X
+                  </Button>
+                </div>
+              ) : null}
+            </Form.Item>
             <Form.Item
               label="Senior Citizen ID No."
               name="id"
@@ -708,16 +794,19 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                   <Radio value={_.value}>{_.label}</Radio>
                 ))}
               </Radio.Group>
+            </Form.Item>
+            <Form.Item noStyle>
               <div style={{ display: "flex" }}>
-                Others:{" "}
                 <Input
+                  prefix={
+                    <Typography.Text type="secondary">Others: </Typography.Text>
+                  }
                   style={{
-                    width: 100,
-                    border: "none",
-                    borderBottom: "1px solid grey",
+                    width: 200,
                     background: "#eee",
                     borderRadius: 0,
                   }}
+                  onChange={(e) => setIncomeIn6mos(e.target.value)}
                 />
               </div>
             </Form.Item>
@@ -843,13 +932,18 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
                   { question: "International Family Members/Relatives" },
                   { question: "Friends/Neighbors" },
                   { question: "Transfer from the Government" },
-                  // {
-                  //   question: (
-                  //     <>
-                  //       Others <Input style={{ width: 150 }} />
-                  //     </>
-                  //   ),
-                  // },
+                  {
+                    question: (
+                      <>
+                        Others{" "}
+                        <Input
+                          style={{ width: 150 }}
+                          onChange={(e) => setOthersIncome(e.target.value)}
+                          value={othersIncome}
+                        />
+                      </>
+                    ),
+                  },
                 ]}
                 rowKey={(_) => _.question}
                 pagination={false}
@@ -1065,16 +1159,42 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
           <div
             style={{
               backgroundColor: "#eee",
-              paddingLeft: 20,
-              paddingRight: 20,
             }}
           >
-            <Form.Item label="Where do you spend your Social Pension? ">
-              <Input.TextArea
+            <Form.Item label="Where do you spend your Social Pension?">
+              <Radio.Group
                 onChange={(e) =>
                   setData({ ...data, part3: { description1: e.target.value } })
                 }
-              />
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  paddingBottom: 10,
+                }}
+              >
+                {description.map((e) => (
+                  <Radio value={e.value} style={{ paddingBottom: 4 }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {e.label}
+                      {(data.part3.description1 == "others" ||
+                        !description
+                          .map((e) => e.value)
+                          .includes(data.part3.description1)) &&
+                        e.value == "others" && (
+                          <Input
+                            style={{ marginLeft: 10 }}
+                            onChange={(e) => setOthersContent(e.target.value)}
+                            value={
+                              othersContent != ""
+                                ? othersContent
+                                : data.part3.description1
+                            }
+                          />
+                        )}
+                    </div>
+                  </Radio>
+                ))}
+              </Radio.Group>
             </Form.Item>
           </div>
         </Form>
@@ -1096,10 +1216,16 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       barangay,
     } = data.part1.seniorInfo;
 
+    if (othersIncome != "")
+      data.part2.sourceIncomeInfo.sourceOfIncome.others.status = othersIncome;
+    if (incomeIn6mos != "")
+      data.part2.sourceIncomeInfo.receivedPension6mos = incomeIn6mos;
+
     let updatedData = {
       //  PART 1
       name: { id, name, middlename, lastname, extensionName },
       motherMaidenName: { ...data.part1.mothersInfo },
+      profileImage: image,
       gender,
       dateOfBirth,
       maritalStatus,
@@ -1116,7 +1242,10 @@ const AddSenior = ({ open, close, refresh, editMode, seniorInfo }) => {
       isPwd: { ...data.part2.isPwd },
       hasIllness: { ...data.part2.hasIllness },
       mealsPerDay: data.part2.mealsPerDay,
-      description: data.part3.description1,
+      description:
+        data.part3.description1 == "others"
+          ? othersContent
+          : data.part3.description1,
     };
 
     let res2 = await axios.get("/api/senior", {

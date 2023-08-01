@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import moment from "moment";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
 class PDF extends React.Component {
   render() {
@@ -25,6 +26,8 @@ const Reports = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [seniors, setSeniors] = useState([]);
   const ref = useRef();
+
+  const barangay = Cookies.get("barangay");
 
   const handlePrint = useReactToPrint({
     content: () => ref.current,
@@ -182,6 +185,7 @@ const Reports = () => {
               let { data } = await axios.get("/api/senior", {
                 params: {
                   mode: "fetch-all",
+                  barangay,
                 },
               });
 

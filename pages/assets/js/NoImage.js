@@ -4,7 +4,7 @@ const NoImage = () => {
   return (
     <div
       style={{
-        width: "35%",
+        width: "100%",
         aspectRatio: "1/1",
         display: "flex",
         justifyContent: "center",

@@ -20,7 +20,7 @@ import NewAdminBarangay from "./NewAdminBarangay";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TabView = ({ barangay, refresh }) => {
+const TabView = ({ barangay, refresh, hideExtra }) => {
   const [seniors, setSeniors] = useState([]);
   const [openAddBarangayAdmin, setOpenBarangayAdmin] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState(null);
@@ -115,41 +115,43 @@ const TabView = ({ barangay, refresh }) => {
           setTrigger(trigger + 1);
         }}
       />
-      <Row
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography.Title level={3}>{barangay}</Typography.Title>
-        <div>
-          {currentAdmin != null ? (
-            currentAdmin.name != null ? (
-              <Space>
-                {currentAdmin.name + " " + currentAdmin.lastname}
-                <Popconfirm
-                  title="Are you sure?"
-                  okText="Confirm"
-                  onConfirm={handleRemoveAdmin}
-                >
-                  <DeleteOutlined
-                    style={{
-                      fontSize: 20,
-                      color: "rgba(255,0,0,0.5)",
-                    }}
-                  />
-                </Popconfirm>
-              </Space>
+      {!hideExtra && (
+        <Row
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography.Title level={3}>{barangay}</Typography.Title>
+          <div>
+            {currentAdmin != null ? (
+              currentAdmin.name != null ? (
+                <Space>
+                  {currentAdmin.name + " " + currentAdmin.lastname}
+                  <Popconfirm
+                    title="Are you sure?"
+                    okText="Confirm"
+                    onConfirm={handleRemoveAdmin}
+                  >
+                    <DeleteOutlined
+                      style={{
+                        fontSize: 20,
+                        color: "rgba(255,0,0,0.5)",
+                      }}
+                    />
+                  </Popconfirm>
+                </Space>
+              ) : (
+                <Typography.Text type="secondary">Not Set</Typography.Text>
+              )
             ) : (
-              <Typography.Text type="secondary">Not Set</Typography.Text>
-            )
-          ) : (
-            <Button onClick={() => setOpenBarangayAdmin(true)}>
-              ADD ADMIN
-            </Button>
-          )}
-        </div>
-      </Row>
+              <Button onClick={() => setOpenBarangayAdmin(true)}>
+                ADD ADMIN
+              </Button>
+            )}
+          </div>
+        </Row>
+      )}
       <Row>
         <Table
           style={{
@@ -221,6 +223,7 @@ const TabView = ({ barangay, refresh }) => {
         <div
           style={{
             width: 300,
+            marginLeft: 20,
           }}
         >
           {![active, deceased, activeWithIllness].every((e) => e == 0) ? (

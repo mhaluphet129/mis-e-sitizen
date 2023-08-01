@@ -11,8 +11,6 @@ import {
   Modal,
 } from "antd";
 import {
-  CheckOutlined,
-  CloseOutlined,
   EditOutlined,
   EyeOutlined,
   FileAddOutlined,
@@ -42,7 +40,6 @@ const AdminPage = () => {
   const timerRef = useRef(null);
   const [openHistory, setOpenHistory] = useState({ open: false, data: null });
   const [openModal, setOpenModal] = useState({ open: false, id: null });
-  const [filter, setFilter] = useState({});
   const [openRepresentative, setOpenRepresentatives] = useState({
     open: false,
     data: null,
@@ -282,7 +279,7 @@ const AdminPage = () => {
         pagination={{ pageSize: 10 }}
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
-        style={{ width: 1300 }}
+        style={{ width: 1400 }}
       />
       <RepresentativeList />
       <AddSenior
@@ -307,7 +304,6 @@ const AdminPage = () => {
           if (data != null) setSeniors(data);
           else setTrigger(trigger + 1);
         }}
-        setFilter={(e) => setFilter(e)}
       />
       <History
         open={openHistory.open}

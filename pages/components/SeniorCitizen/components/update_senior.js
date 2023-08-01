@@ -7,7 +7,6 @@ import {
   Space,
   DatePicker,
   InputNumber,
-  Checkbox,
   Button,
   Select,
   message,
@@ -15,11 +14,13 @@ import {
   Table,
   Steps,
   Tooltip,
+  Image,
   theme,
 } from "antd";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
+import { PickerDropPane } from "filestack-react";
 
 import JASON from "../../../assets/json/constant.json";
 
@@ -34,6 +35,12 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
   const [form2] = Form.useForm();
 
   const [sourceIncome, setSourceIncome] = useState();
+  const [othersContent, setOthersContent] = useState("");
+  const [othersIncome, setOthersIncome] = useState("");
+  const [incomeIn6mos, setIncomeIn6mos] = useState("");
+  const [image, setImage] = useState(null);
+
+  const [initiateDone, setInitiateDone] = useState(false);
 
   const [data, setData] = useState({
     part1: {
@@ -127,6 +134,41 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
     },
   });
 
+  const description = [
+    {
+      label: "Food",
+      value: "food",
+    },
+    {
+      label: "Medicines and Vitamins",
+      value: "medicines",
+    },
+    {
+      label: "Health check-up and other hospital/medical services",
+      value: "health",
+    },
+    {
+      label: "Clothing",
+      value: "clothing",
+    },
+    {
+      label: "Utilities (e.g. electric and water bills)",
+      value: "utilities",
+    },
+    {
+      label: "Debt payment",
+      value: "debt",
+    },
+    {
+      label: "Livelihood/Entreprenurial Activities",
+      value: "activities",
+    },
+    {
+      label: "Others",
+      value: "others",
+    },
+  ];
+
   const steps = [
     {
       title: "I. IDENTIFICATION",
@@ -161,6 +203,52 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             >
               SENIOR INFORMATION
             </Typography.Title>
+            <Form.Item label="Image Profile" style={{ marginTop: 20 }}>
+              <div
+                style={{ width: 255, cursor: "pointer" }}
+                id="picker-container"
+              >
+                {(image == null || image == "") && initiateDone ? (
+                  <PickerDropPane
+                    apikey={"AKXY0x47MRoyw21abVGzJz"}
+                    onUploadDone={(res) => setImage(res?.filesUploaded[0]?.url)}
+                    pickerOptions={{ container: "picker-container" }}
+                  />
+                ) : null}
+              </div>
+
+              {image != null && image != "" ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    position: "relative",
+                    width: 200,
+                  }}
+                >
+                  <Image src={image} alt="random_photo" width="100%" />
+                  <Button
+                    style={{
+                      padding: 0,
+                      fontSize: 15,
+                      position: "absolute",
+                      width: 32,
+                      borderRadius: "100%",
+                      aspectRatio: 1 / 1,
+                      right: 5,
+                      top: 5,
+                    }}
+                    danger
+                    onClick={() => {
+                      setImage(null);
+                    }}
+                  >
+                    X
+                  </Button>
+                </div>
+              ) : null}
+            </Form.Item>
             <Form.Item
               label="Senior Citizen ID No."
               name="id"
@@ -251,7 +339,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
             </Form.Item>
             <Form.Item label="Gender" name="gender">
               <Radio.Group
-                defaultValue="male"
                 style={{ display: "flex" }}
                 onChange={(e) =>
                   setData({
@@ -294,7 +381,6 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               <Select
                 style={{ width: 100, display: "flex" }}
                 value={data.part1?.seniorInfo.maritalStatus}
-                defaultValue={data.part1?.seniorInfo.maritalStatus}
                 onChange={(e) =>
                   setData({
                     ...data,
@@ -693,6 +779,11 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     },
                   })
                 }
+                value={
+                  incomeIn6mos != ""
+                    ? null
+                    : data.part2?.sourceIncomeInfo?.receivedPension6mos
+                }
               >
                 {[
                   {
@@ -719,13 +810,39 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   <Radio value={_.value}>{_.label}</Radio>
                 ))}
               </Radio.Group>
+            </Form.Item>
+            <Form.Item noStyle>
               <div style={{ display: "flex" }}>
                 <Input
-                  prefix="Others: "
+                  prefix={
+                    <Typography.Text type="secondary">Others: </Typography.Text>
+                  }
+                  value={
+                    incomeIn6mos != ""
+                      ? incomeIn6mos
+                      : !["dswd", "gsis", "sss", "afpslai", "none"].includes(
+                          data.part2?.sourceIncomeInfo?.receivedPension6mos
+                        )
+                      ? data.part2?.sourceIncomeInfo?.receivedPension6mos
+                      : ""
+                  }
                   style={{
                     width: 200,
                     background: "#eee",
                     borderRadius: 0,
+                  }}
+                  onChange={(e) => {
+                    setIncomeIn6mos(e.target.value);
+                    setData({
+                      ...data,
+                      part2: {
+                        ...data.part2,
+                        sourceIncomeInfo: {
+                          ...data.part2.sourceIncomeInfo,
+                          receivedPension6mos: null,
+                        },
+                      },
+                    });
                   }}
                 />
               </div>
@@ -852,7 +969,20 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                   {
                     question: (
                       <>
-                        Others <Input style={{ width: 150 }} />
+                        Others{" "}
+                        <Input
+                          style={{ width: 150 }}
+                          onChange={(e) => setOthersIncome(e.target.value)}
+                          value={
+                            othersIncome != ""
+                              ? othersIncome
+                              : data.part2.sourceIncomeInfo.sourceOfIncome
+                                  .others?.status == false
+                              ? ""
+                              : data.part2.sourceIncomeInfo.sourceOfIncome
+                                  .others?.status
+                          }
+                        />
                       </>
                     ),
                   },
@@ -1082,17 +1212,55 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
           <div
             style={{
               backgroundColor: "#eee",
-              paddingLeft: 20,
-              paddingRight: 20,
             }}
           >
             <Form.Item label="Where do you spend your Social Pension? ">
-              <Input.TextArea
-                value={data.part3.description1}
+              <Radio.Group
                 onChange={(e) =>
                   setData({ ...data, part3: { description1: e.target.value } })
                 }
-              />
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  paddingBottom: 10,
+                }}
+                value={
+                  !description
+                    .map((e) => e.value)
+                    .includes(data.part3.description1) &&
+                  !["", null, undefined].includes(data.part3.description1)
+                    ? "others"
+                    : data.part3.description1
+                }
+              >
+                {description.map((e) => (
+                  <Radio
+                    value={e.value}
+                    style={{
+                      paddingBottom: 4,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {e.label}
+                      {(data.part3.description1 == "others" ||
+                        !description
+                          .map((e) => e.value)
+                          .includes(data.part3.description1)) &&
+                        e.value == "others" && (
+                          <Input
+                            style={{ marginLeft: 10 }}
+                            onChange={(e) => setOthersContent(e.target.value)}
+                            value={
+                              othersContent != ""
+                                ? othersContent
+                                : data.part3.description1
+                            }
+                          />
+                        )}
+                    </div>
+                  </Radio>
+                ))}
+              </Radio.Group>
             </Form.Item>
           </div>
         </Form>
@@ -1113,6 +1281,12 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       barangay,
     } = data.part1.seniorInfo;
 
+    if (othersIncome != "")
+      data.part2.sourceIncomeInfo.sourceOfIncome.others.status = othersIncome;
+
+    if (incomeIn6mos != "")
+      data.part2.sourceIncomeInfo.receivedPension6mos = incomeIn6mos;
+
     let updatedData = {
       //  PART 1
       name: {
@@ -1130,6 +1304,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       motherMaidenName: { ...data.part1.mothersInfo },
       authorizedRepresentative,
       guardian: data.part1.guardian,
+      profileImage: image,
       // PART 2
       receivedPension: data.part2.sourceIncomeInfo.receivedPension,
       receivedPension6mos: data.part2.sourceIncomeInfo.receivedPension6mos,
@@ -1139,7 +1314,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       isPwd: { ...data.part2.isPwd },
       hasIllness: { ...data.part2.hasIllness },
       mealsPerDay: data.part2.mealsPerDay,
-      description: data.part3.description1,
+      description:
+        data.part3.description1 == "others"
+          ? othersContent
+          : data.part3.description1,
     };
 
     let res = await axios.post("/api/senior", {
@@ -1154,6 +1332,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       message.success(res.data.message);
       close();
       refresh();
+      setCurrent(0);
     } else message.error(res.data.message);
   };
 
@@ -1243,6 +1422,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
 
   useEffect(() => {
     (async () => {
+      setInitiateDone(false);
       let res = await axios.get("/api/senior", {
         params: {
           mode: "search-senior-by-id",
@@ -1324,7 +1504,10 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
         });
         setAuthorizedRepresentative(_?.authorizedRepresentative);
         setSourceIncome(_?.sourceOfIncome);
+        setImage(_?.profileImage ?? null);
+        setInitiateDone(true);
       }
+      setInitiateDone(true);
     })();
   }, [id, open]);
 
@@ -1333,6 +1516,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
       open={open}
       onCancel={() => {
         close();
+        setCurrent(0);
       }}
       closable={false}
       width={800}

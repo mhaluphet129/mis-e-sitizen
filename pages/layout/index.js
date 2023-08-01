@@ -13,11 +13,7 @@ import {
   message,
   Affix,
 } from "antd";
-import {
-  LogoutOutlined,
-  SettingOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
@@ -62,11 +58,6 @@ const Sider = ({ selectedIndex, selectedKey }) => {
         paddingRight: "40px",
       },
     },
-    // {
-    //   label: "Settings",
-    //   key: "settings",
-    //   icon: <FcSettings />,
-    // },
   ]);
 
   useEffect(() => {
