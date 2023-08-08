@@ -750,7 +750,7 @@ const AddSenior = ({ open, close, refresh }) => {
               >
                 <Radio value={true}>Yes</Radio>
                 <Radio value={false}>No</Radio>
-                <Radio value={null}>Don't Know</Radio>
+                <Radio value={null}>Don&apos;t Know</Radio>
               </Radio.Group>
             </Form.Item>
             <Form.Item label="Pension/s receive in the past 6 months?">
@@ -791,7 +791,9 @@ const AddSenior = ({ open, close, refresh }) => {
                     value: "none",
                   },
                 ].map((_) => (
-                  <Radio value={_.value}>{_.label}</Radio>
+                  <Radio value={_.value} key={_.value}>
+                    {_.label}
+                  </Radio>
                 ))}
               </Radio.Group>
             </Form.Item>
@@ -980,7 +982,7 @@ const AddSenior = ({ open, close, refresh }) => {
                 </Radio>
                 <Radio value="unrelatedPeople" style={{ display: "flex" }}>
                   Living with unrelated people only, apart from the older
-                  person'sspouse
+                  person&apos;s spouse
                 </Radio>
               </Radio.Group>
             </Form.Item>
@@ -1172,8 +1174,8 @@ const AddSenior = ({ open, close, refresh }) => {
                   paddingBottom: 10,
                 }}
               >
-                {description.map((e) => (
-                  <Radio value={e.value} style={{ paddingBottom: 4 }}>
+                {description.map((e, i) => (
+                  <Radio value={e.value} style={{ paddingBottom: 4 }} key={i}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       {e.label}
                       {(data.part3.description1 == "others" ||

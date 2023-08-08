@@ -32,7 +32,11 @@ const StatusChange = ({ open, close, value, refresh }) => {
       open={open}
       onCancel={close}
       footer={[
-        <Button onClick={handleUpdate} disabled={value?.status == status}>
+        <Button
+          onClick={handleUpdate}
+          disabled={value?.status == status}
+          key="1"
+        >
           UPDATE
         </Button>,
       ]}

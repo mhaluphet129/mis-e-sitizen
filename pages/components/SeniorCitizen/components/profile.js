@@ -257,8 +257,8 @@ const Profile = ({ id }) => {
             Authorized Representative
           </Typography.Title>
           <Divider style={{ marginLeft: 10 }} />
-          {user?.authorizedRepresentative?.map((e) => (
-            <Typography style={{ marginLeft: 10 }}>
+          {user?.authorizedRepresentative?.map((e, i) => (
+            <Typography style={{ marginLeft: 10 }} key={i}>
               {e.name} <br />
               {e.contactNumber} <br />
               {e.relationship}

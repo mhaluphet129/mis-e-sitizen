@@ -757,7 +757,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
               >
                 <Radio value={true}>Yes</Radio>
                 <Radio value={false}>No</Radio>
-                <Radio value={null}>Don't Know</Radio>
+                <Radio value={null}>Don&apos;t Know</Radio>
               </Radio.Group>
             </Form.Item>
             <Form.Item
@@ -807,7 +807,9 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     value: "none",
                   },
                 ].map((_) => (
-                  <Radio value={_.value}>{_.label}</Radio>
+                  <Radio value={_.value} key={_.value}>
+                    {_.label}
+                  </Radio>
                 ))}
               </Radio.Group>
             </Form.Item>
@@ -1023,7 +1025,7 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                 </Radio>
                 <Radio value="unrelatedPeople" style={{ display: "flex" }}>
                   Living with unrelated people only, apart from the older
-                  person'sspouse
+                  person&apos;s spouse
                 </Radio>
               </Radio.Group>
             </Form.Item>
@@ -1233,12 +1235,13 @@ const UpdateSenior = ({ open, close, refresh, id }) => {
                     : data.part3.description1
                 }
               >
-                {description.map((e) => (
+                {description.map((e, i) => (
                   <Radio
                     value={e.value}
                     style={{
                       paddingBottom: 4,
                     }}
+                    key={i}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       {e.label}

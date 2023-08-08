@@ -156,8 +156,11 @@ const History = ({ open, close, id }) => {
       )}
       {mode == "Timeline" && (
         <Timeline mode="left">
-          {history?.map((e) => (
-            <Timeline.Item label={dayjs(e?.createdAt).format("MMMM D, YYYY")}>
+          {history?.map((e, i) => (
+            <Timeline.Item
+              label={dayjs(e?.createdAt).format("MMMM D, YYYY")}
+              key={i}
+            >
               <Typography.Text>
                 <strong>Authorized Person:</strong>{" "}
                 {e.name ?? user?.name?.name + " " + user?.name?.lastname ?? ""}
