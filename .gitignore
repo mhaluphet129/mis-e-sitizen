@@ -6,7 +6,7 @@
 .pnp.js
 
 #protected variables
-# .env
+.env
 
 # testing
 /coverage
