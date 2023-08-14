@@ -26,7 +26,7 @@ const Barangay = () => {
       //   display: "flex",
       //   flexDirection: "column",
       // }}
-      style={{ width: 1400 }}
+      // style={{ width: 1400 }}
       title="Barangay"
     >
       <Tabs

@@ -63,6 +63,13 @@ const Login = () => {
 
   useEffect(() => {
     setLocation(window.location);
+    (async (_) => {
+      await _.get("/api/etc", {
+        params: {
+          mode: "init",
+        },
+      });
+    })(axios);
   }, []);
 
   return (

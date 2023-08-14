@@ -153,9 +153,65 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
         </Row>
       )}
       <Row>
+        <div
+          style={{
+            width: 300,
+            marginLeft: 20,
+          }}
+        >
+          {![active, deceased, activeWithIllness].every((e) => e == 0) ? (
+            <Pie
+              options={{
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    align: "center",
+                  },
+                  title: {
+                    display: true,
+                    text: `Status of Barangay ${barangay} Seniors Pie Chart`,
+                  },
+                },
+              }}
+              data={{
+                labels: ["ACTIVE", "DECEASED", "ACTIVE WITH DISEASE"],
+                datasets: [
+                  {
+                    label: "count: ",
+                    data: [active, deceased, activeWithIllness],
+                    backgroundColor: [
+                      "rgba(0,255,0,0.2)",
+                      "rgba(255, 0, 0, 0.2)",
+                      "rgba(200, 200, 0, 0.2)",
+                    ],
+                    borderColor: [
+                      "rgb(0,255,0)",
+                      "rgba(255, 0, 0)",
+                      "rgba(200, 200, 0)",
+                    ],
+                    borderWidth: 1,
+                  },
+                ],
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                height: 200,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography.Text type="secondary" italic>
+                No data
+              </Typography.Text>
+            </div>
+          )}
+        </div>
         <Table
           style={{
-            width: 700,
+            width: 500,
           }}
           title={() => (
             <strong>{`List of Seniors in Barangay ${barangay}`}</strong>
@@ -220,62 +276,6 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
           pagination={false}
           rowKey={(e) => e._id}
         />
-        <div
-          style={{
-            width: 300,
-            marginLeft: 20,
-          }}
-        >
-          {![active, deceased, activeWithIllness].every((e) => e == 0) ? (
-            <Pie
-              options={{
-                plugins: {
-                  legend: {
-                    position: "bottom",
-                    align: "center",
-                  },
-                  title: {
-                    display: true,
-                    text: `Status of Barangay ${barangay} Seniors Pie Chart`,
-                  },
-                },
-              }}
-              data={{
-                labels: ["ACTIVE", "DECEASED", "ACTIVE WITH DISEASE"],
-                datasets: [
-                  {
-                    label: "count: ",
-                    data: [active, deceased, activeWithIllness],
-                    backgroundColor: [
-                      "rgba(0,255,0,0.2)",
-                      "rgba(255, 0, 0, 0.2)",
-                      "rgba(200, 200, 0, 0.2)",
-                    ],
-                    borderColor: [
-                      "rgb(0,255,0)",
-                      "rgba(255, 0, 0)",
-                      "rgba(200, 200, 0)",
-                    ],
-                    borderWidth: 1,
-                  },
-                ],
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                height: 200,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography.Text type="secondary" italic>
-                No data
-              </Typography.Text>
-            </div>
-          )}
-        </div>
       </Row>
     </>
   );

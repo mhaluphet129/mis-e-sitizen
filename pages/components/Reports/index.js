@@ -4,16 +4,16 @@ import {
   Table,
   Card,
   Button,
-  Space,
   Drawer,
   Col,
   Typography,
   message,
   Image,
+  Row,
+  Space,
 } from "antd";
 import axios from "axios";
-import moment from "moment";
-import dayjs from "dayjs";
+import { master_list } from "./columns";
 
 class PDF extends React.Component {
   render() {
@@ -22,8 +22,11 @@ class PDF extends React.Component {
 }
 
 const Reports = () => {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [seniors, setSeniors] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState({
+    open: false,
+    dataSource: [],
+    column: [],
+  });
   const ref = useRef();
 
   const handlePrint = useReactToPrint({
@@ -69,74 +72,11 @@ const Reports = () => {
       </Typography.Title>
 
       <Table
-        dataSource={seniors}
+        dataSource={openDrawer.dataSource}
         className="myTable"
         rowClassName="custom-table"
         pagination={false}
-        columns={[
-          {
-            title: "NO",
-            align: "center",
-            width: 50,
-            render: (_, row) => seniors.indexOf(row) + 1,
-          },
-          {
-            title: "LAST",
-            width: 200,
-            render: (_, row) => row?.name?.lastname?.toUpperCase(),
-          },
-          {
-            title: "FIRST",
-            width: 200,
-
-            render: (_, row) => row?.name?.name?.toUpperCase(),
-          },
-          {
-            title: "MIDDLE",
-            width: 200,
-            render: (_, row) => row?.name?.middlename?.toUpperCase(),
-          },
-
-          {
-            title: "BARANGAY",
-            width: 180,
-            render: (_, row) => row?.barangay?.toUpperCase(),
-          },
-          {
-            title: "AGE",
-            align: "center",
-            width: 1,
-            render: (_, row) =>
-              dayjs().diff(
-                dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
-                "years",
-                false
-              ),
-          },
-
-          {
-            title: "GENDER",
-            width: 1,
-            render: (_, row) => row?.gender?.toUpperCase(),
-          },
-          {
-            title: "CIVIL STATUS",
-            width: 50,
-            render: (_, row) => row?.maritalStatus?.toUpperCase(),
-          },
-          {
-            title: "BIRTHDATE ",
-            width: 1,
-            align: "center",
-            render: (_, row) =>
-              moment(row?.dateOfBirth?.toUpperCase()).format("DD/MM/YYYY"),
-          },
-          {
-            title: "OSCA ID NO.",
-            width: 50,
-            render: (_, row) => row?.name.id?.toUpperCase(),
-          },
-        ]}
+        columns={openDrawer.column}
         bordered
       />
       <Col span={5} style={{ marginTop: 100 }}>
@@ -152,8 +92,10 @@ const Reports = () => {
   return (
     <>
       <Drawer
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
+        open={openDrawer.open}
+        onClose={() =>
+          setOpenDrawer({ open: false, dataSource: null, column: null })
+        }
         placement="bottom"
         height="100%"
         title="Print Preview"
@@ -176,24 +118,41 @@ const Reports = () => {
         </PDF>
       </Drawer>
       <Card>
-        <Space>
-          <Button
-            onClick={async () => {
-              let { data } = await axios.get("/api/senior", {
-                params: {
-                  mode: "fetch-all",
-                },
-              });
-
-              if (data?.status == 200) {
-                setOpenDrawer(true);
-                setSeniors(data?.senior);
-              } else message.error(data?.message);
-            }}
-          >
-            Print Senior Citizen List
-          </Button>
-        </Space>
+        <Row>
+          <Col span={8}>
+            <Space direction="vertical">
+              <Typography.Title level={4}>General</Typography.Title>
+              <Button
+                onClick={async () => {
+                  message.info("Generating reports....");
+                  let { data } = await axios.get("/api/senior", {
+                    params: {
+                      mode: "fetch-all",
+                    },
+                  });
+                  if (data?.status == 200) {
+                    setOpenDrawer({
+                      open: true,
+                      dataSource: data.senior,
+                      column: master_list,
+                    });
+                    message.success("Generate success");
+                  } else message.error(data?.message);
+                }}
+              >
+                Print Senior Citizen List
+              </Button>
+            </Space>
+          </Col>
+          <Col span={8}>
+            <Space direction="vertical">
+              <Typography.Title level={4}>Forms</Typography.Title>
+              <Button>Warranty and Release from liability</Button>
+              <Button>Authorization</Button>
+              <Button>Certification</Button>
+            </Space>
+          </Col>
+        </Row>
       </Card>
     </>
   );

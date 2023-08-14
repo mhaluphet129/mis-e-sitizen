@@ -236,7 +236,7 @@ const Profile = ({ id }) => {
                 <>
                   {customLabels(e)}:{" "}
                   <strong>
-                    {user.sourceOfIncome[e].status.toString()} | ₱
+                    {user.sourceOfIncome[e].status ? "Yes" : "No"} | ₱
                     {user.sourceOfIncome[e].value}
                   </strong>
                   <br />

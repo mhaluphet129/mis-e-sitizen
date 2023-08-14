@@ -24,6 +24,50 @@ body {
   background-color: rgba(255, 200, 0, 0.8) !important;
 }
 
+.document-paper > * {
+  font-family: sans-serif;
+}
+
+.label-under {
+  position: relative;
+  display: inline;
+}
+
+.label-under label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 30px;
+  width: 100%;
+  text-align: center;
+}
+
+.label-under .input {
+  width: 200px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #a0a0a0;
+}
+
+.document-paper-text {
+  display: inline-block;
+  line-height: 2.5;
+}
+
+.document-paper-input {
+  margin-left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  border-bottom: 1px solid #a0a0a0;
+}
+
+.document-paper-input + p {
+  text-align: center;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-bottom: 30;
+}
+
 thead {
   display: table-row-group;
 }

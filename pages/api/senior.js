@@ -18,23 +18,27 @@ export default async function handler(req, res) {
             if (barangay) query.barangay = barangay;
             if (!["", undefined].includes(req.query.search)) {
               query._id = search;
-              return await Senior.find(query).then((e) => {
-                res.json({
-                  status: 200,
-                  message: "Successfully fetched the data",
-                  senior: e,
+              return await Senior.find(query)
+                .sort({ barangay: 1 })
+                .then((e) => {
+                  res.json({
+                    status: 200,
+                    message: "Successfully fetched the data",
+                    senior: e,
+                  });
+                  resolve();
                 });
-                resolve();
-              });
             } else {
-              return await Senior.find(query).then((e) => {
-                res.json({
-                  status: 200,
-                  message: "Successfully fetched the data",
-                  senior: e,
+              return await Senior.find(query)
+                .sort({ barangay: 1 })
+                .then((e) => {
+                  res.json({
+                    status: 200,
+                    message: "Successfully fetched the data",
+                    senior: e,
+                  });
+                  resolve();
                 });
-                resolve();
-              });
             }
           }
           case "search-senior": {

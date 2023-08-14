@@ -12,6 +12,9 @@ export default async function handler(req, res) {
         const { mode } = req.query;
 
         switch (mode) {
+          case "init": {
+            res.json({ status: 200 });
+          }
           case "dashboard-data": {
             try {
               let seniors = await Senior.find(

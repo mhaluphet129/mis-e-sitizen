@@ -899,6 +899,7 @@ const AddSenior = ({ open, close, refresh }) => {
                                 "internationalMember",
                                 "fromFriends",
                                 "fromGovernment",
+                                "others",
                               ];
                               setData({
                                 ...data,
@@ -912,7 +913,8 @@ const AddSenior = ({ open, close, refresh }) => {
                                       [keys[index]]: {
                                         status:
                                           data.part2.sourceIncomeInfo
-                                            .sourceOfIncome[keys[index]].status,
+                                            .sourceOfIncome[keys[index]]
+                                            ?.status,
                                         value: e.target.value,
                                       },
                                     },
