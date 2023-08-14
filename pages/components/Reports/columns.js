@@ -95,5 +95,5 @@ const pension_status = [
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
 ];
-
+export default () => null;
 export { master_list };
