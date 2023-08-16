@@ -1,6 +1,6 @@
 import { Typography, Input } from "antd";
 
-const Component = ({ setData }) => {
+const Component = ({ data }) => {
   return (
     <div className="document-paper">
       <div
@@ -32,13 +32,10 @@ const Component = ({ setData }) => {
         THIS IS TO CERTIFY that{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 300, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, name: e.target.value };
-              });
-            }}
+            value={data?.name}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         is a Social Pension beneficiary with Osca ID No.
@@ -46,49 +43,37 @@ const Component = ({ setData }) => {
       <Typography.Text>
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 100, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, id: e.target.value };
-              });
-            }}
+            value={data?.id}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         of Barangay{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 150, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, brgy: e.target.value };
-              });
-            }}
+            value={data?.brgy}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         in
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 100, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, day: e.target.value };
-              });
-            }}
+            value={data?.day}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         ,
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 150, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, year: e.target.value };
-              });
-            }}
+            value={data?.year}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         .
@@ -103,13 +88,10 @@ const Component = ({ setData }) => {
       <Typography.Text>
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 250, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, name2: e.target.value };
-              });
-            }}
+            value={data?.name2}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         .
@@ -121,13 +103,10 @@ const Component = ({ setData }) => {
         person for the release of her / his{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 100, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, semester: e.target.value };
-              });
-            }}
+            value={data?.semester}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         Semester Social Pension
@@ -138,61 +117,46 @@ const Component = ({ setData }) => {
         Given this day{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 100, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, day2: e.target.value };
-              });
-            }}
+            value={data?.day2}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         of
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 100, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, month: e.target.value };
-              });
-            }}
+            value={data?.month}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         202
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 40, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, year2: e.target.value };
-              });
-            }}
+            value={data?.year2}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         at
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 200, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, place1: e.target.value };
-              });
-            }}
+            value={data?.place1}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         ,
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 200, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, place2: e.target.value };
-              });
-            }}
+            value={data?.place2}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
       </Typography.Text>

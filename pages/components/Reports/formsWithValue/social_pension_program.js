@@ -1,6 +1,6 @@
 import { Typography, Input } from "antd";
 
-const Home = ({ setData }) => {
+const Home = ({ data }) => {
   return (
     <div className="document-paper">
       <div
@@ -39,13 +39,10 @@ const Home = ({ setData }) => {
         This is to certify that{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 500, marginBottom: 10, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, name: e.target.value };
-              });
-            }}
+            value={data?.name}
+            className="input disabled-preview-input"
+            disabled
           />
           <label>(name of authorized representative)</label>
         </div>
@@ -55,26 +52,20 @@ const Home = ({ setData }) => {
         be the
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 200, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, relationship: e.target.value };
-              });
-            }}
+            value={data?.relationship}
+            className="input disabled-preview-input"
+            disabled
           />
           <label>(relationship to beneficiary)</label>
         </div>
         of
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 300, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, beneName: e.target.value };
-              });
-            }}
+            value={data?.beneName}
+            className="input disabled-preview-input"
+            disabled
           />
           <label>(name of beneficiary)</label>
         </div>
@@ -83,17 +74,14 @@ const Home = ({ setData }) => {
         authorized to claim the
         <div class="label-under">
           <Input
-            className="input"
             style={{
               width: 30,
               textAlign: "center",
               background: "rgba(0,0,0,0)",
             }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, semester: e.target.value };
-              });
-            }}
+            value={data?.semester}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         semester Social Pension stipend amounting 3,000.00 as
@@ -105,37 +93,28 @@ const Home = ({ setData }) => {
         Issued this{" "}
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 70, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, day: e.target.value };
-              });
-            }}
+            value={data?.day}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         of August
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 70, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, year: e.target.value };
-              });
-            }}
+            value={data?.year}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         at
         <div class="label-under">
           <Input
-            className="input"
             style={{ width: 150, textAlign: "center" }}
-            onChange={(e) => {
-              setData((_) => {
-                return { ..._, place: e.target.value };
-              });
-            }}
+            value={data?.place}
+            className="input disabled-preview-input"
+            disabled
           />
         </div>
         .

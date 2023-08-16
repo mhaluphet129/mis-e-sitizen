@@ -1,6 +1,6 @@
 import { Image, Typography, Input } from "antd";
 
-const Component = ({ setData }) => {
+const Component = ({ data }) => {
   return (
     <div className="document-paper">
       <div
@@ -42,11 +42,9 @@ const Component = ({ setData }) => {
                 borderRadius: 0,
                 textAlign: "center",
               }}
-              onChange={(e) => {
-                setData((_) => {
-                  return { ..._, name: e.target.value };
-                });
-              }}
+              value={data?.name}
+              className="disabled-preview-input"
+              disabled
             />
             <p
               style={{
@@ -63,26 +61,20 @@ const Component = ({ setData }) => {
             Said beneficiary died on{" "}
             <div class="label-under">
               <Input
-                className="input"
                 style={{ textAlign: "center" }}
-                onChange={(e) => {
-                  setData((_) => {
-                    return { ..._, dateDied: e.target.value };
-                  });
-                }}
+                className="input disabled-preview-input"
+                value={data?.dateDied}
+                disabled
               />
               <label>(Date)</label>
             </div>
             at{" "}
             <div class="label-under">
               <Input
-                className="input"
                 style={{ width: 300, textAlign: "center" }}
-                onChange={(e) => {
-                  setData((_) => {
-                    return { ..._, placeOfDeath: e.target.value };
-                  });
-                }}
+                className="input disabled-preview-input"
+                value={data?.placeOfDeath}
+                disabled
               />
               <label>(Place of death)</label>
             </div>
@@ -96,46 +88,37 @@ const Component = ({ setData }) => {
           </li>
           <div style={{ marginBottom: 20 }}>
             <Input
-              className="document-paper-input"
               style={{
                 width: 500,
                 textAlign: "center",
               }}
-              onChange={(e) => {
-                setData((_) => {
-                  return { ..._, signature: e.target.value };
-                });
-              }}
+              className="document-paper-input disabled-preview-input"
+              value={data?.signature}
+              disabled
             />
             <p>(Signature over Full Name of Claimant)</p>
           </div>
           <div style={{ marginBottom: 20 }}>
             <Input
-              className="document-paper-input"
               style={{
                 width: 500,
                 textAlign: "center",
               }}
-              onChange={(e) => {
-                setData((_) => {
-                  return { ..._, addressAndContact: e.target.value };
-                });
-              }}
+              className="document-paper-input disabled-preview-input"
+              value={data?.addressAndContact}
+              disabled
             />
             <p>(Address and Contact Number)</p>
           </div>
           <div style={{ marginBottom: 20 }}>
             <Input
-              className="document-paper-input"
               style={{
                 width: 500,
                 textAlign: "center",
               }}
-              onChange={(e) => {
-                setData((_) => {
-                  return { ..._, date: e.target.value };
-                });
-              }}
+              className="document-paper-input disabled-preview-input"
+              value={data?.date}
+              disabled
             />
             <p>(Date)</p>
           </div>

@@ -59,6 +59,7 @@ body {
   transform: translateX(-50%);
   border: none;
   border-bottom: 1px solid #a0a0a0;
+  border-radius: 0;
 }
 
 .document-paper-input + p {
@@ -80,4 +81,9 @@ thead {
 .barangay-label {
   font-size: 24px;
   padding: 10px;
+}
+
+.disabled-preview-input {
+  color: #000 !important;
+  background-color: #fff !important;
 }

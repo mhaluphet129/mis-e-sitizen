@@ -7,13 +7,26 @@ import {
   Drawer,
   Col,
   Typography,
-  message,
   Image,
   Row,
   Space,
+  message,
 } from "antd";
 import axios from "axios";
+
 import { master_list } from "./columns";
+import ModalForm from "./components/ModalForm";
+import DrawerPrintPreview from "./components/DrawerPrintPreview";
+
+// FORMS
+import Certification from "./forms/certication";
+import SocialPensionProgram from "./forms/social_pension_program";
+import WarrantAndRelease from "./forms/warrant_and_release";
+
+// FORMS PREVIEW
+import PreviewCertification from "./formsWithValue/certication";
+import PreviewSocialPensionProgram from "./formsWithValue/social_pension_program";
+import PreviewWarrantAndRelease from "./formsWithValue/warrant_and_release";
 
 class PDF extends React.Component {
   render() {
@@ -22,11 +35,22 @@ class PDF extends React.Component {
 }
 
 const Reports = () => {
+  const [openModalForm, setOpenModalForm] = useState({
+    open: false,
+    children: <></>,
+  });
+  const [openDrawerPreview, setOpenDrawerPreview] = useState({
+    open: false,
+    title: "",
+    children: <></>,
+  });
+
   const [openDrawer, setOpenDrawer] = useState({
     open: false,
     dataSource: [],
     column: [],
   });
+  const [formValues, setFormValues] = useState({});
   const ref = useRef();
 
   const handlePrint = useReactToPrint({
@@ -91,6 +115,45 @@ const Reports = () => {
 
   return (
     <>
+      <ModalForm
+        open={openModalForm.open}
+        close={() => setOpenModalForm({ open: false, children: <></> })}
+        print={() => {
+          let children = <></>;
+
+          switch (openDrawerPreview.title) {
+            case "WARRANTY AND RELEASE FROM LIABILITY": {
+              children = <PreviewWarrantAndRelease data={formValues} />;
+              break;
+            }
+            case "AUTHORIZATION": {
+              children = <PreviewSocialPensionProgram data={formValues} />;
+              break;
+            }
+            case "CERTIFICATION": {
+              children = <PreviewCertification data={formValues} />;
+              break;
+            }
+          }
+
+          setOpenDrawerPreview((e) => {
+            return { ...e, open: true, children };
+          });
+        }}
+      >
+        {openModalForm.children}
+      </ModalForm>
+      <DrawerPrintPreview
+        open={openDrawerPreview.open}
+        title={openDrawerPreview.title}
+        close={() =>
+          setOpenDrawerPreview((e) => {
+            return { ...e, open: false, children: <></> };
+          })
+        }
+      >
+        {openDrawerPreview.children}
+      </DrawerPrintPreview>
       <Drawer
         open={openDrawer.open}
         onClose={() =>
@@ -147,9 +210,61 @@ const Reports = () => {
           <Col span={8}>
             <Space direction="vertical">
               <Typography.Title level={4}>Forms</Typography.Title>
-              <Button>Warranty and Release from liability</Button>
-              <Button>Authorization</Button>
-              <Button>Certification</Button>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "WARRANTY AND RELEASE FROM LIABILITY",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: <WarrantAndRelease setData={setFormValues} />,
+                  });
+                }}
+              >
+                Warranty and Release from liability
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "AUTHORIZATION",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: (
+                      <SocialPensionProgram
+                        setData={setFormValues}
+                        print={() => {}}
+                      />
+                    ),
+                  });
+                }}
+              >
+                Authorization
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "CERTIFICATION",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: (
+                      <Certification setData={setFormValues} print={() => {}} />
+                    ),
+                  });
+                }}
+              >
+                Certification
+              </Button>
             </Space>
           </Col>
         </Row>
