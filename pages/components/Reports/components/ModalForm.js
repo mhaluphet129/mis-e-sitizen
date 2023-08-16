@@ -8,7 +8,7 @@ const ModalForm = (props) => {
       onCancel={props.close}
       width={900}
       footer={[
-        <Button type="primary" onClick={props.print}>
+        <Button type="primary" onClick={props.print} key="key-1">
           Proceed and Review
         </Button>,
       ]}

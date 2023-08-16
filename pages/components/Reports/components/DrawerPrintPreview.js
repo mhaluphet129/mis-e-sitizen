@@ -22,7 +22,11 @@ const DrawerPrintPreview = ({ open, close, title, children }) => {
       title={title}
       placement="bottom"
       height="100%"
-      extra={[<Button onClick={handlePrint}>PRINT</Button>]}
+      extra={[
+        <Button onClick={handlePrint} key="key-1">
+          PRINT
+        </Button>,
+      ]}
       style={{
         width: 900,
         marginLeft: "50%",
