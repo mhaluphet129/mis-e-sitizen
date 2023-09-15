@@ -157,6 +157,7 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
           style={{
             width: 300,
             marginLeft: 20,
+            marginRight: 20,
           }}
         >
           {![active, deceased, activeWithIllness].every((e) => e == 0) ? (
@@ -211,7 +212,7 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
         </div>
         <Table
           style={{
-            width: 500,
+            width: 700,
           }}
           title={() => (
             <strong>{`List of Seniors in Barangay ${barangay}`}</strong>

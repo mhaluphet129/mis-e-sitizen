@@ -8,13 +8,27 @@ import {
   Drawer,
   Col,
   Typography,
-  message,
   Image,
+  Row,
+  message,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+
+// FORMS
+import Certification from "../../Reports/forms/certication";
+import SocialPensionProgram from "../../Reports/forms/social_pension_program";
+import WarrantAndRelease from "../../Reports/forms/warrant_and_release";
+
+// FORMS PREVIEW
+import PreviewCertification from "../../Reports/formsWithValue/certication";
+import PreviewSocialPensionProgram from "../../Reports/formsWithValue/social_pension_program";
+import PreviewWarrantAndRelease from "../../Reports/formsWithValue/warrant_and_release";
+
+import ModalForm from "../../Reports/components/ModalForm";
+import DrawerPrintPreview from "../../Reports/components/DrawerPrintPreview";
 
 class PDF extends React.Component {
   render() {
@@ -24,8 +38,22 @@ class PDF extends React.Component {
 
 const Reports = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
+
   const [seniors, setSeniors] = useState([]);
   const ref = useRef();
+
+  const [openModalForm, setOpenModalForm] = useState({
+    open: false,
+    children: <></>,
+  });
+
+  const [openDrawerPreview, setOpenDrawerPreview] = useState({
+    open: false,
+    title: "",
+    children: <></>,
+  });
+
+  const [formValues, setFormValues] = useState({});
 
   const barangay = Cookies.get("barangay");
 
@@ -154,6 +182,45 @@ const Reports = () => {
 
   return (
     <>
+      <ModalForm
+        open={openModalForm.open}
+        close={() => setOpenModalForm({ open: false, children: <></> })}
+        print={() => {
+          let children = <></>;
+
+          switch (openDrawerPreview.title) {
+            case "WARRANTY AND RELEASE FROM LIABILITY": {
+              children = <PreviewWarrantAndRelease data={formValues} />;
+              break;
+            }
+            case "AUTHORIZATION": {
+              children = <PreviewSocialPensionProgram data={formValues} />;
+              break;
+            }
+            case "CERTIFICATION": {
+              children = <PreviewCertification data={formValues} />;
+              break;
+            }
+          }
+
+          setOpenDrawerPreview((e) => {
+            return { ...e, open: true, children };
+          });
+        }}
+      >
+        {openModalForm.children}
+      </ModalForm>
+      <DrawerPrintPreview
+        open={openDrawerPreview.open}
+        title={openDrawerPreview.title}
+        close={() =>
+          setOpenDrawerPreview((e) => {
+            return { ...e, open: false, children: <></> };
+          })
+        }
+      >
+        {openDrawerPreview.children}
+      </DrawerPrintPreview>
       <Drawer
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
@@ -179,25 +246,90 @@ const Reports = () => {
         </PDF>
       </Drawer>
       <Card>
-        <Space>
-          <Button
-            onClick={async () => {
-              let { data } = await axios.get("/api/senior", {
-                params: {
-                  mode: "fetch-all",
-                  barangay,
-                },
-              });
+        <Row>
+          <Col span={8}>
+            <Space direction="vertical">
+              <Typography.Title level={4}>General</Typography.Title>
+              <Button
+                onClick={async () => {
+                  let { data } = await axios.get("/api/senior", {
+                    params: {
+                      mode: "fetch-all",
+                      barangay,
+                    },
+                  });
 
-              if (data?.status == 200) {
-                setOpenDrawer(true);
-                setSeniors(data?.senior);
-              } else message.error(data?.message);
-            }}
-          >
-            Print Senior Citizen List
-          </Button>
-        </Space>
+                  if (data?.status == 200) {
+                    setOpenDrawer(true);
+                    setSeniors(data?.senior);
+                  } else message.error(data?.message);
+                }}
+              >
+                Print Senior Citizen Lists
+              </Button>
+            </Space>
+          </Col>
+          <Col span={8}>
+            <Space direction="vertical">
+              <Typography.Title level={4}>Forms</Typography.Title>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "WARRANTY AND RELEASE FROM LIABILITY",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: <WarrantAndRelease setData={setFormValues} />,
+                  });
+                }}
+              >
+                Warranty and Release from liability
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "AUTHORIZATION",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: (
+                      <SocialPensionProgram
+                        setData={setFormValues}
+                        print={() => {}}
+                      />
+                    ),
+                  });
+                }}
+              >
+                Authorization
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenDrawerPreview((e) => {
+                    return {
+                      ...e,
+                      title: "CERTIFICATION",
+                    };
+                  });
+                  setOpenModalForm({
+                    open: true,
+                    children: (
+                      <Certification setData={setFormValues} print={() => {}} />
+                    ),
+                  });
+                }}
+              >
+                Certification
+              </Button>
+            </Space>
+          </Col>
+        </Row>
       </Card>
     </>
   );

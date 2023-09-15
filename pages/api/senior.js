@@ -259,19 +259,33 @@ export default async function handler(req, res) {
 
         switch (mode) {
           case "add-senior": {
-            let newSenior = Senior(req.body.payload.senior);
+            let id = req.body.payload.senior?.name?.id ?? "";
 
-            return await newSenior
-              .save()
-              .then(() => {
-                res.json({ status: 200, message: "Successfully Added" });
-                resolve();
-              })
-              .catch((err) => {
-                res
-                  .status(500)
-                  .json({ success: false, message: "Error: " + err });
-              });
+            return await new Promise(async (resolve, reject) => {
+              let found = await Senior.find({ "name.id": id });
+
+              if (found && found?.length > 0) {
+                return res.json({
+                  status: 404,
+                  success: false,
+                  message: "Duplicated Id found",
+                });
+              } else resolve();
+            }).then(async () => {
+              let newSenior = Senior(req.body.payload.senior);
+
+              return await newSenior
+                .save()
+                .then(() => {
+                  res.json({ status: 200, message: "Successfully Added" });
+                  resolve();
+                })
+                .catch((err) => {
+                  res
+                    .status(500)
+                    .json({ success: false, message: "Error: " + err });
+                });
+            });
           }
           case "update-senior": {
             const { id, data } = req.body.payload;

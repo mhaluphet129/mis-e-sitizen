@@ -130,7 +130,7 @@ const AdminPage = () => {
     },
     {
       title: "Representative(s)",
-      width: 150,
+      width: 160,
       align: "center",
       render: (_, row) => (
         <Typography.Link

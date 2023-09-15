@@ -1268,6 +1268,11 @@ const AddSenior = ({ open, close, refresh }) => {
         },
       });
 
+      if (!res.data.success) {
+        message.error(res.data.message);
+        return;
+      }
+
       if (res.data.status == 200) {
         message.success(res.data.message);
         close();

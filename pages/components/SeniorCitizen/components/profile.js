@@ -135,8 +135,8 @@ const Profile = ({ id }) => {
         setName(data.data.name);
         setGuardian(data.data.guardian);
         setLoader("");
-         // Set the timestamp when the senior is added
-         setTimestamp(dayjs().format("YYYY-MM-DD "));
+        // Set the timestamp when the senior is added
+        setTimestamp(dayjs().format("YYYY-MM-DD "));
       }
     })(axios);
   }, []);
@@ -150,7 +150,8 @@ const Profile = ({ id }) => {
           </Typography.Title>
           {timestamp && (
             <Typography>
-              Added on: {dayjs(timestamp).format("MMMM DD, YYYY ")}
+              Time and Date added:{" "}
+              {dayjs(timestamp).format("hh:mm a, MM/DD/YYYY")}
             </Typography>
           )}
           <div style={{ position: "relative", width: 350 }}>
