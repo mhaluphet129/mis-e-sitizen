@@ -205,46 +205,7 @@ const Reports = () => {
               >
                 Print Senior Citizen List
               </Button>
-              <Button
-                onClick={async () => {
-                  message.info("Generating reports....");
-                  let { data } = await axios.get("/api/seniors", {
-                    params: {
-                      mode: "fetch-all",
-                    },
-                  });
-                  if (data?.status == 200) {
-                    setOpenDrawer({
-                      open: true,
-                      dataSource: data.senior,
-                      column: master_list,
-                    });
-                    message.success("Generate success");
-                  } else message.error(data?.message);
-                }}
-              >
-                Living Status
-              </Button>
-              <Button
-                onClick={async () => {
-                  message.info("Generating reports....");
-                  let { data } = await axios.get("/api/seniors", {
-                    params: {
-                      mode: "fetch-all",
-                    },
-                  });
-                  if (data?.status == 200) {
-                    setOpenDrawer({
-                      open: true,
-                      dataSource: data.senior,
-                      column: master_list,
-                    });
-                    message.success("Generate success");
-                  } else message.error(data?.message);
-                }}
-              >
-                Pension Status
-              </Button>
+           
             </Space>
           </Col>
           <Col span={8}>

@@ -9,7 +9,7 @@ const Profile = ({ id }) => {
   const [guardian, setGuardian] = useState({});
   const [user, setUser] = useState({});
   const [loader, setLoader] = useState("");
-  const [timestamp, setTimestamp] = useState(null); // State for timestamp
+
 
   const customLabels = (_) => {
     let label = _;
@@ -135,8 +135,7 @@ const Profile = ({ id }) => {
         setName(data.data.name);
         setGuardian(data.data.guardian);
         setLoader("");
-        // Set the timestamp when the senior is added
-        setTimestamp(dayjs().format("YYYY-MM-DD "));
+       
       }
     })(axios);
   }, []);
@@ -148,12 +147,7 @@ const Profile = ({ id }) => {
           <Typography.Title level={4} underline>
             Personal
           </Typography.Title>
-          {timestamp && (
-            <Typography>
-              Time and Date added:{" "}
-              {dayjs(timestamp).format("hh:mm a, MM/DD/YYYY")}
-            </Typography>
-          )}
+         
           <div style={{ position: "relative", width: 350 }}>
             {user.profileImage ? (
               <Image src={user.profileImage} alt="random_photo" width="100%" />
