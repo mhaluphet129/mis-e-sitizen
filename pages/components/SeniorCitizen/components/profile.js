@@ -1,15 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Col, Divider, Row, Spin, Tag, Typography, Image } from "antd";
+import {
+  Col,
+  Divider,
+  Row,
+  Spin,
+  Tag,
+  Typography,
+  Image,
+  Space,
+  Button,
+  Modal,
+} from "antd";
 import NoImage from "../../../assets/js/NoImage";
 import axios from "axios";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
 const Profile = ({ id }) => {
   const [name, setName] = useState({});
   const [guardian, setGuardian] = useState({});
   const [user, setUser] = useState({});
   const [loader, setLoader] = useState("");
-
+  const [modal, contextHolder] = Modal.useModal();
+  const [currentUser, setCurrentUser] = useState({ name: "", lastname: "" });
 
   const customLabels = (_) => {
     let label = _;
@@ -119,6 +132,18 @@ const Profile = ({ id }) => {
     return labels.filter((e) => e.value == _)[0]?.label ?? _ ?? "None";
   };
 
+  const confirmArchive = () => {
+    (async (_) => {
+      let { data } = await _.post("/api/senior", {
+        payload: {
+          mode: "archive-senior",
+          seniorId: user._id,
+          updaterId: currentUser._id,
+        },
+      });
+    })(axios);
+  };
+
   useEffect(() => {
     (async (_) => {
       setLoader("fetch-user");
@@ -132,22 +157,26 @@ const Profile = ({ id }) => {
 
       if (data.status == 200) {
         setUser(data.data);
-        setName(data.data.name);
+        setName(data.data?.name);
         setGuardian(data.data.guardian);
         setLoader("");
-       
       }
     })(axios);
+    setCurrentUser(JSON.parse(Cookies.get("currentUser")));
   }, []);
 
   return (
     <Spin spinning={loader == "fetch-user"}>
+      {contextHolder}
       <Row gutter={[16, 16]}>
         <Col span={8}>
           <Typography.Title level={4} underline>
             Personal
           </Typography.Title>
-         
+          <Typography>
+            Time and Date added:{" "}
+            {dayjs(user?.createdAt).format("hh:mm a, MM/DD/YYYY")}
+          </Typography>
           <div style={{ position: "relative", width: 350 }}>
             {user.profileImage ? (
               <Image src={user.profileImage} alt="random_photo" width="100%" />
@@ -274,6 +303,25 @@ const Profile = ({ id }) => {
           <Typography.Title level={5}>
             {customLabels3(user.description)}
           </Typography.Title>
+        </Col>
+        <Col span={8}>
+          <Typography.Title level={4} underline>
+            Functions
+          </Typography.Title>
+          <Space direction="vertical">
+            <Button
+              onClick={() => {
+                modal.confirm({
+                  title: "This senior ",
+                  okText: "CLEAR",
+                  onOk: confirmArchive,
+                });
+              }}
+            >
+              Archive
+            </Button>
+            <Button>Move to another Barangay</Button>
+          </Space>
         </Col>
       </Row>
     </Spin>

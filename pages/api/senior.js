@@ -1,4 +1,6 @@
 import Senior from "../../database/model/Senior";
+import Notification from "../../database/model/Notitification";
+import Admin from "../../database/model/Admin";
 import dbConnect from "../../database/dbConnect";
 import mongoose from "mongoose";
 
@@ -330,6 +332,45 @@ export default async function handler(req, res) {
                   .status(500)
                   .json({ success: false, message: "Error: " + err });
               });
+          }
+
+          case "archive-senior": {
+            let { seniorId, updaterId } = req.body.payload;
+
+            let updater = await Admin.findOne({ _id: updaterId });
+
+            let isSuperAdmin = updater.role == "superadmin";
+
+            await Senior.findOneAndUpdate(
+              { _id: seniorId },
+              { $set: { isArchived: true } },
+              { returnOriginal: false }
+            ).then(async (doc) => {
+              let placeholder = {
+                title: "Senior Archived",
+                content: `${doc.name.name} ${doc.name.lastname} has been archived by Super Admin`,
+                type: "notification",
+              };
+
+              if (isSuperAdmin) {
+                let adminIds = await Admin.find(
+                  { role: "barangay-admin" },
+                  { _id: 1 }
+                );
+
+                await Notification.insertMany(
+                  adminIds.map((e) => {
+                    return { ...placeholder, adminId: e };
+                  })
+                );
+              }
+
+              await Notification.create({
+                ...placeholder,
+                adminId: updaterId,
+                content: `You archived ${doc.name.name} ${doc.name.lastname}`,
+              });
+            });
           }
         }
       });

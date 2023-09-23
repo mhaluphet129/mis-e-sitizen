@@ -17,7 +17,7 @@ import Profile from "./profile";
 const History = ({ open, close, id }) => {
   let [history, setHistory] = useState([]);
   let [user, setUser] = useState({});
-  let [mode, setMode] = useState("Table");
+  let [mode, setMode] = useState("Personal Info");
 
   const semesterLabel = (_) => {
     if (_?.length > 1) {
@@ -124,7 +124,7 @@ const History = ({ open, close, id }) => {
     <Drawer
       open={open}
       onClose={() => {
-        setMode("Table");
+        setMode("Personal Info");
         close();
       }}
       placement="bottom"
@@ -140,7 +140,7 @@ const History = ({ open, close, id }) => {
           }}
         >
           <Segmented
-            options={["Table", "Timeline", "Personal Info"]}
+            options={["Personal Info", "Table", "Timeline"]}
             onChange={(e) => setMode(e)}
             value={mode}
           />

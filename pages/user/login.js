@@ -63,41 +63,51 @@ const Login = () => {
 
   useEffect(() => {
     setLocation(window.location);
+    (async (_) => {
+      await _.get("/api/init");
+    })(axios);
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-    <div className="logo-container">
-      <img
-        src="logo.png"
-        alt="Logo 1"
-        className="logo"
-        style={{ width: "100px", height: "100px",  marginRight: "30px", marginTop: "20px", }} // Adjust the width and height as needed
-      />
-      <img
-        src="menu-logo.png"
-        alt="Logo 2"
-        className="logo"
-        style={{ width: "100px", height: "100px",  marginRight: "30px" }} // Adjust the width and height as needed
-      />
-      <img
-        src="logo-mswd.png"
-        alt="Logo 3"
-        className="logo"
-        style={{ width: "100px", height: "100px",  marginRight: "30px" }} // Adjust the width and height as needed
-      />
-    </div>
-   
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <div className="logo-container">
+        <img
+          src="logo.png"
+          alt="Logo 1"
+          className="logo"
+          style={{
+            width: "100px",
+            height: "100px",
+            marginRight: "30px",
+            marginTop: "20px",
+          }} // Adjust the width and height as needed
+        />
+        <img
+          src="menu-logo.png"
+          alt="Logo 2"
+          className="logo"
+          style={{ width: "100px", height: "100px", marginRight: "30px" }} // Adjust the width and height as needed
+        />
+        <img
+          src="logo-mswd.png"
+          alt="Logo 3"
+          className="logo"
+          style={{ width: "100px", height: "100px", marginRight: "30px" }} // Adjust the width and height as needed
+        />
+      </div>
+
       <div className="main-login-info">
-      <Typography.Title
-  style={{
-    marginTop: "6vh", // Reduce the marginTop value to move the text closer
-    color: "#de6b0d",
-    fontFamily: "sans-serif",
-  }}
->
-  E-Sitizen
-</Typography.Title>
+        <Typography.Title
+          style={{
+            marginTop: "6vh", // Reduce the marginTop value to move the text closer
+            color: "#de6b0d",
+            fontFamily: "sans-serif",
+          }}
+        >
+          E-Sitizen
+        </Typography.Title>
         <Typography.Title
           level={4}
           style={{
@@ -151,7 +161,6 @@ const Login = () => {
           </Form.Item>
           <Form.Item label="PASSWORD" name="password">
             <Input.Password onChange={(e) => setPassword(e.target.value)} />
-           
           </Form.Item>
 
           <Form.Item noStyle>

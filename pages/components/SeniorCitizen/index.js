@@ -56,7 +56,7 @@ const AdminPage = () => {
     },
     {
       title: "Name",
-      width: 270,
+      width: 230,
       render: (_, row) => (
         <Typography>
           {row?.name?.name}
@@ -75,13 +75,13 @@ const AdminPage = () => {
     },
     {
       title: "Gender",
-      width: 150,
-      align: "center",
+      width: 90,
       render: (_, row) => <Typography>{row?.gender}</Typography>,
     },
     {
       title: "Age",
-      width: 100,
+      width: 70,
+      align: "center",
       render: (_, row) => (
         <Typography>
           {dayjs().diff(
@@ -94,7 +94,8 @@ const AdminPage = () => {
     },
     {
       title: "Status",
-      width: 150,
+      width: 90,
+      align: "center",
       render: (_, row) => (
         <Tag
           color={
@@ -113,7 +114,7 @@ const AdminPage = () => {
     },
     {
       title: "Pensioner Type",
-      width: 100,
+      width: 130,
       align: "center",
       render: (_, row) =>
         row?.pensionerType == "social" ? (
@@ -280,6 +281,11 @@ const AdminPage = () => {
         scroll={{ y: 500 }}
         rowKey={(row) => row._id}
         style={{ width: 1400 }}
+        onRow={(data) => {
+          return {
+            onClick: () => setOpenHistory({ open: true, id: data?._id }),
+          };
+        }}
       />
       <RepresentativeList />
       <AddSenior

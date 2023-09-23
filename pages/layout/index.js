@@ -13,10 +13,14 @@ import {
   message,
   Affix,
 } from "antd";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  NotificationOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 
-import { FcBullish, FcBusinessman, FcSettings } from "react-icons/fc";
+import { FcBullish, FcBusinessman } from "react-icons/fc";
 import { TbOld, TbReport } from "react-icons/tb";
 import { FaHouseUser } from "react-icons/fa";
 import AdminPage from "../components/Admin";
@@ -24,7 +28,9 @@ import SeniorCitizenPage from "../components/SeniorCitizen";
 import Dashboard from "../components/Dashboard";
 import Barangay from "../components/Barangay";
 import Reports from "../components/Reports";
+import NotificationHeader from "../components/NotificationHeader";
 import UpdatePassword from "../components/Admin/components/update_password";
+import AnnouncementMaker from "../components/AnnouncementMaker";
 import Cookies from "js-cookie";
 import { PageHeader } from "@ant-design/pro-layout";
 
@@ -104,11 +110,30 @@ const Header = () => {
   const [openChangePass, setOpenChangePass] = useState(false);
   const [form] = Form.useForm();
   const [location, setLocation] = useState();
+  const [openAnnounce, setOpenAnnounce] = useState(false);
+  const [notification, setNotification] = useState([]);
+  const [annoucement, setAnnouncement] = useState([]);
 
   useEffect(() => {
     setLocation(window.location);
     setCurrentUser(JSON.parse(Cookies.get("currentUser")));
   }, []);
+
+  useEffect(() => {
+    (async (_) => {
+      let res = await _.get("/api/notification", {
+        params: {
+          id: currentUser?._id,
+        },
+      });
+      if (res.data?.success) {
+        setNotification(res.data.notification);
+        setAnnouncement(res.data.announcement);
+      } else {
+        message.error(res.data?.message ?? "Error in the server");
+      }
+    })(axios);
+  }, [currentUser]);
 
   return (
     <>
@@ -116,6 +141,10 @@ const Header = () => {
         open={openChangePass}
         close={() => setOpenChangePass(false)}
         id={currentUser._id}
+      />
+      <AnnouncementMaker
+        open={openAnnounce}
+        close={() => setOpenAnnounce(false)}
       />
       <Modal
         open={openEdit}
@@ -186,6 +215,28 @@ const Header = () => {
         }}
       >
         <Space>
+          <Tooltip title="Create an announcement">
+            <Button
+              size="large"
+              icon={<NotificationOutlined />}
+              style={{
+                backgroundColor: "#aaa",
+                color: "#fff",
+                padding: 0,
+              }}
+              onClick={() => setOpenAnnounce(true)}
+            />
+          </Tooltip>
+          <Tooltip title="Notification and Announcements">
+            <NotificationHeader
+              announcement={annoucement}
+              notif={notification}
+              id={currentUser?._id}
+              setNotification={setNotification}
+              setAnnouncement={setAnnouncement}
+              isAdmin={true}
+            />
+          </Tooltip>
           <Tooltip title="Profile Settings">
             <Button
               size="large"

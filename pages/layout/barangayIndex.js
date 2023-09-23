@@ -30,6 +30,7 @@ import TabView from "../components/Barangay/components/TabView";
 import Cookies from "js-cookie";
 import { PageHeader } from "@ant-design/pro-layout";
 import json from "../assets/json/constant.json";
+import NotificationHeader from "../components/NotificationHeader";
 
 const barangay = Cookies.get("barangay");
 
@@ -106,12 +107,30 @@ const Header = () => {
   const [form] = Form.useForm();
   const [location, setLocation] = useState();
   const [color, setColor] = useState(null);
+  const [notification, setNotification] = useState([]);
+  const [annoucement, setAnnouncement] = useState([]);
 
   useEffect(() => {
     setLocation(window.location);
     setCurrentUser(JSON.parse(Cookies.get("currentUser")));
     setColor(json["barangay-color-theme"][barangay]);
   }, []);
+
+  useEffect(() => {
+    (async (_) => {
+      let res = await _.get("/api/notification", {
+        params: {
+          id: currentUser?._id,
+        },
+      });
+      if (res.data?.success) {
+        setNotification(res.data.notification);
+        setAnnouncement(res.data.announcement);
+      } else {
+        message.error(res.data?.message ?? "Error in the server");
+      }
+    })(axios);
+  }, [currentUser]);
 
   return (
     <>
@@ -179,52 +198,61 @@ const Header = () => {
           </Button>
         </Form>
       </Modal>
-      <Layout.Header
-        style={{
-          backgroundColor: "#aaa",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingInline: 20,
-        }}
-      >
-        <Tag color={color} className="barangay-label">
-          {barangay}
-        </Tag>
-        <Space>
-          <Tooltip title="Profile Settings">
-            <Button
-              size="large"
-              icon={<SettingOutlined />}
-              style={{
-                backgroundColor: "#aaa",
-                color: "#fff",
-                padding: 0,
-              }}
-              onClick={() => {
-                setOpenEdit(true);
-              }}
+      <Affix>
+        <Layout.Header
+          style={{
+            backgroundColor: "#aaa",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingInline: 20,
+          }}
+        >
+          <Tag color={color} className="barangay-label">
+            {barangay}
+          </Tag>
+          <Space>
+            <NotificationHeader
+              announcement={annoucement}
+              notif={notification}
+              setNotification={setNotification}
+              setAnnouncement={setAnnouncement}
+              id={currentUser?._id}
             />
-          </Tooltip>
-          <Tooltip title="Logout">
-            <Button
-              size="large"
-              icon={<LogoutOutlined />}
-              style={{
-                backgroundColor: "#aaa",
-                color: "#fff",
-                padding: 0,
-              }}
-              onClick={() => {
-                Cookies.remove("currentUser");
-                Cookies.remove("loggedIn");
-                Cookies.remove("barangay");
-                location?.reload();
-              }}
-            />
-          </Tooltip>
-        </Space>
-      </Layout.Header>
+            <Tooltip title="Profile Settings">
+              <Button
+                size="large"
+                icon={<SettingOutlined />}
+                style={{
+                  backgroundColor: "#aaa",
+                  color: "#fff",
+                  padding: 0,
+                }}
+                onClick={() => {
+                  setOpenEdit(true);
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Logout">
+              <Button
+                size="large"
+                icon={<LogoutOutlined />}
+                style={{
+                  backgroundColor: "#aaa",
+                  color: "#fff",
+                  padding: 0,
+                }}
+                onClick={() => {
+                  Cookies.remove("currentUser");
+                  Cookies.remove("loggedIn");
+                  Cookies.remove("barangay");
+                  location?.reload();
+                }}
+              />
+            </Tooltip>
+          </Space>
+        </Layout.Header>
+      </Affix>
     </>
   );
 };
