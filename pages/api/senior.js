@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             if (barangay) query.barangay = barangay;
             if (!["", undefined].includes(req.query.search)) {
               query._id = search;
-              return await Senior.find(query)
+              return await Senior.find({ ...query, isArchived: false })
                 .sort({ barangay: 1 })
                 .then((e) => {
                   res.json({
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
                   resolve();
                 });
             } else {
-              return await Senior.find(query)
+              return await Senior.find({ ...query, isArchived: false })
                 .sort({ barangay: 1 })
                 .then((e) => {
                   res.json({
@@ -48,12 +48,19 @@ export default async function handler(req, res) {
             var re = new RegExp(searchKeyword.toLowerCase().trim(), "i");
 
             return await Senior.find({
-              $or: [
-                { "name.lastname": { $regex: re } },
-                { "name.name": { $regex: re } },
-                { "name.middlename": { $regex: re } },
-                { "name.id": { $regex: re } },
-                { barangay: { $regex: re } },
+              $and: [
+                {
+                  $or: [
+                    { "name.lastname": { $regex: re } },
+                    { "name.name": { $regex: re } },
+                    { "name.middlename": { $regex: re } },
+                    { "name.id": { $regex: re } },
+                    { barangay: { $regex: re } },
+                  ],
+                },
+                {
+                  isArchived: false,
+                },
               ],
             })
               .collation({ locale: "en" })
@@ -73,7 +80,7 @@ export default async function handler(req, res) {
             let _ = JSON.parse(filter);
 
             let option = [];
-            console.log(_);
+
             if (_.hasOwnProperty("gender")) option.push({ gender: _.gender });
             if (_.hasOwnProperty("pensionerType"))
               option.push({ pensionerType: _.pensionerType });
@@ -353,16 +360,14 @@ export default async function handler(req, res) {
               };
 
               if (isSuperAdmin) {
-                let adminIds = await Admin.find(
-                  { role: "barangay-admin" },
-                  { _id: 1 }
-                );
+                let admin = await Admin.findOne({
+                  barangay: doc.barangay,
+                }).select("_id");
 
-                await Notification.insertMany(
-                  adminIds.map((e) => {
-                    return { ...placeholder, adminId: e };
-                  })
-                );
+                await Notification.create({
+                  ...placeholder,
+                  adminId: admin._id,
+                });
               }
 
               await Notification.create({
@@ -370,7 +375,48 @@ export default async function handler(req, res) {
                 adminId: updaterId,
                 content: `You archived ${doc.name.name} ${doc.name.lastname}`,
               });
+
+              return res.json({
+                status: 200,
+                success: true,
+                message: "Successfully Archived the senior",
+              });
             });
+          }
+
+          case "transfer-senior": {
+            let { barangay, seniorId, transferBy } = req.body.payload;
+
+            return await Senior.findOneAndUpdate(
+              { _id: seniorId },
+              { $set: { barangay } }
+            )
+              .then(async (doc) => {
+                //* notify transferer
+                await Notification.create({
+                  title: "Transfered Senior",
+                  content: `${doc.name.name} ${doc.name.lastname} has been transfered to Barangay ${barangay}`,
+                  type: "notification",
+                  adminId: transferBy,
+                });
+
+                //* notify transfered to
+                let admin = await Admin.findOne({
+                  barangay: doc.barangay,
+                }).select("_id");
+                await Notification.create({
+                  title: "Transfered Senior",
+                  content: `Senior Citizen ${doc.name.name} ${doc.name.lastname} has been transfered to you.`,
+                  type: "notification",
+                  adminId: admin._id,
+                });
+                resolve();
+              })
+              .catch((err) => {
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+              });
           }
         }
       });

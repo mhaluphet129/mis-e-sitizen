@@ -46,14 +46,12 @@ const NotificationHeader = ({
   const seen = (index, flag) => {
     (async (_) => {
       let { data } = await _.post("/api/notification", {
-        payload:
-          selectedIndex == "1"
-            ? {
-                mode: "seen-push",
-                id,
-                notifId: announcement[index]._id,
-              }
-            : {},
+        payload: {
+          mode: "seen-push",
+          id,
+          notifId:
+            selectedIndex == "1" ? announcement[index]._id : notif[index]._id,
+        },
       });
 
       if (data.success) {
@@ -101,8 +99,9 @@ const NotificationHeader = ({
   const ListCard = ({ data, index }) => {
     let flag =
       selectedIndex == "1"
-        ? announcement[index].seenBy?.includes(id) ?? false
+        ? announcement[index]?.seenBy?.includes(id) ?? false
         : notif[index]?.isSeen ?? false;
+
     return (
       <List.Item
         onClick={() => {
@@ -164,7 +163,7 @@ const NotificationHeader = ({
               paddingBottom: 10,
               paddingRight: 20,
               paddingLeft: 20,
-              width: isAdmin ? 250 : null,
+              width: isAdmin ? 300 : null,
             }}
             actions={[
               <Typography.Text
@@ -217,6 +216,10 @@ const NotificationHeader = ({
                           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                         ) : (
                           <List
+                            style={{
+                              maxHeight: 300,
+                              overflow: "scroll",
+                            }}
                             dataSource={announcement}
                             renderItem={(item, index) =>
                               ListCard({ data: item, index })
@@ -242,8 +245,14 @@ const NotificationHeader = ({
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     ) : (
                       <List
+                        style={{
+                          maxHeight: 300,
+                          overflow: "scroll",
+                        }}
                         dataSource={notif}
-                        renderItem={(item) => ListCard({ data: item })}
+                        renderItem={(item, index) =>
+                          ListCard({ data: item, index })
+                        }
                       />
                     ),
                 },
@@ -259,7 +268,6 @@ const NotificationHeader = ({
               : 0) + notif.filter((e) => !e.isSeen).length
           }
           style={{ zIndex: 99999 }}
-          d
         >
           <Tooltip title="Notification and Announcements">
             <Button

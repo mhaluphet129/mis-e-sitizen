@@ -12,8 +12,10 @@ export default async function handler(req, res) {
           let notification = await Notification.find({
             adminId: id,
             type: "notification",
-          });
-          let announcement = await Notification.find({ type: "annoucement" });
+          }).sort({ createdAt: -1 });
+          let announcement = await Notification.find({
+            type: "annoucement",
+          }).sort({ createdAt: -1 });
 
           return res.json({
             status: 200,
@@ -57,7 +59,7 @@ export default async function handler(req, res) {
             let { id, notifId } = req.body.payload;
             return await Notification.findOneAndUpdate(
               { _id: notifId },
-              { $push: { seenBy: id } }
+              { $push: { seenBy: id }, $set: { isSeen: true } }
             )
               .then(() => {
                 return res.json({ success: true });

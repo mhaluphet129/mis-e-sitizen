@@ -10,11 +10,14 @@ import {
   Space,
   Button,
   Modal,
+  message,
+  Select,
 } from "antd";
 import NoImage from "../../../assets/js/NoImage";
 import axios from "axios";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import jason from "../../../assets/json/constant.json";
 
 const Profile = ({ id }) => {
   const [name, setName] = useState({});
@@ -23,6 +26,8 @@ const Profile = ({ id }) => {
   const [loader, setLoader] = useState("");
   const [modal, contextHolder] = Modal.useModal();
   const [currentUser, setCurrentUser] = useState({ name: "", lastname: "" });
+  const [openMoveTo, setOpenMoveTo] = useState(false);
+  const [tranferBrgy, setTransferBrgy] = useState("");
 
   const customLabels = (_) => {
     let label = _;
@@ -141,6 +146,31 @@ const Profile = ({ id }) => {
           updaterId: currentUser._id,
         },
       });
+
+      if (data.success) {
+        message.success(data?.message ?? "Archived Successfully");
+      } else {
+        message.error("Error in the Server.");
+      }
+    })(axios);
+  };
+
+  const transferSenior = () => {
+    (async (_) => {
+      let { data } = await _.post("/api/senior", {
+        payload: {
+          mode: "transfer-senior",
+          barangay: tranferBrgy,
+          transferBy: currentUser._id,
+          seniorId: user._id,
+        },
+      });
+
+      if (data.success) {
+        message.success(data?.message ?? "Tranfered Successfully");
+      } else {
+        message.error("Error in the Server.");
+      }
     })(axios);
   };
 
@@ -168,6 +198,42 @@ const Profile = ({ id }) => {
   return (
     <Spin spinning={loader == "fetch-user"}>
       {contextHolder}
+      <Modal
+        title="Tranfer Senior"
+        open={openMoveTo}
+        closable={false}
+        footer={null}
+        onCancel={() => setOpenMoveTo(false)}
+      >
+        <Space>
+          <Select
+            placeholder="Search to Select"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label.toLocaleLowerCase() ?? "").includes(
+                input.toLocaleLowerCase()
+              )
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            showSearch
+            options={jason.barangay.map((e) => {
+              return { value: e, label: e };
+            })}
+            onChange={(e) => setTransferBrgy(e)}
+          />
+          <Button
+            type="primary"
+            disabled={tranferBrgy == ""}
+            onClick={transferSenior}
+          >
+            Transfer
+          </Button>
+        </Space>
+      </Modal>
       <Row gutter={[16, 16]}>
         <Col span={8}>
           <Typography.Title level={4} underline>
@@ -178,7 +244,7 @@ const Profile = ({ id }) => {
             {dayjs(user?.createdAt).format("hh:mm a, MM/DD/YYYY")}
           </Typography>
           <div style={{ position: "relative", width: 350 }}>
-            {user.profileImage ? (
+            {user?.profileImage ? (
               <Image src={user.profileImage} alt="random_photo" width="100%" />
             ) : (
               <NoImage />
@@ -309,18 +375,22 @@ const Profile = ({ id }) => {
             Functions
           </Typography.Title>
           <Space direction="vertical">
+            {/* {currentUser.role == "superadmin" && ( */}
             <Button
               onClick={() => {
                 modal.confirm({
                   title: "This senior ",
-                  okText: "CLEAR",
+                  okText: "ARCHIVE",
                   onOk: confirmArchive,
                 });
               }}
             >
               Archive
             </Button>
-            <Button>Move to another Barangay</Button>
+            {/* )} */}
+            <Button onClick={() => setOpenMoveTo(true)}>
+              Move to another Barangay
+            </Button>
           </Space>
         </Col>
       </Row>
