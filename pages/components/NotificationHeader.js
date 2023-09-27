@@ -172,10 +172,9 @@ const NotificationHeader = ({
               >
                 Mark all as read
               </Typography.Text>,
-              <Tooltip title="Temporary Disabled">
+              <Tooltip title="Temporary Disabled" key="key2">
                 <Button
                   type="text"
-                  key="key2"
                   danger
                   onClick={() => {
                     setOpen(false);

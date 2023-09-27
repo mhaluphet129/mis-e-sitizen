@@ -39,7 +39,12 @@ const AnnouncementMaker = ({ open, close }) => {
       open={open}
       onCancel={close}
       footer={[
-        <Button type="primary" loading={loader} onClick={handleSubmit}>
+        <Button
+          type="primary"
+          loading={loader}
+          onClick={handleSubmit}
+          key="key1"
+        >
           Submit
         </Button>,
       ]}
