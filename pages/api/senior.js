@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             if (barangay) query.barangay = barangay;
             if (!["", undefined].includes(req.query.search)) {
               query._id = search;
-              return await Senior.find({ ...query, isArchived: false })
+              return await Senior.find({ ...query })
                 .sort({ barangay: 1 })
                 .then((e) => {
                   res.json({
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
                   resolve();
                 });
             } else {
-              return await Senior.find({ ...query, isArchived: false })
+              return await Senior.find({ ...query })
                 .sort({ barangay: 1 })
                 .then((e) => {
                   res.json({
@@ -364,10 +364,12 @@ export default async function handler(req, res) {
                   barangay: doc.barangay,
                 }).select("_id");
 
-                await Notification.create({
-                  ...placeholder,
-                  adminId: admin._id,
-                });
+                if (admin) {
+                  await Notification.create({
+                    ...placeholder,
+                    adminId: admin._id,
+                  });
+                }
               }
 
               await Notification.create({

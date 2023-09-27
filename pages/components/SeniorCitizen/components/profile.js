@@ -250,9 +250,9 @@ const Profile = ({ id }) => {
               <NoImage />
             )}
 
-            {(user.status != null ||
-              user.status != undefined ||
-              user.status != "") && (
+            {(user?.status != null ||
+              user?.status != undefined ||
+              user?.status != "") && (
               <Tag
                 color={
                   user.status == "ACTIVE"
