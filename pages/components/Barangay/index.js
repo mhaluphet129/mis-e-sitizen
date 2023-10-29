@@ -21,14 +21,7 @@ const Barangay = () => {
   }, [trigger]);
 
   return (
-    <Card
-      // bodyStyle={{
-      //   display: "flex",
-      //   flexDirection: "column",
-      // }}
-      // style={{ width: 1400 }}
-      title="Barangay"
-    >
+    <Card title="Barangay">
       <Tabs
         defaultActiveKey="1"
         tabPosition="left"

@@ -114,7 +114,6 @@ const AdminPage = () => {
     },
     {
       title: "Pensioner Type",
-      width: 130,
       align: "center",
       render: (_, row) =>
         row?.pensionerType == "social" ? (
@@ -125,7 +124,7 @@ const AdminPage = () => {
           <Tag color="grey">For Validation</Tag>
         ) : (
           <Typography.Text type="secondary" italic>
-            No Data
+            No Data``
           </Typography.Text>
         ),
     },
@@ -175,7 +174,11 @@ const AdminPage = () => {
           <Tooltip title="Edit Senior">
             <Button
               icon={<EditOutlined />}
-              onClick={() => setUpdateSenior({ open: true, data: __ })}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setUpdateSenior({ open: true, data: __ });
+              }}
             />
           </Tooltip>
         </Space>

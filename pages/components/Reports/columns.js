@@ -40,7 +40,6 @@ const master_list = [
         false
       ),
   },
-
   {
     title: "GENDER",
     width: 1,
@@ -94,6 +93,12 @@ const pension_status = [
     width: 180,
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
+  {
+    title: "Pension Status",
+    width: 180,
+    render: (_, row) => row?.status,
+  },
 ];
+
 export default () => null;
-export { master_list };
+export { master_list, pension_status };

@@ -13,8 +13,9 @@ import {
   message,
 } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 
-import { master_list } from "./columns";
+import { master_list, pension_status } from "./columns";
 import ModalForm from "./components/ModalForm";
 import DrawerPrintPreview from "./components/DrawerPrintPreview";
 
@@ -27,6 +28,8 @@ import WarrantAndRelease from "./forms/warrant_and_release";
 import PreviewCertification from "./formsWithValue/certication";
 import PreviewSocialPensionProgram from "./formsWithValue/social_pension_program";
 import PreviewWarrantAndRelease from "./formsWithValue/warrant_and_release";
+
+import FilterForm from "./components/FilterForm";
 
 class PDF extends React.Component {
   render() {
@@ -49,6 +52,11 @@ const Reports = () => {
     open: false,
     dataSource: [],
     column: [],
+  });
+
+  const [openFilterForm, setOpenFilterForm] = useState({
+    open: false,
+    type: "",
   });
   const [formValues, setFormValues] = useState({});
   const ref = useRef();
@@ -180,11 +188,68 @@ const Reports = () => {
           <CustomTable1 />
         </PDF>
       </Drawer>
+      {/* Filter Form here */}
+      <FilterForm
+        title="Living Status"
+        open={openFilterForm.open}
+        close={() => setOpenFilterForm({ open: false, type: "" })}
+        submit={(v) => {
+          message.info("Generating reports...");
+
+          (async (_) => {
+            let { data } = await axios.get("/api/senior", {
+              params: {
+                mode: "senior-with-filter",
+                status:
+                  v.status != null && v.status?.length != 0
+                    ? JSON.stringify(v.status)
+                    : "",
+                barangay: v.barangay,
+              },
+            });
+
+            if (data?.status == 200) {
+              // sort by birthdate
+              data.senior = data.senior.sort((a, b) => {
+                let _a = dayjs().diff(
+                  dayjs(a?.dateOfBirth).format("YYYY-MM-DD"),
+                  "years",
+                  false
+                );
+                let _b = dayjs().diff(
+                  dayjs(b?.dateOfBirth).format("YYYY-MM-DD"),
+                  "years",
+                  false
+                );
+
+                if (_a < _b) {
+                  return -1;
+                }
+                if (_a > _b) {
+                  return 1;
+                }
+                return 0;
+              });
+
+              setOpenDrawer({
+                open: true,
+                dataSource: data.senior,
+                column:
+                  openFilterForm.type == "living-status"
+                    ? master_list
+                    : pension_status,
+              });
+              message.success(data?.message ?? "Generate success");
+            } else message.error(data?.message);
+          })(axios);
+        }}
+      />
+      {/* end */}
       <Card>
         <Row>
           <Col span={8}>
+            <Typography.Title level={4}>General</Typography.Title>
             <Space direction="vertical">
-              <Typography.Title level={4}>General</Typography.Title>
               <Button
                 onClick={async () => {
                   message.info("Generating reports....");
@@ -205,12 +270,25 @@ const Reports = () => {
               >
                 Print Senior Citizen List
               </Button>
-           
+              <Button
+                onClick={() => {
+                  setOpenFilterForm({ open: true, type: "living-status" });
+                }}
+              >
+                Living Status
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenFilterForm({ open: true, type: "pension-status" });
+                }}
+              >
+                Pension Status
+              </Button>
             </Space>
           </Col>
           <Col span={8}>
+            <Typography.Title level={4}>Forms</Typography.Title>
             <Space direction="vertical">
-              <Typography.Title level={4}>Forms</Typography.Title>
               <Button
                 onClick={() => {
                   setOpenDrawerPreview((e) => {

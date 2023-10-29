@@ -245,7 +245,7 @@ export default async function handler(req, res) {
 
           case "update-status": {
             const { id, status } = req.query;
-            console.log(req.query);
+
             return await Senior.findOneAndUpdate(
               { _id: id },
               { $set: { status } }
@@ -258,6 +258,33 @@ export default async function handler(req, res) {
                 res
                   .status(500)
                   .json({ success: false, message: "Error: " + err });
+              });
+          }
+
+          case "senior-with-filter": {
+            let { status, barangay } = req.query;
+            if (status != "") status = JSON.parse(status);
+
+            let filter = {};
+            if (barangay != null) filter.barangay = barangay;
+            if (status != null && status?.length != 0)
+              filter.status = { $in: status };
+
+            return await Senior.find(filter)
+              .then((doc) => {
+                res.json({
+                  status: 200,
+                  senior: doc,
+                  message: "Generated Successfully",
+                });
+                resolve();
+              })
+              .catch((err) => {
+                console.log(err);
+                res
+                  .status(500)
+                  .json({ success: false, message: "Error: " + err });
+                reject();
               });
           }
         }

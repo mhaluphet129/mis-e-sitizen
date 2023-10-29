@@ -12,11 +12,14 @@ import {
   Input,
   message,
   Affix,
+  Avatar,
+  Dropdown,
 } from "antd";
 import {
   LogoutOutlined,
   SettingOutlined,
   NotificationOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 
@@ -205,71 +208,87 @@ const Header = () => {
           </Button>
         </Form>
       </Modal>
-      <Layout.Header
-        style={{
-          backgroundColor: "#aaa",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          paddingInline: 20,
-        }}
-      >
-        <Space>
-          <Tooltip title="Create an announcement">
-            <Button
-              size="large"
-              icon={<NotificationOutlined />}
-              style={{
-                backgroundColor: "#aaa",
-                color: "#fff",
-                padding: 0,
+      <Affix>
+        <Layout.Header
+          style={{
+            backgroundColor: "#aaa",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingInline: 20,
+          }}
+        >
+          <Space>
+            <Tooltip title="Create an announcement">
+              <Button
+                size="large"
+                icon={<NotificationOutlined />}
+                style={{
+                  backgroundColor: "#aaa",
+                  color: "#fff",
+                  padding: 0,
+                }}
+                onClick={() => setOpenAnnounce(true)}
+              />
+            </Tooltip>
+            <Tooltip title="Notification and Announcements">
+              <NotificationHeader
+                announcement={annoucement}
+                notif={notification}
+                id={currentUser?._id}
+                setNotification={setNotification}
+                setAnnouncement={setAnnouncement}
+                isAdmin={true}
+              />
+            </Tooltip>
+            <div style={{ marginRight: 10 }} />
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    label: "Edit Profile",
+                    key: "edit",
+                    onClick: () => setOpenEdit(true),
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: (
+                      <div style={{ color: "#ff0000" }}>
+                        logout <LogoutOutlined />
+                      </div>
+                    ),
+                    key: "logout",
+                    onClick: () => {
+                      Cookies.remove("currentUser");
+                      Cookies.remove("loggedIn");
+                      Cookies.remove("mode");
+                      window.location.reload();
+                    },
+                  },
+                ],
               }}
-              onClick={() => setOpenAnnounce(true)}
-            />
-          </Tooltip>
-          <Tooltip title="Notification and Announcements">
-            <NotificationHeader
-              announcement={annoucement}
-              notif={notification}
-              id={currentUser?._id}
-              setNotification={setNotification}
-              setAnnouncement={setAnnouncement}
-              isAdmin={true}
-            />
-          </Tooltip>
-          <Tooltip title="Profile Settings">
-            <Button
-              size="large"
-              icon={<SettingOutlined />}
-              style={{
-                backgroundColor: "#aaa",
-                color: "#fff",
-                padding: 0,
-              }}
-              onClick={() => {
-                setOpenEdit(true);
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Logout">
-            <Button
-              size="large"
-              icon={<LogoutOutlined />}
-              style={{
-                backgroundColor: "#aaa",
-                color: "#fff",
-                padding: 0,
-              }}
-              onClick={() => {
-                Cookies.remove("currentUser");
-                Cookies.remove("loggedIn");
-                Cookies.remove("barangay");
-                location?.reload();
-              }}
-            />
-          </Tooltip>
-        </Space>
-      </Layout.Header>
+              trigger={["click"]}
+            >
+              {currentUser?.profilePhoto != null ? (
+                <Image
+                  src={JSON.parse(user)?.profilePhoto}
+                  width={40}
+                  style={{ borderRadius: "100%", backgroundColor: "#fff" }}
+                  preview={false}
+                />
+              ) : (
+                <Avatar
+                  icon={<UserOutlined />}
+                  size={40}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </Dropdown>
+          </Space>
+        </Layout.Header>
+      </Affix>
     </>
   );
 };
