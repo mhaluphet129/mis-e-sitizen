@@ -10,6 +10,8 @@ import {
   Typography,
   Image,
   Row,
+  Modal,
+  Checkbox,
   message,
 } from "antd";
 import axios from "axios";
@@ -60,6 +62,64 @@ const Reports = () => {
   const handlePrint = useReactToPrint({
     content: () => ref.current,
   });
+
+  const options = [
+    { label: "Active", value: "ACTIVE" },
+    { label: "Active with Illness", value: "ACTIVE_WITH_ILLNESS" },
+    { label: "Deceased", value: "DECEASED" },
+  ];
+
+  const options2 = [
+    { label: "Social", value: "social" },
+    { label: "Private", value: "private" },
+    { label: "None", value: "none" },
+  ];
+
+  const [filterOpt, setFilterOpt] = useState({
+    title: "",
+    open: false,
+    checked: ["ACTIVE"],
+    pstatus: [""],
+    options: [],
+  });
+
+  const resetFilter = () =>
+    setFilterOpt({
+      title: "",
+      open: false,
+      checked: ["ACTIVE"],
+      pstatus: ["social"],
+      options: [],
+    });
+
+  const fetchSenior = async () => {
+    if (
+      (filterOpt.title == "Living Status" && filterOpt.checked.length == 0) ||
+      (filterOpt.title == "Pension Status" && filterOpt.pstatus.length == 0)
+    ) {
+      message.warning("Select atleast 1 status");
+      return;
+    }
+    message.info("Generating reports....");
+    const { data } = await axios.get("/api/senior", {
+      params: {
+        mode: "senior-with-filter",
+        [filterOpt.title == "Living Status" ? "status" : "pstatus"]:
+          JSON.stringify(
+            filterOpt.title == "Living Status"
+              ? filterOpt.checked
+              : filterOpt.pstatus
+          ),
+      },
+    });
+
+    if (data.status == 200) {
+      message.success("Generate success");
+      setSeniors(data.senior);
+      setOpenDrawer(true);
+      setFilterOpt({ ...filterOpt, open: false });
+    }
+  };
 
   const CustomTable1 = () => (
     <div style={{ marginTop: 15 }}>
@@ -245,6 +305,59 @@ const Reports = () => {
           <CustomTable1 />
         </PDF>
       </Drawer>
+      {/* FIlter form */}
+      <Modal
+        title={filterOpt.title}
+        open={filterOpt.open}
+        onCancel={() => resetFilter()}
+        footer={[
+          <Button
+            key="btn-1"
+            onClick={() =>
+              setFilterOpt({
+                ...filterOpt,
+                checked: ["ACTIVE"],
+                pstatus: ["social"],
+              })
+            }
+          >
+            Clear All
+          </Button>,
+          <Button key="btn-2" type="primary" onClick={fetchSenior}>
+            Apply Filter
+          </Button>,
+        ]}
+        destroyOnClose
+      >
+        <Checkbox.Group
+          defaultValue={
+            filterOpt.title == "Living Status"
+              ? filterOpt.checked
+              : filterOpt.pstatus
+          }
+          value={
+            filterOpt.title == "Living Status"
+              ? filterOpt.checked
+              : filterOpt.pstatus
+          }
+          onChange={(v) =>
+            setFilterOpt({
+              ...filterOpt,
+              [filterOpt.title == "Living Status" ? "checked" : "pstatus"]: v,
+            })
+          }
+          style={{ marginTop: 10 }}
+        >
+          <Space direction="vertical">
+            {filterOpt.options.map((e, i) => (
+              <Checkbox key={`checkbox_${i}`} value={e.value}>
+                {e.label}
+              </Checkbox>
+            ))}
+          </Space>
+        </Checkbox.Group>
+      </Modal>
+      {/* end */}
       <Card>
         <Row>
           <Col span={8}>
@@ -265,7 +378,31 @@ const Reports = () => {
                   } else message.error(data?.message);
                 }}
               >
-                Print Senior Citizen Lists
+                Print Senior Citizen List
+              </Button>
+              <Button
+                onClick={() =>
+                  setFilterOpt({
+                    title: "Living Status",
+                    open: true,
+                    checked: ["ACTIVE"],
+                    options: options,
+                  })
+                }
+              >
+                Living Status
+              </Button>
+              <Button
+                onClick={async () =>
+                  setFilterOpt({
+                    title: "Pension Status",
+                    open: true,
+                    pstatus: ["social"],
+                    options: options2,
+                  })
+                }
+              >
+                Pension Status
               </Button>
             </Space>
           </Col>

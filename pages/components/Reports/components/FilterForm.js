@@ -1,21 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Select, Checkbox, Space, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import JASON from "../../../assets/json/constant.json";
 
-const FilterForm = ({ title, open, close, submit }) => {
-  const [checkValues, setCheckValues] = useState(["ACTIVE"]);
+const FilterForm = ({
+  title,
+  open,
+  close,
+  submit,
+  checkValues,
+  setCheckValues,
+}) => {
   const [barangay, setBarangay] = useState("");
+  const [enabledOptions, setEnabledOptions] = useState([]);
   const options = [
     { label: "Active", value: "ACTIVE" },
     { label: "Active with Illness", value: "ACTIVE_WITH_ILLNESS" },
     { label: "Deceased", value: "DECEASED" },
+  ];
+  const options2 = [
+    { label: "Social", value: "social" },
+    { label: "Private", value: "private" },
+    { label: "None", value: "none" },
   ];
 
   const reset = () => {
     setCheckValues(["ACTIVE"]);
     setBarangay("");
   };
+
+  useEffect(() => {
+    if (title == "Living Status") setEnabledOptions(options);
+    else setEnabledOptions(options2);
+  }, [title]);
 
   return (
     <Modal
@@ -71,7 +87,7 @@ const FilterForm = ({ title, open, close, submit }) => {
         style={{ marginTop: 10 }}
       >
         <Space direction="vertical">
-          {options.map((e, i) => (
+          {enabledOptions.map((e, i) => (
             <Checkbox key={`checkbox_${i}`} value={e.value}>
               {e.label}
             </Checkbox>

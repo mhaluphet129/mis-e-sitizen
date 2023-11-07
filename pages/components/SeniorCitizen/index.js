@@ -94,8 +94,7 @@ const AdminPage = () => {
     },
     {
       title: "Status",
-      width: 90,
-      align: "center",
+      width: 160,
       render: (_, row) => (
         <Tag
           color={
@@ -114,6 +113,7 @@ const AdminPage = () => {
     },
     {
       title: "Pensioner Type",
+      width: 100,
       align: "center",
       render: (_, row) =>
         row?.pensionerType == "social" ? (

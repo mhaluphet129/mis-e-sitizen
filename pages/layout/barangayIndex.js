@@ -6,15 +6,16 @@ import {
   Typography,
   Image,
   Space,
-  Tooltip,
+  Dropdown,
   Modal,
   Form,
   Input,
   message,
   Affix,
   Tag,
+  Avatar,
 } from "antd";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 // ICONS
@@ -219,37 +220,50 @@ const Header = () => {
               setAnnouncement={setAnnouncement}
               id={currentUser?._id}
             />
-            <Tooltip title="Profile Settings">
-              <Button
-                size="large"
-                icon={<SettingOutlined />}
-                style={{
-                  backgroundColor: "#aaa",
-                  color: "#fff",
-                  padding: 0,
-                }}
-                onClick={() => {
-                  setOpenEdit(true);
-                }}
-              />
-            </Tooltip>
-            <Tooltip title="Logout">
-              <Button
-                size="large"
-                icon={<LogoutOutlined />}
-                style={{
-                  backgroundColor: "#aaa",
-                  color: "#fff",
-                  padding: 0,
-                }}
-                onClick={() => {
-                  Cookies.remove("currentUser");
-                  Cookies.remove("loggedIn");
-                  Cookies.remove("barangay");
-                  location?.reload();
-                }}
-              />
-            </Tooltip>
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    label: "Edit Profile",
+                    key: "edit",
+                    onClick: () => setOpenEdit(true),
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: (
+                      <div style={{ color: "#ff0000" }}>
+                        logout <LogoutOutlined />
+                      </div>
+                    ),
+                    key: "logout",
+                    onClick: () => {
+                      Cookies.remove("currentUser");
+                      Cookies.remove("loggedIn");
+                      Cookies.remove("mode");
+                      window.location.reload();
+                    },
+                  },
+                ],
+              }}
+              trigger={["click"]}
+            >
+              {currentUser?.profilePhoto != null ? (
+                <Image
+                  src={JSON.parse(user)?.profilePhoto}
+                  width={40}
+                  style={{ borderRadius: "100%", backgroundColor: "#fff" }}
+                  preview={false}
+                />
+              ) : (
+                <Avatar
+                  icon={<UserOutlined />}
+                  size={40}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </Dropdown>
           </Space>
         </Layout.Header>
       </Affix>

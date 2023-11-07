@@ -55,8 +55,11 @@ const Reports = () => {
   });
 
   const [openFilterForm, setOpenFilterForm] = useState({
+    title: "",
     open: false,
     type: "",
+    checked: [],
+    pstatus: [],
   });
   const [formValues, setFormValues] = useState({});
   const ref = useRef();
@@ -190,17 +193,48 @@ const Reports = () => {
       </Drawer>
       {/* Filter Form here */}
       <FilterForm
-        title="Living Status"
+        title={openFilterForm.title}
         open={openFilterForm.open}
-        close={() => setOpenFilterForm({ open: false, type: "" })}
+        close={() =>
+          setOpenFilterForm({
+            title: "",
+            open: false,
+            type: "",
+            checked: ["ACTIVE"],
+            pstatus: ["social"],
+          })
+        }
+        checkValues={
+          openFilterForm.title == "Living Status"
+            ? openFilterForm.checked
+            : openFilterForm.pstatus
+        }
+        setCheckValues={(val) =>
+          setOpenFilterForm({
+            ...openFilterForm,
+            [openFilterForm.title == "Living Status" ? "checked" : "pstatus"]:
+              val,
+          })
+        }
         submit={(v) => {
+          if (
+            (openFilterForm.title == "Living Status" &&
+              openFilterForm.checked.length == 0) ||
+            (openFilterForm.title == "Pension Status" &&
+              openFilterForm.pstatus.length == 0)
+          ) {
+            message.warning("Select atleast 1 status");
+            return;
+          }
           message.info("Generating reports...");
 
           (async (_) => {
             let { data } = await axios.get("/api/senior", {
               params: {
                 mode: "senior-with-filter",
-                status:
+                [openFilterForm.title == "Living Status"
+                  ? "status"
+                  : "pstatus"]:
                   v.status != null && v.status?.length != 0
                     ? JSON.stringify(v.status)
                     : "",
@@ -272,14 +306,24 @@ const Reports = () => {
               </Button>
               <Button
                 onClick={() => {
-                  setOpenFilterForm({ open: true, type: "living-status" });
+                  setOpenFilterForm({
+                    title: "Living Status",
+                    open: true,
+                    type: "living-status",
+                    checked: ["ACTIVE"],
+                  });
                 }}
               >
                 Living Status
               </Button>
               <Button
                 onClick={() => {
-                  setOpenFilterForm({ open: true, type: "pension-status" });
+                  setOpenFilterForm({
+                    title: "Pension Status",
+                    open: true,
+                    type: "pension-status",
+                    pstatus: ["social"],
+                  });
                 }}
               >
                 Pension Status

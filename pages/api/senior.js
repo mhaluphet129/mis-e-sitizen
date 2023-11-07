@@ -262,13 +262,17 @@ export default async function handler(req, res) {
           }
 
           case "senior-with-filter": {
-            let { status, barangay } = req.query;
-            if (status != "") status = JSON.parse(status);
-
+            let { status, barangay, pstatus } = req.query;
+            if (status != "" && status != null) status = JSON.parse(status);
+            if (pstatus != "" && pstatus != null) pstatus = JSON.parse(pstatus);
             let filter = {};
             if (barangay != null) filter.barangay = barangay;
             if (status != null && status?.length != 0)
               filter.status = { $in: status };
+            if (pstatus != null && pstatus?.length != 0)
+              filter.pensionerType = { $in: pstatus };
+
+            console.log(filter);
 
             return await Senior.find(filter)
               .then((doc) => {
