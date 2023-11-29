@@ -57,18 +57,34 @@ export default async function handler(req, res) {
           }
           case "seen-push": {
             let { id, notifId } = req.body.payload;
-            return await Notification.findOneAndUpdate(
-              { _id: notifId },
-              { $push: { seenBy: id }, $set: { isSeen: true } }
-            )
-              .then(() => {
-                return res.json({ success: true });
-              })
-              .catch((err) => {
-                res
-                  .status(500)
-                  .json({ success: false, message: "Error: " + err });
-              });
+
+            if (typeof notifId == "object") {
+              return await Notification.updateMany(
+                { _id: { $in: notifId } },
+                { $set: { isSeen: true } }
+              )
+                .then(() => {
+                  return res.json({ success: true });
+                })
+                .catch((err) => {
+                  res
+                    .status(500)
+                    .json({ success: false, message: "Error: " + err });
+                });
+            } else {
+              return await Notification.findOneAndUpdate(
+                { _id: notifId },
+                { $push: { seenBy: id }, $set: { isSeen: true } }
+              )
+                .then(() => {
+                  return res.json({ success: true });
+                })
+                .catch((err) => {
+                  res
+                    .status(500)
+                    .json({ success: false, message: "Error: " + err });
+                });
+            }
           }
 
           case "seen-push-all": {

@@ -320,6 +320,9 @@ const AdminPage = () => {
           setOpenHistory({ open: false, data: null });
         }}
         id={openHistory.id}
+        refresh={() => {
+          setTrigger(trigger + 1);
+        }}
       />
       <AddHistory
         open={openModal.open}

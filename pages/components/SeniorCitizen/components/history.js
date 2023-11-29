@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 
 import Profile from "./profile";
 
-const History = ({ open, close, id }) => {
+const History = ({ open, close, id, refresh }) => {
   let [history, setHistory] = useState([]);
   let [user, setUser] = useState({});
   let [mode, setMode] = useState("Personal Info");
@@ -184,7 +184,15 @@ const History = ({ open, close, id }) => {
           ))}
         </Timeline>
       )}
-      {mode == "Personal Info" && <Profile id={id} />}
+      {mode == "Personal Info" && (
+        <Profile
+          id={id}
+          closeAll={() => {
+            close();
+            refresh();
+          }}
+        />
+      )}
     </Drawer>
   );
 };

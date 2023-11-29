@@ -30,6 +30,7 @@ import PreviewSocialPensionProgram from "./formsWithValue/social_pension_program
 import PreviewWarrantAndRelease from "./formsWithValue/warrant_and_release";
 
 import FilterForm from "./components/FilterForm";
+import FilterFormBarangay from "./components/Filterform_barangay";
 
 class PDF extends React.Component {
   render() {
@@ -61,6 +62,8 @@ const Reports = () => {
     checked: [],
     pstatus: [],
   });
+
+  const [openBarangayFilter, setOpenBarangayFilter] = useState(false);
   const [formValues, setFormValues] = useState({});
   const ref = useRef();
 
@@ -165,6 +168,28 @@ const Reports = () => {
       >
         {openDrawerPreview.children}
       </DrawerPrintPreview>
+      <FilterFormBarangay
+        open={openBarangayFilter}
+        close={() => setOpenBarangayFilter(false)}
+        selectedBarangay={async (v) => {
+          console.log(v);
+          message.info("Generating reports....");
+          let { data } = await axios.get("/api/senior", {
+            params: {
+              mode: "fetch-all",
+              barangay: [null, ""].includes(v) ? null : v,
+            },
+          });
+          if (data?.status == 200) {
+            setOpenDrawer({
+              open: true,
+              dataSource: data.senior,
+              column: master_list,
+            });
+            message.success("Generate success");
+          } else message.error(data?.message);
+        }}
+      />
       <Drawer
         open={openDrawer.open}
         onClose={() =>
@@ -284,24 +309,7 @@ const Reports = () => {
           <Col span={8}>
             <Typography.Title level={4}>General</Typography.Title>
             <Space direction="vertical">
-              <Button
-                onClick={async () => {
-                  message.info("Generating reports....");
-                  let { data } = await axios.get("/api/senior", {
-                    params: {
-                      mode: "fetch-all",
-                    },
-                  });
-                  if (data?.status == 200) {
-                    setOpenDrawer({
-                      open: true,
-                      dataSource: data.senior,
-                      column: master_list,
-                    });
-                    message.success("Generate success");
-                  } else message.error(data?.message);
-                }}
-              >
+              <Button onClick={() => setOpenBarangayFilter(true)}>
                 Print Senior Citizen List
               </Button>
               <Button

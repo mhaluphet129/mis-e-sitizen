@@ -291,6 +291,23 @@ export default async function handler(req, res) {
                 reject();
               });
           }
+
+          case "check-id": {
+            let { id } = req.query;
+            return await Senior.find({ "name.id": id }).then((doc) => {
+              if (doc.length > 0) {
+                res.json({
+                  success: true,
+                });
+                resolve();
+              } else {
+                res.json({
+                  success: false,
+                });
+                resolve();
+              }
+            });
+          }
         }
       });
     case "POST": {
@@ -379,7 +396,7 @@ export default async function handler(req, res) {
 
             let isSuperAdmin = updater.role == "superadmin";
 
-            await Senior.findOneAndUpdate(
+            return await Senior.findOneAndUpdate(
               { _id: seniorId },
               { $set: { isArchived: true } },
               { returnOriginal: false }
@@ -419,10 +436,11 @@ export default async function handler(req, res) {
 
           case "transfer-senior": {
             let { barangay, seniorId, transferBy } = req.body.payload;
-
+            console.log(req.body);
             return await Senior.findOneAndUpdate(
               { _id: seniorId },
-              { $set: { barangay } }
+              { $set: { barangay } },
+              { returnOriginal: false }
             )
               .then(async (doc) => {
                 //* notify transferer
@@ -437,15 +455,24 @@ export default async function handler(req, res) {
                 let admin = await Admin.findOne({
                   barangay: doc.barangay,
                 }).select("_id");
-                await Notification.create({
-                  title: "Transfered Senior",
-                  content: `Senior Citizen ${doc.name.name} ${doc.name.lastname} has been transfered to you.`,
-                  type: "notification",
-                  adminId: admin._id,
+
+                if (admin) {
+                  await Notification.create({
+                    title: "Transfered Senior",
+                    content: `Senior Citizen ${doc.name.name} ${doc.name.lastname} has been transfered to you.`,
+                    type: "notification",
+                    adminId: admin._id,
+                  });
+                }
+
+                return res.json({
+                  status: 200,
+                  success: true,
+                  message: "Successfully transfered the senior",
                 });
-                resolve();
               })
               .catch((err) => {
+                console.log(err);
                 res
                   .status(500)
                   .json({ success: false, message: "Error: " + err });

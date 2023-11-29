@@ -17,7 +17,11 @@ import {
   Tooltip,
   Image,
 } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  LoadingOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import { PickerDropPane } from "filestack-react";
@@ -35,6 +39,60 @@ const AddSenior = ({ open, close, refresh }) => {
   const [othersIncome, setOthersIncome] = useState("");
   const [incomeIn6mos, setIncomeIn6mos] = useState("");
   const [image, setImage] = useState(null);
+  const [idStatus, setIdStatus] = useState(-1); // -1 = not updated, 0 - checking, 1 = good, 2 = error
+  // api functions
+
+  const checkId = (v) => {
+    setIdStatus(0);
+    (async (_) => {
+      let { data } = await _.get("/api/senior", {
+        params: {
+          mode: "check-id",
+          id: v,
+        },
+      });
+      setIdStatus(data.success ? 2 : 1);
+    })(axios);
+  };
+
+  const idCheckerComponent = () => {
+    switch (idStatus) {
+      case -1: {
+        // nothing
+        return <></>;
+      }
+      case 0: {
+        return (
+          <>
+            <LoadingOutlined />
+            <Typography.Text type="secondary" style={{ marginLeft: 5 }}>
+              checking
+            </Typography.Text>
+          </>
+        );
+      }
+      case 1: {
+        return (
+          <>
+            <CheckOutlined style={{ color: "#52c41a" }} />
+            <Typography.Text type="success" style={{ marginLeft: 5 }}>
+              Valid ID
+            </Typography.Text>
+          </>
+        );
+      }
+      case 2: {
+        return (
+          <>
+            <CloseOutlined style={{ color: "red" }} />
+            <Typography.Text type="danger" style={{ marginLeft: 5 }}>
+              ID is already taken
+            </Typography.Text>
+          </>
+        );
+      }
+    }
+  };
 
   const [data, setData] = useState({
     part1: {
@@ -251,7 +309,7 @@ const AddSenior = ({ open, close, refresh }) => {
               <InputNumber
                 maxLength={6}
                 controls={false}
-                onChange={(e) =>
+                onChange={(e) => {
                   setData({
                     ...data,
                     part1: {
@@ -261,9 +319,21 @@ const AddSenior = ({ open, close, refresh }) => {
                         id: e,
                       },
                     },
-                  })
-                }
+                  });
+                  if (e?.length == 0 ?? false) {
+                    setIdStatus(-1);
+                  } else {
+                    checkId(e);
+                  }
+                }}
+                style={{
+                  width: 300,
+                }}
+                status={idStatus == "2" ? "error" : null}
+                loading
               />
+              <br />
+              {idCheckerComponent()}
             </Form.Item>
             <Form.Item label="First Name" name="name" required>
               <Input
@@ -1268,16 +1338,14 @@ const AddSenior = ({ open, close, refresh }) => {
         },
       });
 
-      if (!res.data.success) {
-        message.error(res.data.message);
-        return;
-      }
-
       if (res.data.status == 200) {
         message.success(res.data.message);
         close();
         refresh();
-      } else message.error(res.data.message);
+      } else {
+        message.error(res.data.message);
+        return;
+      }
     } else {
       message.warning(
         `Senior ${name} ${lastname} is already registered in another barangay`
@@ -1382,6 +1450,7 @@ const AddSenior = ({ open, close, refresh }) => {
         close();
         setCurrent(0);
         setAuthorizedRepresentative([]);
+        setIdStatus(-1);
       }}
       closable={false}
       width={800}

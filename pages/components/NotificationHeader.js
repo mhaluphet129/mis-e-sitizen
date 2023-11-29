@@ -93,6 +93,25 @@ const NotificationHeader = ({
           setOpen(false);
         }
       })(axios);
+    } else {
+      (async (_) => {
+        let { data } = await _.post("/api/notification", {
+          payload: {
+            mode: "seen-push",
+            id,
+            notifId: notif.map((e) => e._id),
+          },
+        });
+        if (data.success) {
+          setNotification((e) => {
+            e.forEach((_, index) => {
+              e[index].isSeen = true;
+            });
+            return e;
+          });
+          setOpen(false);
+        }
+      })(axios);
     }
   };
 

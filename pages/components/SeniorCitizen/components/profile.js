@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import jason from "../../../assets/json/constant.json";
 
-const Profile = ({ id }) => {
+const Profile = ({ id, closeAll }) => {
   const [name, setName] = useState({});
   const [guardian, setGuardian] = useState({});
   const [user, setUser] = useState({});
@@ -149,6 +149,7 @@ const Profile = ({ id }) => {
 
       if (data.success) {
         message.success(data?.message ?? "Archived Successfully");
+        closeAll();
       } else {
         message.error("Error in the Server.");
       }
@@ -168,6 +169,7 @@ const Profile = ({ id }) => {
 
       if (data.success) {
         message.success(data?.message ?? "Tranfered Successfully");
+        setOpenMoveTo(false);
       } else {
         message.error("Error in the Server.");
       }
@@ -199,7 +201,7 @@ const Profile = ({ id }) => {
     <Spin spinning={loader == "fetch-user"}>
       {contextHolder}
       <Modal
-        title="Tranfer Senior"
+        title="Transfer Senior"
         open={openMoveTo}
         closable={false}
         footer={null}
@@ -379,7 +381,7 @@ const Profile = ({ id }) => {
             <Button
               onClick={() => {
                 modal.confirm({
-                  title: "This senior ",
+                  title: "Archive this senior ?",
                   okText: "ARCHIVE",
                   onOk: confirmArchive,
                 });

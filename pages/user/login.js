@@ -41,7 +41,13 @@ const Login = () => {
       setIsError({ show: true, description: "Account doesn't exist" });
     else if (data.status == 403)
       setIsError({ show: true, description: "Wrong password" });
-    else if (data.status == 200) {
+    else if (data.status == 402) {
+      setIsError({
+        show: true,
+        description:
+          "Cannot log in. Ask admin to assign this account to any barangay",
+      });
+    } else if (data.status == 200) {
       Cookies.set("currentUser", JSON.stringify(data.currentUser));
       Cookies.set("loggedIn", "true");
       Cookies.set("barangay", data.currentUser?.barangay ?? false);

@@ -29,6 +29,13 @@ export default async function handler(req, res) {
                 if (e == null) {
                   res.json({ status: 404, message: "Account not found." });
                 } else if (e.password == password) {
+                  if (
+                    ["", null, undefined, "false", false].includes(
+                      e.barangay
+                    ) &&
+                    e.role != "superadmin"
+                  )
+                    res.status(200).json({ status: 402 });
                   await Admin.findOneAndUpdate(
                     { email },
                     { $set: { lastLogin: moment() } }
