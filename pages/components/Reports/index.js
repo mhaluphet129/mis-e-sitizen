@@ -61,6 +61,7 @@ const Reports = () => {
     type: "",
     checked: [],
     pstatus: [],
+    semester: "",
   });
 
   const [openBarangayFilter, setOpenBarangayFilter] = useState(false);
@@ -171,13 +172,15 @@ const Reports = () => {
       <FilterFormBarangay
         open={openBarangayFilter}
         close={() => setOpenBarangayFilter(false)}
-        selectedBarangay={async (v) => {
-          console.log(v);
+        selectedBarangay={async (v, d, s) => {
+          console.log(s);
           message.info("Generating reports....");
           let { data } = await axios.get("/api/senior", {
             params: {
               mode: "fetch-all",
               barangay: [null, ""].includes(v) ? null : v,
+              date: JSON.stringify(d),
+              selectedDates: JSON.stringify(s),
             },
           });
           if (data?.status == 200) {
@@ -232,6 +235,8 @@ const Reports = () => {
         checkValues={
           openFilterForm.title == "Living Status"
             ? openFilterForm.checked
+            : openFilterForm.title == "Released Pension"
+            ? null
             : openFilterForm.pstatus
         }
         setCheckValues={(val) =>
@@ -310,20 +315,34 @@ const Reports = () => {
             <Typography.Title level={4}>General</Typography.Title>
             <Space direction="vertical">
               <Button onClick={() => setOpenBarangayFilter(true)}>
-                Print Senior Citizen List
+                Senior Citizen List
               </Button>
-              <Button
-                onClick={() => {
-                  setOpenFilterForm({
-                    title: "Living Status",
-                    open: true,
-                    type: "living-status",
-                    checked: ["ACTIVE"],
-                  });
-                }}
-              >
-                Living Status
-              </Button>
+              <Space>
+                <Button
+                  onClick={() => {
+                    setOpenFilterForm({
+                      title: "Living Status",
+                      open: true,
+                      type: "living-status",
+                      checked: ["ACTIVE"],
+                    });
+                  }}
+                >
+                  Living Status
+                </Button>
+                <Button
+                  onClick={() => {
+                    setOpenFilterForm({
+                      title: "Released Pension",
+                      open: true,
+                      type: "released-pension",
+                      checked: ["ACTIVE"],
+                    });
+                  }}
+                >
+                  Released Pension
+                </Button>
+              </Space>
               <Button
                 onClick={() => {
                   setOpenFilterForm({

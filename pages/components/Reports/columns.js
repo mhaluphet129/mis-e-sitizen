@@ -96,7 +96,7 @@ const pension_status = [
   {
     title: "Pension Status",
     width: 180,
-    render: (_, row) => row?.status,
+    render: (_, row) => row?.status.replaceAll("_", " "),
   },
 ];
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Select, Checkbox, Space, Button } from "antd";
+import { Modal, Select, Checkbox, Space, Button, Radio } from "antd";
 import JASON from "../../../assets/json/constant.json";
 
 const FilterForm = ({
@@ -80,20 +80,30 @@ const FilterForm = ({
         onChange={(v) => setBarangay(v)}
         allowClear
       />
-      <Checkbox.Group
-        defaultValue={checkValues}
-        value={checkValues}
-        onChange={(v) => setCheckValues(v)}
-        style={{ marginTop: 10 }}
-      >
-        <Space direction="vertical">
-          {enabledOptions.map((e, i) => (
-            <Checkbox key={`checkbox_${i}`} value={e.value}>
-              {e.label}
-            </Checkbox>
-          ))}
-        </Space>
-      </Checkbox.Group>
+      {title == "Released Pension" ? (
+        <>
+          (under construction) <br />
+          <Radio.Group>
+            <Radio value="1">First Semester</Radio>
+            <Radio value="2">First Semester</Radio>
+          </Radio.Group>
+        </>
+      ) : (
+        <Checkbox.Group
+          defaultValue={checkValues}
+          value={checkValues}
+          onChange={(v) => setCheckValues(v)}
+          style={{ marginTop: 10 }}
+        >
+          <Space direction="vertical">
+            {enabledOptions.map((e, i) => (
+              <Checkbox key={`checkbox_${i}`} value={e.value}>
+                {e.label}
+              </Checkbox>
+            ))}
+          </Space>
+        </Checkbox.Group>
+      )}
     </Modal>
   );
 };

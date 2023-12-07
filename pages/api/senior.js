@@ -3,6 +3,7 @@ import Notification from "../../database/model/Notitification";
 import Admin from "../../database/model/Admin";
 import dbConnect from "../../database/dbConnect";
 import mongoose from "mongoose";
+import dayjs from "dayjs";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -15,33 +16,58 @@ export default async function handler(req, res) {
 
         switch (mode) {
           case "fetch-all": {
-            const { search, barangay } = req.query;
-            let query = {};
-            if (barangay) query.barangay = barangay;
-            if (!["", undefined].includes(req.query.search)) {
-              query._id = search;
-              return await Senior.find({ ...query })
-                .sort({ barangay: 1 })
-                .then((e) => {
-                  res.json({
-                    status: 200,
-                    message: "Successfully fetched the data",
-                    senior: e,
-                  });
-                  resolve();
+            let { search, barangay, date, selectedDates } = req.query;
+            let query = { $expr: { $and: [] } };
+
+            if (date) date = JSON.parse(date);
+            if (selectedDates) selectedDates = JSON.parse(selectedDates);
+            if (barangay) query.$and = [{ barangay }];
+            if (date) {
+              if (date.year) {
+                query.$expr.$and.push({
+                  $eq: [{ $year: "$createdAt" }, parseInt(date.year)],
                 });
-            } else {
-              return await Senior.find({ ...query })
-                .sort({ barangay: 1 })
-                .then((e) => {
-                  res.json({
-                    status: 200,
-                    message: "Successfully fetched the data",
-                    senior: e,
+
+                if (date.month) {
+                  query.$expr.$and.push({
+                    $and: [
+                      {
+                        $eq: [
+                          { $month: "$createdAt" },
+                          parseInt(date.month) + 1,
+                        ],
+                      },
+                    ],
                   });
-                  resolve();
-                });
+
+                  if (date.day) {
+                    query.$expr.$and.push({
+                      $eq: [{ $dayOfMonth: "$createdAt" }, parseInt(date.day)],
+                    });
+                  }
+                }
+              }
             }
+            if (selectedDates && selectedDates?.length != 0) {
+              query.$expr.$and.push({
+                $gte: ["$createdAt", new Date(selectedDates[0])],
+              });
+              query.$expr.$and.push({
+                $lt: ["$createdAt", new Date(selectedDates[1])],
+              });
+            }
+
+            if (search) query.$expr.$and.push({ _id: search });
+            return await Senior.find(query.$expr.$and.length == 0 ? {} : query)
+              .sort({ barangay: 1 })
+              .then((e) => {
+                res.json({
+                  status: 200,
+                  message: "Successfully fetched the data",
+                  senior: e,
+                });
+                resolve();
+              });
           }
           case "search-senior": {
             const { searchKeyword } = req.query;

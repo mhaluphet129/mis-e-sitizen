@@ -378,7 +378,7 @@ const Reports = () => {
                   } else message.error(data?.message);
                 }}
               >
-                Print Senior Citizen List
+                Senior Citizen List
               </Button>
               <Button
                 onClick={() =>
