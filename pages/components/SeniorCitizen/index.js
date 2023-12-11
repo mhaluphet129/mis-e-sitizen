@@ -9,6 +9,7 @@ import {
   AutoComplete,
   List,
   Modal,
+  message,
 } from "antd";
 import {
   EditOutlined,
@@ -235,12 +236,17 @@ const AdminPage = () => {
   );
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
       let { data } = await axios.get("/api/senior", {
         params: { mode: "fetch-all", search: _searchName, barangay },
       });
       if (data.status == 200) {
+        setLoading(false);
         setSeniors(data.senior);
+      } else {
+        message.error(data?.message ?? "Error in the Server.");
+        setLoading(false);
       }
     })();
   }, [trigger]);
