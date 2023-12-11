@@ -117,10 +117,8 @@ export default async function handler(req, res) {
                     ).then(async () => {
                       await Notification.create({
                         adminId: mongoose.Types.ObjectId(id),
-                        title: `Added as Barangay Admin in barangay ${barangay}`,
-                        content: `Superadmin added you as barangay admin in barangay ${barangay} at ${dayjs(
-                          new Date()
-                        ).format("MMM DD, YYYY - hh:mm a")}`,
+                        title: `Added as Barangay Admin`,
+                        content: `Hello there!, Super Admin added you as barangay admin in barangay ${barangay}`,
                         type: "notification",
                       });
                       res.json({
@@ -168,10 +166,8 @@ export default async function handler(req, res) {
               .then(async () => {
                 await Notification.create({
                   adminId: mongoose.Types.ObjectId(id),
-                  title: `Removed as Barangay Admin in barangay ${barangay}`,
-                  content: `Superadmin removed you as barangay admin in barangay ${barangay} at ${dayjs(
-                    new Date()
-                  ).format("MMM DD, YYYY - hh:mm a")}`,
+                  title: `Removed as Barangay Admin`,
+                  content: `Hello there!, Super Admin removed you as barangay admin in barangay ${barangay}`,
                   type: "notification",
                 });
 

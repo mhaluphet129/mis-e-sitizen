@@ -167,6 +167,16 @@ const AdminPage = () => {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
+                if (
+                  __?.pensionerType == "none" ||
+                  __?.pensionerType == "private"
+                ) {
+                  message.warning(
+                    "Cannot add new release to for validation or private pension type senior"
+                  );
+                  return;
+                }
+
                 setOpenModal({ open: true, id: __?._id });
               }}
               icon={<FileAddOutlined />}

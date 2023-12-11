@@ -21,7 +21,7 @@ const FilterForm = ({
 }) => {
   const [barangay, setBarangay] = useState("");
   const [enabledOptions, setEnabledOptions] = useState([]);
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState();
   const [semester, setSemester] = useState("");
   const options = [
     { label: "Active", value: "ACTIVE" },
@@ -44,6 +44,8 @@ const FilterForm = ({
   useEffect(() => {
     if (title == "Living Status") setEnabledOptions(options);
     else setEnabledOptions(options2);
+
+    if (title == "Released Pension") setYear(new Date().getFullYear());
 
     if (selectedBarangay) setBarangay(selectedBarangay);
   }, [title, selectedBarangay]);

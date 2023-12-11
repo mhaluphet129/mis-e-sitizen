@@ -259,15 +259,15 @@ const Profile = ({ id, closeAll }) => {
                 color={
                   user?.status == "ACTIVE"
                     ? "green"
-                    : user.status == "DECEASED"
+                    : user?.status == "DECEASED"
                     ? "red"
                     : "lime"
                 }
                 style={{ position: "absolute", top: 10, left: 10 }}
               >
-                {user.status == "ACTIVE"
+                {user?.status == "ACTIVE"
                   ? "Active"
-                  : user.status == "DECEASED"
+                  : user?.status == "DECEASED"
                   ? "Deceased"
                   : "Active with Illness/PWD"}
               </Tag>

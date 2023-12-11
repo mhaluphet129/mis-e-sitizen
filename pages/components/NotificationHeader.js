@@ -18,6 +18,7 @@ import { BellOutlined } from "@ant-design/icons";
 import { TbBellRinging, TbBellRingingFilled } from "react-icons/tb";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const NotificationHeader = ({
   isAdmin = false,
@@ -50,13 +51,6 @@ const NotificationHeader = ({
         message.error(data?.message ?? "Error in the server");
       }
     })(axios);
-    // messageApi
-    //   .open({
-    //     type: "loading",
-    //     content: "Action in progress..",
-    //     duration: 2.5,
-    //   })
-    //   .then(() => message.success("Loading finished", 2.5));
   };
 
   const seen = (index, flag) => {
@@ -164,9 +158,17 @@ const NotificationHeader = ({
   };
 
   const ModalNotifCard = ({ data, open, close }) => (
-    <Modal open={open} onCancel={close} footer={null}>
-      <Typography.Title level={3}>{data?.title ?? ""}</Typography.Title>
-      <Typography.Paragraph>{data?.content ?? ""}</Typography.Paragraph>
+    <Modal open={open} onCancel={close} footer={null} title={data?.title ?? ""}>
+      {/* <Typography.Title level={3}>{data?.title ?? ""}</Typography.Title> */}
+      <Typography.Paragraph style={{ fontSize: 14 }}>
+        {data?.content ?? ""}
+      </Typography.Paragraph>
+      <Typography.Text
+        type="secondary"
+        style={{ fontSize: 12, float: "right", paddingBottom: 10 }}
+      >
+        Received at {dayjs(data?.createdAt).format("MMMM DD, YYYY - hh:mm a")}
+      </Typography.Text>
     </Modal>
   );
 
