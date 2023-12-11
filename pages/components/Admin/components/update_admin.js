@@ -139,7 +139,7 @@ const UpdateAdmin = ({ open, close, data, refresh }) => {
           {data?.lastLogin && (
             <Typography.Text type="secondary" italic>
               Last login @{" "}
-              {moment(data?.lastLogin).format("MMM DD, YYYY - HH:mm a")}
+              {moment(data?.lastLogin).format("MMM DD, YYYY - hh:mm a")}
             </Typography.Text>
           )}
         </Form>

@@ -25,11 +25,14 @@ const NewAdminBarangay = ({ open, close, refresh, barangay }) => {
       (async (_) => {
         let { data } = await _.get("/api/barangay", {
           params: {
-            mode: "fetch-senior-specific",
+            mode: "fetch-admin-specific",
             searchKeyword: a,
           },
         });
-        if (data.status == 200) setAdminOptions(data.data);
+        if (data.status == 200) {
+          setAdminOptions(data.data);
+          setIsSearching(false);
+        }
       })(axios);
     } else {
       setAdminOptions([]);
@@ -73,6 +76,12 @@ const NewAdminBarangay = ({ open, close, refresh, barangay }) => {
       <Space>
         <AutoComplete
           options={adminOptions?.map((_) => {
+            if ([_?.name, _?.lastname].includes(undefined)) {
+              return {
+                label: _?.email,
+                value: _?._id,
+              };
+            }
             return {
               label: `${_?.name} ${_?.lastname} (${_?.email})`,
               value: _?._id,
@@ -83,7 +92,11 @@ const NewAdminBarangay = ({ open, close, refresh, barangay }) => {
           onSelect={(e) => {
             setSelectedAdmin(e);
             let admin = adminOptions?.filter((_) => _._id == e)[0];
-            setValue(admin.name + " " + admin.lastname);
+            if ([admin?.name, admin?.lastname].includes(undefined)) {
+              setValue(admin.email);
+            } else {
+              setValue(admin.name + " " + admin.lastname);
+            }
           }}
           style={{
             width: 400,

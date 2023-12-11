@@ -43,6 +43,7 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
         params: {
           mode: "remove-admin",
           id: currentAdmin?._id ?? "",
+          barangay,
         },
       });
 
@@ -163,7 +164,26 @@ const TabView = ({ barangay, refresh, hideExtra }) => {
                   </Space>
                 </>
               ) : (
-                <Typography.Text type="secondary">Not Set</Typography.Text>
+                <>
+                  <Typography.Text type="secondary" italic>
+                    Name not set ({currentAdmin?.email})
+                  </Typography.Text>
+                  <br />
+                  <Popconfirm
+                    title="Are you sure?"
+                    okText="Confirm"
+                    onConfirm={handleRemoveAdmin}
+                  >
+                    <Button
+                      type="text"
+                      size="small"
+                      danger
+                      style={{ margin: 0, paddingLeft: 3, paddingRight: 3 }}
+                    >
+                      remove
+                    </Button>
+                  </Popconfirm>
+                </>
               )
             ) : (
               <Button onClick={() => setOpenBarangayAdmin(true)} size="small">

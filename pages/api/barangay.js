@@ -1,8 +1,11 @@
 import Senior from "../../database/model/Senior";
 import Admin from "../../database/model/Admin";
+import Notification from "../../database/model/Notitification";
 import dbConnect from "../../database/dbConnect";
 
 import json from "../assets/json/constant.json";
+import mongoose from "mongoose";
+import dayjs from "dayjs";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -16,6 +19,11 @@ export default async function handler(req, res) {
           case "dashboard-data": {
             try {
               let pieData = await Senior.aggregate([
+                {
+                  $match: {
+                    isArchived: false,
+                  },
+                },
                 {
                   $group: {
                     _id: "$barangay",
@@ -60,7 +68,7 @@ export default async function handler(req, res) {
               });
           }
 
-          case "fetch-senior-specific": {
+          case "fetch-admin-specific": {
             var re = new RegExp(req.query.searchKeyword.trim(), "i");
             return await Admin.find({
               $and: [
@@ -106,7 +114,15 @@ export default async function handler(req, res) {
                     return await Admin.findOneAndUpdate(
                       { _id: id },
                       { $set: { barangay } }
-                    ).then(() => {
+                    ).then(async () => {
+                      await Notification.create({
+                        adminId: mongoose.Types.ObjectId(id),
+                        title: `Added as Barangay Admin in barangay ${barangay}`,
+                        content: `Superadmin added you as barangay admin in barangay ${barangay} at ${dayjs(
+                          new Date()
+                        ).format("MMM DD, YYYY - hh:mm a")}`,
+                        type: "notification",
+                      });
                       res.json({
                         status: 200,
                         message: `Successfully added`,
@@ -144,11 +160,21 @@ export default async function handler(req, res) {
           }
 
           case "remove-admin": {
+            const { id, barangay } = req.query;
             return await Admin.findOneAndUpdate(
-              { _id: req.query.id },
-              { $set: { barangay: false } }
+              { _id: id },
+              { $set: { barangay: null } }
             )
-              .then(() => {
+              .then(async () => {
+                await Notification.create({
+                  adminId: mongoose.Types.ObjectId(id),
+                  title: `Removed as Barangay Admin in barangay ${barangay}`,
+                  content: `Superadmin removed you as barangay admin in barangay ${barangay} at ${dayjs(
+                    new Date()
+                  ).format("MMM DD, YYYY - hh:mm a")}`,
+                  type: "notification",
+                });
+
                 res.json({
                   status: 200,
                   message: `Remove successfully`,

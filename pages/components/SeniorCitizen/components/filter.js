@@ -64,7 +64,6 @@ const Filter = ({ open, close, setSenior }) => {
         colon={false}
         form={form}
         onFinish={async (val) => {
-          console.log(val);
           val = { ...val, ageRange };
 
           if (pensionerType != null) val = { ...val, pensionerType };

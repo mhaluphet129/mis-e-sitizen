@@ -29,8 +29,16 @@ import PreviewCertification from "../../Reports/formsWithValue/certication";
 import PreviewSocialPensionProgram from "../../Reports/formsWithValue/social_pension_program";
 import PreviewWarrantAndRelease from "../../Reports/formsWithValue/warrant_and_release";
 
+import FilterForm from "../../Reports/components/FilterForm";
+import FilterFormBarangay from "../../Reports/components/Filterform_barangay";
+
 import ModalForm from "../../Reports/components/ModalForm";
-import DrawerPrintPreview from "../../Reports/components/DrawerPrintPreview";
+
+import {
+  master_list,
+  pension_status,
+  living_status,
+} from "../../Reports/columns";
 
 class PDF extends React.Component {
   render() {
@@ -39,7 +47,13 @@ class PDF extends React.Component {
 }
 
 const Reports = () => {
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    open: false,
+    dataSource: [],
+    column: [],
+  });
+
+  const [openBarangayFilter, setOpenBarangayFilter] = useState(false);
 
   const [seniors, setSeniors] = useState([]);
   const ref = useRef();
@@ -63,63 +77,14 @@ const Reports = () => {
     content: () => ref.current,
   });
 
-  const options = [
-    { label: "Active", value: "ACTIVE" },
-    { label: "Active with Illness", value: "ACTIVE_WITH_ILLNESS" },
-    { label: "Deceased", value: "DECEASED" },
-  ];
-
-  const options2 = [
-    { label: "Social", value: "social" },
-    { label: "Private", value: "private" },
-    { label: "None", value: "none" },
-  ];
-
-  const [filterOpt, setFilterOpt] = useState({
+  const [openFilterForm, setOpenFilterForm] = useState({
     title: "",
     open: false,
-    checked: ["ACTIVE"],
-    pstatus: [""],
-    options: [],
+    type: "",
+    checked: [],
+    pstatus: [],
+    semester: "",
   });
-
-  const resetFilter = () =>
-    setFilterOpt({
-      title: "",
-      open: false,
-      checked: ["ACTIVE"],
-      pstatus: ["social"],
-      options: [],
-    });
-
-  const fetchSenior = async () => {
-    if (
-      (filterOpt.title == "Living Status" && filterOpt.checked.length == 0) ||
-      (filterOpt.title == "Pension Status" && filterOpt.pstatus.length == 0)
-    ) {
-      message.warning("Select atleast 1 status");
-      return;
-    }
-    message.info("Generating reports....");
-    const { data } = await axios.get("/api/senior", {
-      params: {
-        mode: "senior-with-filter",
-        [filterOpt.title == "Living Status" ? "status" : "pstatus"]:
-          JSON.stringify(
-            filterOpt.title == "Living Status"
-              ? filterOpt.checked
-              : filterOpt.pstatus
-          ),
-      },
-    });
-
-    if (data.status == 200) {
-      message.success("Generate success");
-      setSeniors(data.senior);
-      setOpenDrawer(true);
-      setFilterOpt({ ...filterOpt, open: false });
-    }
-  };
 
   const CustomTable1 = () => (
     <div style={{ marginTop: 15 }}>
@@ -160,74 +125,11 @@ const Reports = () => {
       </Typography.Title>
 
       <Table
-        dataSource={seniors}
+        dataSource={openDrawer.dataSource}
         className="myTable"
         rowClassName="custom-table"
         pagination={false}
-        columns={[
-          {
-            title: "NO",
-            align: "center",
-            width: 50,
-            render: (_, row) => seniors.indexOf(row) + 1,
-          },
-          {
-            title: "LAST",
-            width: 200,
-            render: (_, row) => row?.name?.lastname?.toUpperCase(),
-          },
-          {
-            title: "FIRST",
-            width: 200,
-
-            render: (_, row) => row?.name?.name?.toUpperCase(),
-          },
-          {
-            title: "MIDDLE",
-            width: 200,
-            render: (_, row) => row?.name?.middlename?.toUpperCase(),
-          },
-
-          {
-            title: "BARANGAY",
-            width: 180,
-            render: (_, row) => row?.barangay?.toUpperCase(),
-          },
-          {
-            title: "AGE",
-            align: "center",
-            width: 1,
-            render: (_, row) =>
-              dayjs().diff(
-                dayjs(row?.dateOfBirth).format("YYYY-MM-DD"),
-                "years",
-                false
-              ),
-          },
-
-          {
-            title: "GENDER",
-            width: 1,
-            render: (_, row) => row?.gender?.toUpperCase(),
-          },
-          {
-            title: "CIVIL STATUS",
-            width: 50,
-            render: (_, row) => row?.maritalStatus?.toUpperCase(),
-          },
-          {
-            title: "BIRTHDATE ",
-            width: 1,
-            align: "center",
-            render: (_, row) =>
-              moment(row?.dateOfBirth?.toUpperCase()).format("DD/MM/YYYY"),
-          },
-          {
-            title: "OSCA ID NO.",
-            width: 50,
-            render: (_, row) => row?.name.id?.toUpperCase(),
-          },
-        ]}
+        columns={openDrawer.column}
         bordered
       />
       <Col span={5} style={{ marginTop: 100 }}>
@@ -270,20 +172,11 @@ const Reports = () => {
       >
         {openModalForm.children}
       </ModalForm>
-      <DrawerPrintPreview
-        open={openDrawerPreview.open}
-        title={openDrawerPreview.title}
-        close={() =>
-          setOpenDrawerPreview((e) => {
-            return { ...e, open: false, children: <></> };
-          })
-        }
-      >
-        {openDrawerPreview.children}
-      </DrawerPrintPreview>
       <Drawer
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
+        open={openDrawer.open}
+        onClose={() =>
+          setOpenDrawer({ open: false, dataSource: null, column: null })
+        }
         placement="bottom"
         height="100%"
         title="Print Preview"
@@ -305,100 +198,165 @@ const Reports = () => {
           <CustomTable1 />
         </PDF>
       </Drawer>
-      {/* FIlter form */}
-      <Modal
-        title={filterOpt.title}
-        open={filterOpt.open}
-        onCancel={() => resetFilter()}
-        footer={[
-          <Button
-            key="btn-1"
-            onClick={() =>
-              setFilterOpt({
-                ...filterOpt,
-                checked: ["ACTIVE"],
-                pstatus: ["social"],
-              })
-            }
-          >
-            Clear All
-          </Button>,
-          <Button key="btn-2" type="primary" onClick={fetchSenior}>
-            Apply Filter
-          </Button>,
-        ]}
-        destroyOnClose
-      >
-        <Checkbox.Group
-          defaultValue={
-            filterOpt.title == "Living Status"
-              ? filterOpt.checked
-              : filterOpt.pstatus
+      <FilterForm
+        title={openFilterForm.title}
+        open={openFilterForm.open}
+        selectedBarangay={barangay}
+        close={() =>
+          setOpenFilterForm({
+            title: "",
+            open: false,
+            type: "",
+            checked: ["ACTIVE"],
+            pstatus: ["social"],
+          })
+        }
+        checkValues={
+          openFilterForm.title == "Living Status"
+            ? openFilterForm.checked
+            : openFilterForm.title == "Released Pension"
+            ? null
+            : openFilterForm.pstatus
+        }
+        setCheckValues={(val) =>
+          setOpenFilterForm({
+            ...openFilterForm,
+            [openFilterForm.title == "Living Status" ? "checked" : "pstatus"]:
+              val,
+          })
+        }
+        submit={(v) => {
+          if (
+            (openFilterForm.title == "Living Status" &&
+              openFilterForm.checked.length == 0) ||
+            (openFilterForm.title == "Pension Status" &&
+              openFilterForm.pstatus.length == 0)
+          ) {
+            message.warning("Select atleast 1 status");
+            return;
           }
-          value={
-            filterOpt.title == "Living Status"
-              ? filterOpt.checked
-              : filterOpt.pstatus
-          }
-          onChange={(v) =>
-            setFilterOpt({
-              ...filterOpt,
-              [filterOpt.title == "Living Status" ? "checked" : "pstatus"]: v,
-            })
-          }
-          style={{ marginTop: 10 }}
-        >
-          <Space direction="vertical">
-            {filterOpt.options.map((e, i) => (
-              <Checkbox key={`checkbox_${i}`} value={e.value}>
-                {e.label}
-              </Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      </Modal>
-      {/* end */}
+          message.info("Generating reports...");
+
+          let params = {
+            [openFilterForm.title == "Living Status" ? "status" : "pstatus"]:
+              v.status != null && v.status?.length != 0
+                ? JSON.stringify(v.status)
+                : "",
+            barangay: v?.barangay,
+            year: v?.year,
+            semester: v?.semester,
+          };
+
+          (async (_) => {
+            let { data } = await axios.get("/api/senior", {
+              params: {
+                mode: "senior-with-filter",
+                ...params,
+              },
+            });
+
+            if (data?.status == 200) {
+              // sort by birthdate
+              data.senior = data.senior.sort((a, b) => {
+                let _a = dayjs().diff(
+                  dayjs(a?.dateOfBirth).format("YYYY-MM-DD"),
+                  "years",
+                  false
+                );
+                let _b = dayjs().diff(
+                  dayjs(b?.dateOfBirth).format("YYYY-MM-DD"),
+                  "years",
+                  false
+                );
+
+                if (_a < _b) {
+                  return -1;
+                }
+                if (_a > _b) {
+                  return 1;
+                }
+                return 0;
+              });
+
+              setOpenDrawer({
+                open: true,
+                dataSource: data.senior,
+                column:
+                  openFilterForm.type == "living-status"
+                    ? living_status
+                    : pension_status,
+              });
+              message.success(data?.message ?? "Generate success");
+            } else message.error(data?.message);
+          })(axios);
+        }}
+      />
+      <FilterFormBarangay
+        open={openBarangayFilter}
+        close={() => setOpenBarangayFilter(false)}
+        barangay={barangay}
+        selectedBarangay={async (v, d, s) => {
+          message.info("Generating reports....");
+          let { data } = await axios.get("/api/senior", {
+            params: {
+              mode: "fetch-all",
+              barangay: [null, ""].includes(v) ? null : v,
+              date: JSON.stringify(d),
+              selectedDates: JSON.stringify(s),
+            },
+          });
+          if (data?.status == 200) {
+            setOpenDrawer({
+              open: true,
+              dataSource: data.senior,
+              column: master_list,
+            });
+            message.success("Generate success");
+          } else message.error(data?.message);
+        }}
+      />
       <Card>
         <Row>
           <Col span={8}>
             <Space direction="vertical">
               <Typography.Title level={4}>General</Typography.Title>
-              <Button
-                onClick={async () => {
-                  let { data } = await axios.get("/api/senior", {
-                    params: {
-                      mode: "fetch-all",
-                      barangay,
-                    },
-                  });
-
-                  if (data?.status == 200) {
-                    setOpenDrawer(true);
-                    setSeniors(data?.senior);
-                  } else message.error(data?.message);
-                }}
-              >
+              <Button onClick={() => setOpenBarangayFilter(true)}>
                 Senior Citizen List
               </Button>
-              <Button
-                onClick={() =>
-                  setFilterOpt({
-                    title: "Living Status",
-                    open: true,
-                    checked: ["ACTIVE"],
-                    options: options,
-                  })
-                }
-              >
-                Living Status
-              </Button>
+              <Space>
+                <Button
+                  onClick={() =>
+                    setOpenFilterForm({
+                      title: "Living Status",
+                      open: true,
+                      type: "living-status",
+                      checked: ["ACTIVE"],
+                    })
+                  }
+                >
+                  Living Status
+                </Button>
+                <Button
+                  onClick={() =>
+                    setOpenFilterForm({
+                      title: "Released Pension",
+                      open: true,
+                      type: "released-pension",
+                      checked: ["ACTIVE"],
+                    })
+                  }
+                >
+                  Released Pension
+                </Button>
+              </Space>
+
               <Button
                 onClick={async () =>
-                  setFilterOpt({
+                  setOpenFilterForm({
                     title: "Pension Status",
                     open: true,
+                    type: "pension-status",
                     pstatus: ["social"],
-                    options: options2,
                   })
                 }
               >

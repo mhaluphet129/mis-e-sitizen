@@ -11,7 +11,7 @@ import {
 import jason from "../../../assets/json/constant.json";
 import dayjs from "dayjs";
 
-const FilterFormBarangay = ({ open, close, selectedBarangay }) => {
+const FilterFormBarangay = ({ open, close, barangay, selectedBarangay }) => {
   const [_, __] = useState("");
   const [date, setDate] = useState({ year: null, month: null, day: null });
   const [mode, setMode] = useState("Specific");
@@ -42,7 +42,8 @@ const FilterFormBarangay = ({ open, close, selectedBarangay }) => {
     if (open) {
       __("");
     }
-  }, [open]);
+    if (barangay != "") __(barangay);
+  }, [open, barangay]);
 
   return (
     <Modal
@@ -57,19 +58,24 @@ const FilterFormBarangay = ({ open, close, selectedBarangay }) => {
       title="Filter Form"
       destroyOnClose
     >
-      <Typography.Text>Select Barangay</Typography.Text>
-      <br />
-      <Select
-        options={jason.barangay.map((e) => {
-          return {
-            value: e,
-            label: e,
-          };
-        })}
-        onChange={(e) => __(e)}
-        style={{ width: 300 }}
-      />
-      <br />
+      {barangay == null && (
+        <>
+          <Typography.Text>Select Barangay</Typography.Text>
+          <br />
+          <Select
+            options={jason.barangay.map((e) => {
+              return {
+                value: e,
+                label: e,
+              };
+            })}
+            onChange={(e) => __(e)}
+            style={{ width: 300 }}
+          />
+          <br />
+        </>
+      )}
+
       <Typography.Text>Timestamp</Typography.Text>
       <br />
       <Segmented

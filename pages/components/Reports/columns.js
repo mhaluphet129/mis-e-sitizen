@@ -26,7 +26,8 @@ const master_list = [
   },
   {
     title: "BARANGAY",
-    width: 180,
+    align: "center",
+    width: 150,
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
   {
@@ -42,12 +43,14 @@ const master_list = [
   },
   {
     title: "GENDER",
+    align: "center",
     width: 1,
     render: (_, row) => row?.gender?.toUpperCase(),
   },
   {
     title: "CIVIL STATUS",
     width: 50,
+    align: "center",
     render: (_, row) => row?.maritalStatus?.toUpperCase(),
   },
   {
@@ -96,9 +99,51 @@ const pension_status = [
   {
     title: "Pension Status",
     width: 180,
-    render: (_, row) => row?.status.replaceAll("_", " "),
+    render: (_, row) =>
+      row?.pensionerType == "social"
+        ? "Social"
+        : row?.pensionerType == "private"
+        ? "Private"
+        : row?.pensionerType == "none"
+        ? "For Validation"
+        : "No Data",
+  },
+];
+
+const living_status = [
+  {
+    title: "NO",
+    align: "center",
+    width: 50,
+    render: (_, __, i) => i + 1,
+  },
+  {
+    title: "LAST",
+    width: 200,
+    render: (_, row) => row?.name?.lastname?.toUpperCase(),
+  },
+  {
+    title: "FIRST",
+    width: 200,
+
+    render: (_, row) => row?.name?.name?.toUpperCase(),
+  },
+  {
+    title: "MIDDLE",
+    width: 200,
+    render: (_, row) => row?.name?.middlename?.toUpperCase(),
+  },
+  {
+    title: "BARANGAY",
+    width: 180,
+    render: (_, row) => row?.barangay?.toUpperCase(),
+  },
+  {
+    title: "Living Status",
+    width: 180,
+    render: (_, row) => row?.status,
   },
 ];
 
 export default () => null;
-export { master_list, pension_status };
+export { master_list, pension_status, living_status };

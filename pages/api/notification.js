@@ -106,6 +106,20 @@ export default async function handler(req, res) {
         }
       });
     }
+
+    case "DELETE": {
+      return new Promise(async (resolve, reject) => {
+        const { id } = req.query;
+
+        await Notification.deleteMany({ adminId: id })
+          .then(() => {
+            return res.json({ success: true });
+          })
+          .catch((err) => {
+            res.status(500).json({ success: false, message: "Error: " + err });
+          });
+      });
+    }
     default:
       res.status(400).json({ success: false });
   }

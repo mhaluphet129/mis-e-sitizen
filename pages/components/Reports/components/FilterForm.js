@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Select, Checkbox, Space, Button, Radio } from "antd";
+import {
+  Modal,
+  Select,
+  Checkbox,
+  Space,
+  Button,
+  Radio,
+  InputNumber,
+} from "antd";
 import JASON from "../../../assets/json/constant.json";
 
 const FilterForm = ({
@@ -9,9 +17,12 @@ const FilterForm = ({
   submit,
   checkValues,
   setCheckValues,
+  selectedBarangay,
 }) => {
   const [barangay, setBarangay] = useState("");
   const [enabledOptions, setEnabledOptions] = useState([]);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [semester, setSemester] = useState("");
   const options = [
     { label: "Active", value: "ACTIVE" },
     { label: "Active with Illness", value: "ACTIVE_WITH_ILLNESS" },
@@ -26,12 +37,16 @@ const FilterForm = ({
   const reset = () => {
     setCheckValues(["ACTIVE"]);
     setBarangay("");
+    setYear(new Date().getFullYear());
+    setSemester("");
   };
 
   useEffect(() => {
     if (title == "Living Status") setEnabledOptions(options);
     else setEnabledOptions(options2);
-  }, [title]);
+
+    if (selectedBarangay) setBarangay(selectedBarangay);
+  }, [title, selectedBarangay]);
 
   return (
     <Modal
@@ -50,8 +65,11 @@ const FilterForm = ({
           type="primary"
           onClick={() => {
             let obj = {};
-            if (checkValues.length != 0) obj.status = checkValues;
+            if (checkValues && checkValues?.length != 0)
+              obj.status = checkValues;
             if (barangay != "") obj.barangay = barangay;
+            if (year != "") obj.year = year;
+            if (semester != "") obj.semester = semester;
             submit(obj);
             reset();
             close();
@@ -62,30 +80,47 @@ const FilterForm = ({
       ]}
       destroyOnClose
     >
-      <Select
-        showSearch
-        value={barangay}
-        placeholder="Select a barangay"
-        optionFilterProp="children"
-        style={{ width: 250, display: "flex", textAlign: "start" }}
-        filterOption={(input, option) =>
-          (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-        }
-        options={JASON.barangay.map((_, i) => {
-          return {
-            label: _,
-            value: _,
-          };
-        })}
-        onChange={(v) => setBarangay(v)}
-        allowClear
-      />
+      {selectedBarangay == null && (
+        <>
+          <label>Select barangay</label>
+          <Select
+            showSearch
+            value={barangay}
+            placeholder="Select a barangay"
+            optionFilterProp="children"
+            style={{ width: 250, display: "flex", textAlign: "start" }}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={JASON.barangay.map((_, i) => {
+              return {
+                label: _,
+                value: _,
+              };
+            })}
+            onChange={(v) => setBarangay(v)}
+            allowClear
+          />
+        </>
+      )}
+
       {title == "Released Pension" ? (
         <>
-          (under construction) <br />
-          <Radio.Group>
-            <Radio value="1">First Semester</Radio>
-            <Radio value="2">First Semester</Radio>
+          <label>Select year</label>
+          <br />
+          <InputNumber
+            min={1900}
+            max={new Date().getFullYear()}
+            value={year}
+            onChange={(e) => setYear(e)}
+          />
+          <br />
+          <Radio.Group
+            style={{ marginTop: 10 }}
+            onChange={(e) => setSemester(e.target.value)}
+          >
+            <Radio value="first">First Semester</Radio>
+            <Radio value="second">Second Semester</Radio>
           </Radio.Group>
         </>
       ) : (

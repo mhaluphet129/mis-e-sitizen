@@ -213,9 +213,23 @@ SeniorSchema.pre("validate", function (next) {
   next();
 });
 
-SeniorSchema.pre("find", function (next) {
-  this.where({ isArchived: false });
-  next();
-});
+SeniorSchema.pre(
+  [
+    "find",
+    "findOne",
+    "findById",
+    "findByIdAndDelete",
+    "findByIdAndUpdate",
+    "findOneAndUpdate",
+    "updateOne",
+    "updateMany",
+    "countDocuments",
+    "count",
+  ],
+  function (next) {
+    this.where({ isArchived: false });
+    next();
+  }
+);
 
 export default mongoose.models.Senior || mongoose.model("Senior", SeniorSchema);

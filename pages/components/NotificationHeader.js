@@ -12,6 +12,7 @@ import {
   Tooltip,
   message,
   Empty,
+  Popconfirm,
 } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import { TbBellRinging, TbBellRingingFilled } from "react-icons/tb";
@@ -33,14 +34,29 @@ const NotificationHeader = ({
   const [viewData, setViewData] = useState({ open: false, data: null });
   const [loader, setLoader] = useState("");
 
-  const handleConfirm = () => {
-    messageApi
-      .open({
-        type: "loading",
-        content: "Action in progress..",
-        duration: 2.5,
-      })
-      .then(() => message.success("Loading finished", 2.5));
+  const handleClear = () => {
+    setOpen(false);
+    (async (_) => {
+      let { data } = await _.delete("/api/notification", {
+        params: {
+          id: id,
+        },
+      });
+
+      if (data?.success) {
+        message.success("Sucessfully clear notification");
+        setNotification([]);
+      } else {
+        message.error(data?.message ?? "Error in the server");
+      }
+    })(axios);
+    // messageApi
+    //   .open({
+    //     type: "loading",
+    //     content: "Action in progress..",
+    //     duration: 2.5,
+    //   })
+    //   .then(() => message.success("Loading finished", 2.5));
   };
 
   const seen = (index, flag) => {
@@ -135,7 +151,7 @@ const NotificationHeader = ({
             description={
               <Typography.Paragraph
                 ellipsis={{
-                  rows: 2,
+                  rows: 3,
                 }}
               >
                 {data.content}
@@ -175,6 +191,9 @@ const NotificationHeader = ({
         trigger={["click"]}
         open={open}
         onOpenChange={(e) => setOpen(e)}
+        overlayStyle={{
+          zIndex: 1,
+        }}
         dropdownRender={() => (
           <Card
             bodyStyle={{
@@ -191,23 +210,17 @@ const NotificationHeader = ({
               >
                 Mark all as read
               </Typography.Text>,
-              <Tooltip title="Temporary Disabled" key="key2">
-                <Button
-                  type="text"
-                  danger
-                  onClick={() => {
-                    setOpen(false);
-                    modal.confirm({
-                      title: "Confirm Clear Notification?",
-                      okText: "CLEAR",
-                      onOk: handleConfirm,
-                    });
-                  }}
-                  disabled
-                >
-                  clear
+              <Popconfirm
+                key="key2"
+                title="Confirm Clear Notification ?"
+                okText="CLEAR"
+                onConfirm={handleClear}
+                zIndex={999}
+              >
+                <Button type="text" danger>
+                  CLEAR
                 </Button>
-              </Tooltip>,
+              </Popconfirm>,
             ]}
           >
             <Tabs

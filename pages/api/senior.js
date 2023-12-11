@@ -58,7 +58,11 @@ export default async function handler(req, res) {
             }
 
             if (search) query.$expr.$and.push({ _id: search });
-            return await Senior.find(query.$expr.$and.length == 0 ? {} : query)
+
+            if (query.$expr.$and.length == 0) delete query.$expr;
+
+            console.dir(query, { depth: null });
+            return await Senior.find(query)
               .sort({ barangay: 1 })
               .then((e) => {
                 res.json({
@@ -288,19 +292,81 @@ export default async function handler(req, res) {
           }
 
           case "senior-with-filter": {
-            let { status, barangay, pstatus } = req.query;
+            let { status, barangay, pstatus, year, semester } = req.query;
             if (status != "" && status != null) status = JSON.parse(status);
             if (pstatus != "" && pstatus != null) pstatus = JSON.parse(pstatus);
-            let filter = {};
-            if (barangay != null) filter.barangay = barangay;
-            if (status != null && status?.length != 0)
-              filter.status = { $in: status };
-            if (pstatus != null && pstatus?.length != 0)
-              filter.pensionerType = { $in: pstatus };
 
-            console.log(filter);
+            let filter = [];
 
-            return await Senior.find(filter)
+            if (barangay != null)
+              filter.push({
+                $match: {
+                  barangay,
+                },
+              });
+
+            if (status != null && status?.length != 0) {
+              filter.push({
+                $match: {
+                  status: {
+                    $in: status,
+                  },
+                },
+              });
+            }
+
+            if (pstatus != null && pstatus?.length != 0) {
+              filter.push({
+                $match: {
+                  pensionerType: {
+                    $in: pstatus,
+                  },
+                },
+              });
+            }
+
+            if (year != undefined || semester != undefined) {
+              let _q = {};
+              if (year != undefined)
+                _q = {
+                  $match: {
+                    $expr: {
+                      $eq: [{ $year: "$createdAt" }, parseInt(year)],
+                    },
+                  },
+                };
+
+              if (semester != undefined) {
+                if (Object.keys(_q).length == 0) {
+                  _q = {
+                    $match: {
+                      semester: { $in: [semester] },
+                    },
+                  };
+                } else {
+                  _q.$match.semester = { $in: [semester] };
+                }
+              }
+
+              filter.push({
+                $lookup: {
+                  from: "histories",
+                  localField: "history",
+                  foreignField: "_id",
+                  pipeline: [_q],
+                  as: "history",
+                },
+              });
+              filter.push({
+                $match: {
+                  history: { $ne: [] },
+                },
+              });
+            }
+
+            console.dir(filter, { depth: null });
+
+            return await Senior.aggregate(filter)
               .then((doc) => {
                 res.json({
                   status: 200,
@@ -378,7 +444,7 @@ export default async function handler(req, res) {
             delete req.body.payload.data.createdAt;
             delete req.body.payload.data.updatedAt;
             delete req.body.payload.data.__v;
-            console.log(req.body.payload.data);
+
             if (receivedPension6mos == "dswd")
               req.body.payload.data.pensionerType = "social";
             else if (receivedPension6mos == "none")
@@ -462,7 +528,7 @@ export default async function handler(req, res) {
 
           case "transfer-senior": {
             let { barangay, seniorId, transferBy } = req.body.payload;
-            console.log(req.body);
+
             return await Senior.findOneAndUpdate(
               { _id: seniorId },
               { $set: { barangay } },

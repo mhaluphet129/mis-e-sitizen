@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 
-import { master_list, pension_status } from "./columns";
+import { master_list, pension_status, living_status } from "./columns";
 import ModalForm from "./components/ModalForm";
 import DrawerPrintPreview from "./components/DrawerPrintPreview";
 
@@ -173,7 +173,6 @@ const Reports = () => {
         open={openBarangayFilter}
         close={() => setOpenBarangayFilter(false)}
         selectedBarangay={async (v, d, s) => {
-          console.log(s);
           message.info("Generating reports....");
           let { data } = await axios.get("/api/senior", {
             params: {
@@ -258,17 +257,21 @@ const Reports = () => {
           }
           message.info("Generating reports...");
 
+          let params = {
+            [openFilterForm.title == "Living Status" ? "status" : "pstatus"]:
+              v.status != null && v.status?.length != 0
+                ? JSON.stringify(v.status)
+                : "",
+            barangay: v?.barangay,
+            year: v?.year,
+            semester: v?.semester,
+          };
+
           (async (_) => {
             let { data } = await axios.get("/api/senior", {
               params: {
                 mode: "senior-with-filter",
-                [openFilterForm.title == "Living Status"
-                  ? "status"
-                  : "pstatus"]:
-                  v.status != null && v.status?.length != 0
-                    ? JSON.stringify(v.status)
-                    : "",
-                barangay: v.barangay,
+                ...params,
               },
             });
 
@@ -300,7 +303,7 @@ const Reports = () => {
                 dataSource: data.senior,
                 column:
                   openFilterForm.type == "living-status"
-                    ? master_list
+                    ? living_status
                     : pension_status,
               });
               message.success(data?.message ?? "Generate success");

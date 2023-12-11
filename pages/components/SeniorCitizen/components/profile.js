@@ -257,7 +257,7 @@ const Profile = ({ id, closeAll }) => {
               user?.status != "") && (
               <Tag
                 color={
-                  user.status == "ACTIVE"
+                  user?.status == "ACTIVE"
                     ? "green"
                     : user.status == "DECEASED"
                     ? "red"
@@ -381,13 +381,13 @@ const Profile = ({ id, closeAll }) => {
             <Button
               onClick={() => {
                 modal.confirm({
-                  title: "Archive this senior ?",
-                  okText: "ARCHIVE",
+                  title: "Transfer/Archive this senior ?",
+                  okText: "CONFIRM",
                   onOk: confirmArchive,
                 });
               }}
             >
-              Archive
+              Transfer of Residency
             </Button>
             {/* )} */}
             <Button onClick={() => setOpenMoveTo(true)}>

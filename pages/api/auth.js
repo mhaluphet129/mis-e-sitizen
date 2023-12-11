@@ -46,9 +46,9 @@ export default async function handler(req, res) {
                     currentUser: e,
                   });
                   resolve();
-                } else if (e?.password == null) {
+                } else if (e?.password == null && e?.role == "barangay-admin") {
                   res.json({
-                    status: 200,
+                    status: 201,
                     message: "New User",
                   });
                 } else {
