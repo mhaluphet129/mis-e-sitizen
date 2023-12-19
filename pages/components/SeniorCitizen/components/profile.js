@@ -281,9 +281,9 @@ const Profile = ({ id, closeAll }) => {
               : ""}
           </Typography.Title>
           <Typography>
-            {dayjs(user.dateOfBirth).format("MMMM DD, YYYY")}{" "}
+            {dayjs(user?.dateOfBirth).format("MMMM DD, YYYY")}{" "}
             {`(${dayjs().diff(
-              dayjs(user.dateOfBirth).format("YYYY-MM-DD"),
+              dayjs(user?.dateOfBirth).format("YYYY-MM-DD"),
               "years",
               false
             )} years old)`}

@@ -61,7 +61,6 @@ export default async function handler(req, res) {
 
             if (query.$expr.$and.length == 0) delete query.$expr;
 
-            console.dir(query, { depth: null });
             return await Senior.find(query)
               .sort({ barangay: 1 })
               .then((e) => {
@@ -363,8 +362,6 @@ export default async function handler(req, res) {
                 },
               });
             }
-
-            console.dir(filter, { depth: null });
 
             return await Senior.aggregate(filter)
               .then((doc) => {
