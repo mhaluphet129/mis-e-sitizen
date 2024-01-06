@@ -26,7 +26,6 @@ const master_list = [
   },
   {
     title: "BARANGAY",
-    align: "center",
     width: 150,
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
@@ -139,7 +138,7 @@ const living_status = [
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
   {
-    title: "Living Status",
+    title: "Health Status",
     width: 180,
     render: (_, row) => row?.status,
   },

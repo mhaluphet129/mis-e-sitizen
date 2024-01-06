@@ -212,7 +212,7 @@ const Reports = () => {
           })
         }
         checkValues={
-          openFilterForm.title == "Living Status"
+          openFilterForm.title == "Health Status"
             ? openFilterForm.checked
             : openFilterForm.title == "Released Pension"
             ? null
@@ -221,13 +221,13 @@ const Reports = () => {
         setCheckValues={(val) =>
           setOpenFilterForm({
             ...openFilterForm,
-            [openFilterForm.title == "Living Status" ? "checked" : "pstatus"]:
+            [openFilterForm.title == "Health Status" ? "checked" : "pstatus"]:
               val,
           })
         }
         submit={(v) => {
           if (
-            (openFilterForm.title == "Living Status" &&
+            (openFilterForm.title == "Health Status" &&
               openFilterForm.checked.length == 0) ||
             (openFilterForm.title == "Pension Status" &&
               openFilterForm.pstatus.length == 0)
@@ -238,7 +238,7 @@ const Reports = () => {
           message.info("Generating reports...");
 
           let params = {
-            [openFilterForm.title == "Living Status" ? "status" : "pstatus"]:
+            [openFilterForm.title == "Health Status" ? "status" : "pstatus"]:
               v.status != null && v.status?.length != 0
                 ? JSON.stringify(v.status)
                 : "",
@@ -327,14 +327,14 @@ const Reports = () => {
                 <Button
                   onClick={() =>
                     setOpenFilterForm({
-                      title: "Living Status",
+                      title: "Health Status",
                       open: true,
                       type: "living-status",
                       checked: ["ACTIVE"],
                     })
                   }
                 >
-                  Living Status
+                  Health Status
                 </Button>
                 <Button
                   onClick={() =>

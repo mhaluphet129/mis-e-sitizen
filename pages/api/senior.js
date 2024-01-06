@@ -62,8 +62,9 @@ export default async function handler(req, res) {
             if (query.$expr.$and.length == 0) delete query.$expr;
 
             return await Senior.find(query)
-              .sort({ barangay: 1 })
+              .sort({ barangay: 1, "name.lastname": 1 })
               .then((e) => {
+                console.log(e);
                 res.json({
                   status: 200,
                   message: "Successfully fetched the data",

@@ -12,6 +12,7 @@ const ModalForm = (props) => {
           Proceed and Review
         </Button>,
       ]}
+      centered
     >
       {props.children}
     </Modal>

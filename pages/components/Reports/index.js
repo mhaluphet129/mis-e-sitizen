@@ -116,6 +116,7 @@ const Reports = () => {
         rowClassName="custom-table"
         pagination={false}
         columns={openDrawer.column}
+        rowKey={(e) => e._id}
         bordered
       />
       <Col span={5} style={{ marginTop: 100 }}>
@@ -232,7 +233,7 @@ const Reports = () => {
           })
         }
         checkValues={
-          openFilterForm.title == "Living Status"
+          openFilterForm.title == "Health Status"
             ? openFilterForm.checked
             : openFilterForm.title == "Released Pension"
             ? null
@@ -241,13 +242,13 @@ const Reports = () => {
         setCheckValues={(val) =>
           setOpenFilterForm({
             ...openFilterForm,
-            [openFilterForm.title == "Living Status" ? "checked" : "pstatus"]:
+            [openFilterForm.title == "Health Status" ? "checked" : "pstatus"]:
               val,
           })
         }
         submit={(v) => {
           if (
-            (openFilterForm.title == "Living Status" &&
+            (openFilterForm.title == "Health Status" &&
               openFilterForm.checked.length == 0) ||
             (openFilterForm.title == "Pension Status" &&
               openFilterForm.pstatus.length == 0)
@@ -258,7 +259,7 @@ const Reports = () => {
           message.info("Generating reports...");
 
           let params = {
-            [openFilterForm.title == "Living Status" ? "status" : "pstatus"]:
+            [openFilterForm.title == "Health Status" ? "status" : "pstatus"]:
               v.status != null && v.status?.length != 0
                 ? JSON.stringify(v.status)
                 : "",
@@ -297,7 +298,6 @@ const Reports = () => {
                 }
                 return 0;
               });
-
               setOpenDrawer({
                 open: true,
                 dataSource: data.senior,
@@ -312,116 +312,120 @@ const Reports = () => {
         }}
       />
       {/* end */}
-      <Card>
-        <Row>
-          <Col span={8}>
-            <Typography.Title level={4}>General</Typography.Title>
-            <Space direction="vertical">
-              <Button onClick={() => setOpenBarangayFilter(true)}>
-                Senior Citizen List
-              </Button>
-              <Space>
-                <Button
-                  onClick={() => {
-                    setOpenFilterForm({
-                      title: "Living Status",
-                      open: true,
-                      type: "living-status",
-                      checked: ["ACTIVE"],
-                    });
-                  }}
-                >
-                  Living Status
-                </Button>
-                <Button
-                  onClick={() => {
-                    setOpenFilterForm({
-                      title: "Released Pension",
-                      open: true,
-                      type: "released-pension",
-                      checked: ["ACTIVE"],
-                    });
-                  }}
-                >
-                  Released Pension
-                </Button>
-              </Space>
-              <Button
-                onClick={() => {
-                  setOpenFilterForm({
-                    title: "Pension Status",
-                    open: true,
-                    type: "pension-status",
-                    pstatus: ["social"],
-                  });
-                }}
-              >
-                Pension Status
-              </Button>
-            </Space>
-          </Col>
-          <Col span={8}>
-            <Typography.Title level={4}>Forms</Typography.Title>
-            <Space direction="vertical">
-              <Button
-                onClick={() => {
-                  setOpenDrawerPreview((e) => {
-                    return {
-                      ...e,
-                      title: "WARRANTY AND RELEASE FROM LIABILITY",
-                    };
-                  });
-                  setOpenModalForm({
-                    open: true,
-                    children: <WarrantAndRelease setData={setFormValues} />,
-                  });
-                }}
-              >
-                Warranty and Release from liability
-              </Button>
-              <Button
-                onClick={() => {
-                  setOpenDrawerPreview((e) => {
-                    return {
-                      ...e,
-                      title: "AUTHORIZATION",
-                    };
-                  });
-                  setOpenModalForm({
-                    open: true,
-                    children: (
-                      <SocialPensionProgram
-                        setData={setFormValues}
-                        print={() => {}}
-                      />
-                    ),
-                  });
-                }}
-              >
-                Authorization
-              </Button>
-              <Button
-                onClick={() => {
-                  setOpenDrawerPreview((e) => {
-                    return {
-                      ...e,
-                      title: "CERTIFICATION",
-                    };
-                  });
-                  setOpenModalForm({
-                    open: true,
-                    children: (
-                      <Certification setData={setFormValues} print={() => {}} />
-                    ),
-                  });
-                }}
-              >
-                Certification
-              </Button>
-            </Space>
-          </Col>
-        </Row>
-      </Card>
+      <Space
+        style={{
+          alignItems: "start",
+        }}
+      >
+        <Card title="General">
+          <Space direction="vertical">
+            <Button onClick={() => setOpenBarangayFilter(true)}>
+              Senior Citizen List
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenFilterForm({
+                  title: "Health Status",
+                  open: true,
+                  type: "living-status",
+                  checked: ["ACTIVE"],
+                });
+              }}
+              block
+            >
+              Health Status
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenFilterForm({
+                  title: "Released Pension",
+                  open: true,
+                  type: "released-pension",
+                  checked: ["ACTIVE"],
+                });
+              }}
+              block
+            >
+              Released Pension
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenFilterForm({
+                  title: "Pension Status",
+                  open: true,
+                  type: "pension-status",
+                  pstatus: ["social"],
+                });
+              }}
+              block
+            >
+              Pension Status
+            </Button>
+          </Space>
+        </Card>
+        <Card title="Forms">
+          <Space direction="vertical">
+            <Button
+              onClick={() => {
+                setOpenDrawerPreview((e) => {
+                  return {
+                    ...e,
+                    title: "WARRANTY AND RELEASE FROM LIABILITY",
+                  };
+                });
+                setOpenModalForm({
+                  open: true,
+                  children: <WarrantAndRelease setData={setFormValues} />,
+                });
+              }}
+              block
+            >
+              Warranty and Release from liability
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenDrawerPreview((e) => {
+                  return {
+                    ...e,
+                    title: "AUTHORIZATION",
+                  };
+                });
+                setOpenModalForm({
+                  open: true,
+                  children: (
+                    <SocialPensionProgram
+                      setData={setFormValues}
+                      print={() => {}}
+                    />
+                  ),
+                });
+              }}
+              block
+            >
+              Authorization
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenDrawerPreview((e) => {
+                  return {
+                    ...e,
+                    title: "CERTIFICATION",
+                  };
+                });
+                setOpenModalForm({
+                  open: true,
+                  children: (
+                    <Certification setData={setFormValues} print={() => {}} />
+                  ),
+                });
+              }}
+              block
+            >
+              Certification
+            </Button>
+          </Space>
+        </Card>
+      </Space>
     </>
   );
 };

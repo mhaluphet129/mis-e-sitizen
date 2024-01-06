@@ -42,7 +42,7 @@ const FilterForm = ({
   };
 
   useEffect(() => {
-    if (title == "Living Status") setEnabledOptions(options);
+    if (title == "Health Status") setEnabledOptions(options);
     else setEnabledOptions(options2);
 
     if (title == "Released Pension") setYear(new Date().getFullYear());
