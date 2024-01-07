@@ -53,6 +53,7 @@ const Reports = () => {
     open: false,
     dataSource: [],
     column: [],
+    title: "",
   });
 
   const [openFilterForm, setOpenFilterForm] = useState({
@@ -109,7 +110,12 @@ const Reports = () => {
       >
         Control Number: Kadingilan-2023-2024
       </Typography.Title>
-
+      <Typography.Title
+        level={5}
+        style={{ margin: 0, marginBottom: 10, textAlign: "center" }}
+      >
+        {openDrawer.title}
+      </Typography.Title>
       <Table
         dataSource={openDrawer.dataSource}
         className="myTable"
@@ -305,6 +311,12 @@ const Reports = () => {
                   openFilterForm.type == "living-status"
                     ? living_status
                     : pension_status,
+                title:
+                  openFilterForm.type == "living-status"
+                    ? "Health Status"
+                    : openFilterForm.type == "released-pension"
+                    ? "Released Pension"
+                    : "Pension Status",
               });
               message.success(data?.message ?? "Generate success");
             } else message.error(data?.message);

@@ -64,7 +64,6 @@ export default async function handler(req, res) {
             return await Senior.find(query)
               .sort({ barangay: 1, "name.lastname": 1 })
               .then((e) => {
-                console.log(e);
                 res.json({
                   status: 200,
                   message: "Successfully fetched the data",
@@ -295,7 +294,6 @@ export default async function handler(req, res) {
             let { status, barangay, pstatus, year, semester } = req.query;
             if (status != "" && status != null) status = JSON.parse(status);
             if (pstatus != "" && pstatus != null) pstatus = JSON.parse(pstatus);
-
             let filter = [];
 
             if (barangay != null)

@@ -37,7 +37,7 @@ const FilterForm = ({
   const reset = () => {
     setCheckValues(["ACTIVE"]);
     setBarangay("");
-    setYear(new Date().getFullYear());
+    setYear(title == "Released Pension" ? new Date().getFullYear() : null);
     setSemester("");
   };
 
