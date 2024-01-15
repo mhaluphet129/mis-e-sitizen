@@ -9,18 +9,18 @@ const master_list = [
     render: (_, __, i) => i + 1,
   },
   {
-    title: "LAST",
+    title: "LAST NAME",
     width: 200,
     render: (_, row) => row?.name?.lastname?.toUpperCase(),
   },
   {
-    title: "FIRST",
+    title: "FIRST NAME",
     width: 200,
 
     render: (_, row) => row?.name?.name?.toUpperCase(),
   },
   {
-    title: "MIDDLE",
+    title: "MIDDLE NAME",
     width: 200,
     render: (_, row) => row?.name?.middlename?.toUpperCase(),
   },
@@ -75,18 +75,18 @@ const pension_status = [
     render: (_, __, i) => i + 1,
   },
   {
-    title: "LAST",
+    title: "LAST NAME",
     width: 200,
     render: (_, row) => row?.name?.lastname?.toUpperCase(),
   },
   {
-    title: "FIRST",
+    title: "FIRST NAME",
     width: 200,
 
     render: (_, row) => row?.name?.name?.toUpperCase(),
   },
   {
-    title: "MIDDLE",
+    title: "MIDDLE NAME",
     width: 200,
     render: (_, row) => row?.name?.middlename?.toUpperCase(),
   },
@@ -96,7 +96,7 @@ const pension_status = [
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
   {
-    title: "Pension Status",
+    title: "PENSION STATUS",
     width: 180,
     render: (_, row) =>
       row?.pensionerType == "social"
@@ -117,18 +117,18 @@ const living_status = [
     render: (_, __, i) => i + 1,
   },
   {
-    title: "LAST",
+    title: "LAST NAME",
     width: 200,
     render: (_, row) => row?.name?.lastname?.toUpperCase(),
   },
   {
-    title: "FIRST",
+    title: "FIRST NAME",
     width: 200,
 
     render: (_, row) => row?.name?.name?.toUpperCase(),
   },
   {
-    title: "MIDDLE",
+    title: "MIDDLE NAME",
     width: 200,
     render: (_, row) => row?.name?.middlename?.toUpperCase(),
   },
@@ -138,7 +138,7 @@ const living_status = [
     render: (_, row) => row?.barangay?.toUpperCase(),
   },
   {
-    title: "Health Status",
+    title: "HEALTH STATUS",
     width: 180,
     render: (_, row) => row?.status,
   },

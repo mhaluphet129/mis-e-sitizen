@@ -82,7 +82,7 @@ const Sider = ({ selectedIndex, selectedKey }) => {
             padding: 10,
           }}
         >
-          <Image preview={false} src="/menu-logo.png" alt="logo" width={150} />
+          <Image preview={false} src="/logo2.png" alt="logo" width={150} />
         </div>
         <Menu
           onClick={selectedIndex}

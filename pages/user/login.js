@@ -116,10 +116,10 @@ const Login = () => {
             }} // Adjust the width and height as needed
           />
           <img
-            src="menu-logo.png"
+            src="logo2.png"
             alt="Logo 2"
             className="logo"
-            style={{ width: "100px", height: "100px", marginRight: "30px" }} // Adjust the width and height as needed
+            style={{ width: "130px", height: "100px", marginRight: "30px" }} // Adjust the width and height as needed
           />
           <img
             src="logo-mswd.png"
