@@ -74,10 +74,8 @@ const Reports = () => {
   });
 
   const CustomTable1 = () => (
-    <div style={{ marginTop: 15 }}>
-      <div
-        style={{ display: "grid", alignItems: "center", textAlign: "center" }}
-      >
+    <div style={{ marginTop: 15, position: "relative" }}> 
+      <div style={{ display: "grid", alignItems: "center", textAlign: "center" }}>
         <Image
           src="/logo.png"
           alt="logo"
@@ -96,8 +94,19 @@ const Reports = () => {
             Municipality of Kadingilan
           </Typography.Title>
         </div>
+        <br/>
+        <div style={{ position: "absolute", top: 25, right: 0, marginRight: 40 }}> 
+          <Image
+            src="/logo2.png"
+            alt="logo2"
+            preview={false}
+            width={130}
+            style={{ marginTop: -15 }} 
+          />
+        </div>
       </div>
-      <br />
+    
+  
       <Typography.Title
         level={4}
         style={{ margin: 0, marginBottom: 0, textAlign: "center" }}
