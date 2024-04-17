@@ -72,7 +72,7 @@ const Reports = () => {
   const handlePrint = useReactToPrint({
     content: () => ref.current,
   });
-
+  const [title, setTitle] = useState("SOCIAL PENSION PROGRAM POTENTIAL LIST OF BENEFICIARIES/WAITLISTED");
   const CustomTable1 = () => (
     <div style={{ marginTop: 15, position: "relative" }}> 
       <div style={{ display: "grid", alignItems: "center", textAlign: "center" }}>
@@ -111,7 +111,7 @@ const Reports = () => {
         level={4}
         style={{ margin: 0, marginBottom: 0, textAlign: "center" }}
       >
-        SOCIAL PENSION PROGRAM POTENTIAL LIST OF BENEFICIARIES/WAITLISTED
+        {title}
       </Typography.Title>
       <Typography.Title
         level={4}
@@ -340,35 +340,40 @@ const Reports = () => {
       >
         <Card title="General">
           <Space direction="vertical">
-            <Button onClick={() => setOpenBarangayFilter(true)}>
-              Senior Citizen List
-            </Button>
+          <Button onClick={() => {
+         setOpenBarangayFilter(true);
+         setTitle("SOCIAL PENSION PROGRAM POTENTIAL LIST OF BENEFICIARIES/WAITLISTED"); 
+       }}>
+      Senior Citizen List
+      </Button>
             <Button
-              onClick={() => {
-                setOpenFilterForm({
-                  title: "Health Status",
-                  open: true,
-                  type: "living-status",
-                  checked: ["ACTIVE"],
-                });
-              }}
-              block
-            >
-              Health Status
-            </Button>
-            <Button
-              onClick={() => {
-                setOpenFilterForm({
-                  title: "Released Pension",
-                  open: true,
-                  type: "released-pension",
-                  checked: ["ACTIVE"],
-                });
-              }}
-              block
-            >
-              Released Pension
-            </Button>
+       onClick={() => {
+        setOpenFilterForm({
+        title: "Health Status",
+        open: true,
+       type: "living-status",
+       checked: ["ACTIVE"],
+        });
+          setTitle("SOCIAL PENSION PROGRAM FOR HEALTH STATUS"); 
+          }}
+           block
+        >
+        Health Status
+       </Button>
+          <Button
+               onClick={() => {
+              setOpenFilterForm({
+             title: "Released Pension",
+            open: true,
+           type: "released-pension",
+          checked: ["ACTIVE"],
+        });
+       setTitle("SOCIAL PENSION PROGRAM FOR RELEASED PENSION"); 
+      }}
+     block
+>
+      Released Pension
+     </Button>
             <Button
               onClick={() => {
                 setOpenFilterForm({
@@ -377,6 +382,7 @@ const Reports = () => {
                   type: "pension-status",
                   pstatus: ["social"],
                 });
+                 setTitle("SOCIAL PENSION STATUS"); 
               }}
               block
             >
